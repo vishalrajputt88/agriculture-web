@@ -1,0 +1,336 @@
+{% assign custom_discount_banner = block.id | replace: '_', '' | downcase %}
+
+{% style %}
+  .coupon-banner-{{ custom_discount_banner }} {
+    display: block;
+    width: {{ block.settings.desktop_width_percent }}%;
+    max-width: 100%;
+  }
+
+  .coupon-banner__container-{{ custom_discount_banner }} {
+    background-color: {{ block.settings.background_color }};
+    border: {{ block.settings.border_width }}px dashed {{ block.settings.border_color }};
+    border-radius: {{ block.settings.border_radius }}px;
+    padding: {{ block.settings.padding }}px {{ block.settings.padding | plus: 4 }}px;
+    max-width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+  }
+
+  .coupon-banner__left-{{ custom_discount_banner }} {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex: 1;
+    min-width: 0;
+  }
+
+  .coupon-banner__lock-icon-{{ custom_discount_banner }} {
+    width: 17px;
+    height: 17px;
+    flex-shrink: 0;
+    color: {{ block.settings.text_color }};
+  }
+
+  .coupon-banner__text-{{ custom_discount_banner }} {
+    font-size: {{ block.settings.price_font_size }}px;
+    color: {{ block.settings.text_color }};
+    line-height: 1.4;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .coupon-banner__text-{{ custom_discount_banner }} strong {
+    font-weight: 700;
+    color: {{ block.settings.code_color }};
+    letter-spacing: 0.3px;
+  }
+
+  .coupon-banner__copy-button-{{ custom_discount_banner }} {
+    background-color: {{ block.settings.button_bg_color }};
+    color: {{ block.settings.button_text_color }};
+    border: none;
+    border-radius: {{ block.settings.button_border_radius }}px;
+    padding: 9px 16px;
+    font-size: {{ block.settings.button_font_size }}px;
+    font-weight: 600;
+    text-transform: uppercase;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    white-space: nowrap;
+    flex-shrink: 0;
+    transition: opacity 0.2s ease;
+    letter-spacing: 0.3px;
+  }
+
+  .coupon-banner__copy-button-{{ custom_discount_banner }}:hover {
+    opacity: 0.85;
+  }
+
+  .coupon-banner__copy-icon-{{ custom_discount_banner }} {
+    width: 13px;
+    height: 13px;
+  }
+
+  @media screen and (max-width: 480px) {
+    .coupon-banner__container-{{ custom_discount_banner }} {
+      padding: 10px 12px;
+    }
+    .coupon-banner__text-{{ custom_discount_banner }} {
+      font-size: {{ block.settings.price_font_size | minus: 1 }}px;
+      white-space: normal;
+    }
+    .coupon-banner__copy-button-{{ custom_discount_banner }} {
+      padding: 8px 12px;
+      font-size: {{ block.settings.button_font_size | minus: 1 }}px;
+    }
+  }
+{% endstyle %}
+
+<coupon-banner-{{ custom_discount_banner }} class="coupon-banner-{{ custom_discount_banner }}" {{ block.shopify_attributes }}>
+  <div class="coupon-banner__container-{{ custom_discount_banner }}">
+
+    <div class="coupon-banner__left-{{ custom_discount_banner }}">
+      <!-- Lock Icon -->
+      <svg class="coupon-banner__lock-icon-{{ custom_discount_banner }}" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+        <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+      </svg>
+
+      <!-- Text: Use code WHATSUP For 5% discount -->
+      <div class="coupon-banner__text-{{ custom_discount_banner }}">
+        {{ block.settings.price_text }} <strong>{{ block.settings.coupon_code }}</strong> {{ block.settings.discount_text }}
+      </div>
+    </div>
+
+    <!-- Copy Button -->
+    <button
+      class="coupon-banner__copy-button-{{ custom_discount_banner }}"
+      data-code="{{ block.settings.coupon_code }}"
+      aria-label="Copy coupon code"
+    >
+      <svg class="coupon-banner__copy-icon-{{ custom_discount_banner }}" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+        <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+      </svg>
+      <span class="coupon-banner__button-text-{{ custom_discount_banner }}">{{ block.settings.button_text }}</span>
+    </button>
+
+  </div>
+</coupon-banner-{{ custom_discount_banner }}>
+
+<script>
+(function() {
+  class CouponBanner{{ custom_discount_banner }} extends HTMLElement {
+    connectedCallback() {
+      this.copyButton = this.querySelector('.coupon-banner__copy-button-{{ custom_discount_banner }}');
+      this.buttonText = this.querySelector('.coupon-banner__button-text-{{ custom_discount_banner }}');
+      this.originalText = this.buttonText ? this.buttonText.textContent : 'COPY';
+      if (this.copyButton) {
+        this.copyButton.addEventListener('click', this.handleCopy.bind(this));
+      }
+    }
+
+    handleCopy() {
+      const code = this.copyButton.getAttribute('data-code');
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(code).then(() => this.showCopiedFeedback()).catch(() => this.fallbackCopy(code));
+      } else {
+        this.fallbackCopy(code);
+      }
+    }
+
+    fallbackCopy(text) {
+      const el = document.createElement('textarea');
+      el.value = text;
+      el.style.cssText = 'position:fixed;left:-9999px';
+      document.body.appendChild(el);
+      el.select();
+      try { document.execCommand('copy'); this.showCopiedFeedback(); } catch(e) {}
+      document.body.removeChild(el);
+    }
+
+    showCopiedFeedback() {
+      if (this.buttonText) this.buttonText.textContent = 'COPIED!';
+      this.copyButton.style.opacity = '0.7';
+      setTimeout(() => {
+        if (this.buttonText) this.buttonText.textContent = this.originalText;
+        this.copyButton.style.opacity = '1';
+      }, 2000);
+    }
+  }
+
+  if (!customElements.get('coupon-banner-{{ custom_discount_banner }}')) {
+    customElements.define('coupon-banner-{{ custom_discount_banner }}', CouponBanner{{ custom_discount_banner }});
+  }
+})();
+</script>
+
+{% schema %}
+{
+  "name": "Promotional coupon banner",
+  "tag": null,
+  "settings": [
+    {
+      "type": "header",
+      "content": "Banner Content"
+    },
+    {
+      "type": "text",
+      "id": "price_text",
+      "label": "Text before code",
+      "default": "Use code"
+    },
+    {
+      "type": "text",
+      "id": "coupon_code",
+      "label": "Coupon code",
+      "default": "WHATSUP"
+    },
+    {
+      "type": "text",
+      "id": "discount_text",
+      "label": "Text after code",
+      "default": "For 5% discount"
+    },
+    {
+      "type": "text",
+      "id": "button_text",
+      "label": "Button text",
+      "default": "COPY"
+    },
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "range",
+      "id": "desktop_width_percent",
+      "label": "Width",
+      "min": 50,
+      "max": 100,
+      "step": 5,
+      "unit": "%",
+      "default": 100
+    },
+    {
+      "type": "range",
+      "id": "padding",
+      "label": "Padding",
+      "min": 8,
+      "max": 24,
+      "step": 2,
+      "unit": "px",
+      "default": 14
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background",
+      "default": "#f5e6d3"
+    },
+    {
+      "type": "color",
+      "id": "border_color",
+      "label": "Border (dashed)",
+      "default": "#d4a574"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color",
+      "default": "#333333"
+    },
+    {
+      "type": "color",
+      "id": "code_color",
+      "label": "Coupon code color",
+      "default": "#000000"
+    },
+    {
+      "type": "color",
+      "id": "button_bg_color",
+      "label": "Button background",
+      "default": "#111111"
+    },
+    {
+      "type": "color",
+      "id": "button_text_color",
+      "label": "Button text",
+      "default": "#ffffff"
+    },
+    {
+      "type": "header",
+      "content": "Style"
+    },
+    {
+      "type": "range",
+      "id": "border_width",
+      "label": "Border width",
+      "min": 1,
+      "max": 4,
+      "step": 1,
+      "unit": "px",
+      "default": 2
+    },
+    {
+      "type": "range",
+      "id": "border_radius",
+      "label": "Border radius",
+      "min": 0,
+      "max": 20,
+      "step": 2,
+      "unit": "px",
+      "default": 10
+    },
+    {
+      "type": "range",
+      "id": "button_border_radius",
+      "label": "Button radius",
+      "min": 0,
+      "max": 8,
+      "step": 1,
+      "unit": "px",
+      "default": 4
+    },
+    {
+      "type": "header",
+      "content": "Typography"
+    },
+    {
+      "type": "range",
+      "id": "price_font_size",
+      "label": "Text font size",
+      "min": 12,
+      "max": 18,
+      "step": 1,
+      "unit": "px",
+      "default": 14
+    },
+    {
+      "type": "range",
+      "id": "button_font_size",
+      "label": "Button font size",
+      "min": 10,
+      "max": 14,
+      "step": 1,
+      "unit": "px",
+      "default": 12
+    }
+  ],
+  "presets": [
+    {
+      "name": "Promotional coupon banner"
+    }
+  ]
+}
+{% endschema %}

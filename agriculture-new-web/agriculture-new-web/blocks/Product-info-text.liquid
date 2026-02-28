@@ -1,0 +1,220 @@
+{% assign product_info_txt = block.id | replace: '_', '' | downcase %}
+
+{% style %}
+  .product-info-{{ product_info_txt }} {
+    display: block;
+    width: {{ block.settings.desktop_width_percent }}%;
+    max-width: 100%;
+  }
+
+  .product-info-container-{{ product_info_txt }} {
+    display: flex;
+    flex-direction: column;
+    gap: {{ block.settings.line_spacing }}px;
+    text-align: {{ block.settings.text_align }};
+  }
+
+  .product-info-line1-{{ product_info_txt }} {
+    font-size: {{ block.settings.line1_size }}px;
+    color: {{ block.settings.line1_color }};
+    font-weight: {{ block.settings.line1_weight }};
+    line-height: 1.5;
+    margin: 0;
+  }
+
+  .product-info-line2-{{ product_info_txt }} {
+    font-size: {{ block.settings.line2_size }}px;
+    color: {{ block.settings.line2_color }};
+    font-weight: {{ block.settings.line2_weight }};
+    line-height: 1.5;
+    margin: 0;
+  }
+{% endstyle %}
+
+<div class="product-info-{{ product_info_txt }}" {{ block.shopify_attributes }}>
+  <div class="product-info-container-{{ product_info_txt }}">
+    {% if block.settings.show_line1 %}
+      <p class="product-info-line1-{{ product_info_txt }}">
+        {{ block.settings.line1_text }}
+      </p>
+    {% endif %}
+    
+    {% comment %} {% if block.settings.show_line2 %}
+      <p class="product-info-line2-{{ product_info_txt }}">
+        {{ block.settings.line2_prefix }}
+        {% if product.selected_or_first_available_variant.sku != blank %}
+          {{ product.selected_or_first_available_variant.sku }}
+        {% else %}
+          {{ block.settings.sku_fallback }}
+        {% endif %}
+      </p>
+    {% endif %} {% endcomment %}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Product info text",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "range",
+      "id": "desktop_width_percent",
+      "label": "Desktop width",
+      "min": 50,
+      "max": 100,
+      "step": 5,
+      "unit": "%",
+      "default": 100
+    },
+    {
+      "type": "select",
+      "id": "text_align",
+      "label": "Text alignment",
+      "options": [
+        {
+          "value": "left",
+          "label": "Left"
+        },
+        {
+          "value": "center",
+          "label": "Center"
+        },
+        {
+          "value": "right",
+          "label": "Right"
+        }
+      ],
+      "default": "left"
+    },
+    {
+      "type": "range",
+      "id": "line_spacing",
+      "label": "Line spacing",
+      "min": 2,
+      "max": 12,
+      "step": 1,
+      "unit": "px",
+      "default": 5
+    },
+    {
+      "type": "header",
+      "content": "Line 1 - Tax information"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_line1",
+      "label": "Show line 1",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "line1_text",
+      "label": "Text",
+      "default": "MRP Inclusive of all taxes"
+    },
+    {
+      "type": "range",
+      "id": "line1_size",
+      "label": "Font size",
+      "min": 10,
+      "max": 18,
+      "step": 1,
+      "unit": "px",
+      "default": 12
+    },
+    {
+      "type": "select",
+      "id": "line1_weight",
+      "label": "Font weight",
+      "options": [
+        {
+          "value": "400",
+          "label": "Normal"
+        },
+        {
+          "value": "500",
+          "label": "Medium"
+        },
+        {
+          "value": "600",
+          "label": "Semibold"
+        }
+      ],
+      "default": "400"
+    },
+    {
+      "type": "color",
+      "id": "line1_color",
+      "label": "Color",
+      "default": "#777777"
+    },
+    {
+      "type": "header",
+      "content": "Line 2 - Product SKU"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_line2",
+      "label": "Show line 2",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "line2_prefix",
+      "label": "Prefix text",
+      "default": "Product SKU: "
+    },
+    {
+      "type": "text",
+      "id": "sku_fallback",
+      "label": "Fallback text",
+      "default": "N/A"
+    },
+    {
+      "type": "range",
+      "id": "line2_size",
+      "label": "Font size",
+      "min": 10,
+      "max": 18,
+      "step": 1,
+      "unit": "px",
+      "default": 13
+    },
+    {
+      "type": "select",
+      "id": "line2_weight",
+      "label": "Font weight",
+      "options": [
+        {
+          "value": "400",
+          "label": "Normal"
+        },
+        {
+          "value": "500",
+          "label": "Medium"
+        },
+        {
+          "value": "600",
+          "label": "Semibold"
+        }
+      ],
+      "default": "400"
+    },
+    {
+      "type": "color",
+      "id": "line2_color",
+      "label": "Color",
+      "default": "#333333"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Product info text"
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,286 @@
+{% assign custom_breadcum = section.id | replace: '_', '' | downcase %}
+
+{% liquid
+  assign current_collection = collection
+  if current_collection == blank and product
+    assign current_collection = product.collections.first
+  endif
+%}
+
+{% style %}
+  .breadcrumb-{{ custom_breadcum }} {
+    display: block;
+    width: 100%;
+    background-color: {{ section.settings.background_color }};
+    padding: {{ section.settings.padding_vertical }}px {{ section.settings.padding_horizontal }}px;
+  }
+
+  .breadcrumb-nav-{{ custom_breadcum }} {
+    max-width: 1430px;
+    margin: 0 auto;
+  }
+
+  .breadcrumb-list-{{ custom_breadcum }} {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    gap: {{ section.settings.separator_spacing }}px;
+    font-size: {{ section.settings.font_size }}px;
+    font-weight: {{ section.settings.font_weight }};
+  }
+
+  .breadcrumb-item-{{ custom_breadcum }} {
+    display: flex;
+    align-items: center;
+    gap: {{ section.settings.separator_spacing }}px;
+  }
+
+  .breadcrumb-link-{{ custom_breadcum }} {
+    color: {{ section.settings.link_color }};
+    text-decoration: none;
+    transition: color 0.2s ease;
+  }
+
+  .breadcrumb-link-{{ custom_breadcum }}:hover {
+    color: {{ section.settings.link_hover_color }};
+    text-decoration: underline;
+  }
+
+  .breadcrumb-separator-{{ custom_breadcum }} {
+    color: {{ section.settings.separator_color }};
+    user-select: none;
+  }
+
+  .breadcrumb-current-{{ custom_breadcum }} {
+    color: {{ section.settings.current_color }};
+    font-weight: {{ section.settings.current_font_weight }};
+  }
+
+  @media screen and (max-width: 749px) {
+    .breadcrumb-{{ custom_breadcum }} {
+      padding: {{ section.settings.padding_vertical_mobile }}px {{ section.settings.padding_horizontal_mobile }}px;
+    }
+
+    .breadcrumb-list-{{ custom_breadcum }} {
+      font-size: {{ section.settings.font_size_mobile }}px;
+    }
+  }
+{% endstyle %}
+
+<nav class="breadcrumb-{{ custom_breadcum }}" aria-label="Breadcrumb" {{ section.shopify_attributes }}>
+  <div class="breadcrumb-nav-{{ custom_breadcum }}">
+    <ol class="breadcrumb-list-{{ custom_breadcum }}" itemscope itemtype="https://schema.org/BreadcrumbList">
+      <li class="breadcrumb-item-{{ custom_breadcum }}" itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+        <a href="{{ routes.root_url }}" class="breadcrumb-link-{{ custom_breadcum }}" itemprop="item">
+          <span itemprop="name">{{ section.settings.home_text }}</span>
+        </a>
+        <meta itemprop="position" content="1">
+        <span class="breadcrumb-separator-{{ custom_breadcum }}" aria-hidden="true">{{ section.settings.separator }}</span>
+      </li>
+
+      {% if current_collection %}
+        <li class="breadcrumb-item-{{ custom_breadcum }}" itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="{{ current_collection.url }}" class="breadcrumb-link-{{ custom_breadcum }}" itemprop="item">
+            <span itemprop="name">{{ current_collection.title }}</span>
+          </a>
+          <meta itemprop="position" content="2">
+          {% if product %}
+            <span class="breadcrumb-separator-{{ custom_breadcum }}" aria-hidden="true">{{ section.settings.separator }}</span>
+          {% endif %}
+        </li>
+      {% endif %}
+
+      {% if product %}
+        <li class="breadcrumb-item-{{ custom_breadcum }}" itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <span class="breadcrumb-current-{{ custom_breadcum }}" itemprop="name" aria-current="page">{{ product.title }}</span>
+          <meta itemprop="position" content="{% if current_collection %}3{% else %}2{% endif %}">
+        </li>
+      {% endif %}
+    </ol>
+  </div>
+</nav>
+
+{% schema %}
+{
+  "name": "Breadcrumb navigation",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Content"
+    },
+    {
+      "type": "text",
+      "id": "home_text",
+      "label": "Home text",
+      "default": "Home"
+    },
+    {
+      "type": "text",
+      "id": "separator",
+      "label": "Separator",
+      "default": "/",
+      "info": "Character between breadcrumb items"
+    },
+    {
+      "type": "header",
+      "content": "Style"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background",
+      "default": "#f3f3f3"
+    },
+    {
+      "type": "color",
+      "id": "link_color",
+      "label": "Link color",
+      "default": "#666666"
+    },
+    {
+      "type": "color",
+      "id": "link_hover_color",
+      "label": "Link hover color",
+      "default": "#333333"
+    },
+    {
+      "type": "color",
+      "id": "current_color",
+      "label": "Current page color",
+      "default": "#1e7d3c"
+    },
+    {
+      "type": "color",
+      "id": "separator_color",
+      "label": "Separator color",
+      "default": "#999999"
+    },
+    {
+      "type": "header",
+      "content": "Typography"
+    },
+    {
+      "type": "range",
+      "id": "font_size",
+      "label": "Font size",
+      "min": 10,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "default": 14
+    },
+    {
+      "type": "range",
+      "id": "font_size_mobile",
+      "label": "Mobile font size",
+      "min": 10,
+      "max": 18,
+      "step": 1,
+      "unit": "px",
+      "default": 13
+    },
+    {
+      "type": "select",
+      "id": "font_weight",
+      "label": "Font weight",
+      "options": [
+        {
+          "value": "400",
+          "label": "Normal"
+        },
+        {
+          "value": "500",
+          "label": "Medium"
+        },
+        {
+          "value": "600",
+          "label": "Semi-bold"
+        }
+      ],
+      "default": "500"
+    },
+    {
+      "type": "select",
+      "id": "current_font_weight",
+      "label": "Current page font weight",
+      "options": [
+        {
+          "value": "500",
+          "label": "Medium"
+        },
+        {
+          "value": "600",
+          "label": "Semi-bold"
+        },
+        {
+          "value": "700",
+          "label": "Bold"
+        }
+      ],
+      "default": "700"
+    },
+    {
+      "type": "header",
+      "content": "Spacing"
+    },
+    {
+      "type": "range",
+      "id": "padding_vertical",
+      "label": "Vertical padding",
+      "min": 5,
+      "max": 40,
+      "step": 5,
+      "unit": "px",
+      "default": 35
+    },
+    {
+      "type": "range",
+      "id": "padding_horizontal",
+      "label": "Horizontal padding",
+      "min": 10,
+      "max": 60,
+      "step": 5,
+      "unit": "px",
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "padding_vertical_mobile",
+      "label": "Mobile vertical padding",
+      "min": 8,
+      "max": 30,
+      "step": 2,
+      "unit": "px",
+      "default": 12
+    },
+    {
+      "type": "range",
+      "id": "padding_horizontal_mobile",
+      "label": "Mobile horizontal padding",
+      "min": 10,
+      "max": 40,
+      "step": 5,
+      "unit": "px",
+      "default": 15
+    },
+    {
+      "type": "range",
+      "id": "separator_spacing",
+      "label": "Separator spacing",
+      "min": 4,
+      "max": 16,
+      "step": 2,
+      "unit": "px",
+      "default": 8
+    }
+  ],
+  "presets": [
+    {
+      "name": "Breadcrumb navigation"
+    }
+  ]
+}
+{% endschema %}

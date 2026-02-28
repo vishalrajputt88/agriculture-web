@@ -1,0 +1,610 @@
+
+<script
+  src="{{ 'blog-posts-list.js' | asset_url }}"
+  type="module"
+  fetchpriority="low"
+></script>
+
+<blog-posts-list section-id="{{ section.id }}">
+  <div class="section-background color-{{ section.settings.color_scheme }}"></div>
+  <div
+    class="
+      section
+      color-{{ section.settings.color_scheme }}
+      blog-posts
+      spacing-style
+      size-style
+      agri-blog-section
+    "
+    data-testid="blog-posts"
+    style="{% render 'spacing-style', settings: section.settings %}"
+  >
+
+    <!-- Agriculture decorative header band -->
+    <div class="agri-blog-header" aria-hidden="true">
+      <div class="agri-blog-header__vine">
+        <span>🌿</span><span>🌾</span><span>🍃</span><span>🌻</span><span>🌿</span><span>🌾</span><span>🍃</span><span>🌻</span><span>🌿</span><span>🌾</span><span>🍃</span><span>🌻</span>
+      </div>
+      <div class="agri-blog-header__title-wrap">
+        <span class="agri-blog-header__leaf-left">🌾</span>
+        <span class="agri-blog-header__label">From the Field</span>
+        <span class="agri-blog-header__leaf-right">🌾</span>
+      </div>
+      <div class="agri-blog-header__tagline">Latest insights from our farmers &amp; agronomists</div>
+    </div>
+
+    {% content_for 'blocks' %}
+
+    <div
+      ref="grid"
+      class="blog-posts-container agri-blog-grid"
+    >
+      {% liquid
+        assign items_on_page = blog.articles.size
+      %}
+      {% for article in blog.articles %}
+        {% liquid
+          assign col_span = 2
+          assign scale = 0.6
+          assign is_horizontal = false
+          assign is_hero = false
+
+          case items_on_page
+            when 1
+              assign col_span = 6
+              assign scale = 1
+              assign is_horizontal = true
+              assign is_hero = true
+            when 2
+              assign col_span = 3
+              assign scale = 0.8
+            when 3
+              if forloop.index == 1
+                assign col_span = 6
+                assign scale = 1
+                assign is_horizontal = true
+                assign is_hero = true
+              else
+                assign col_span = 3
+                assign scale = 0.8
+              endif
+            when 4
+              assign col_span = 3
+              assign scale = 0.8
+            when 5
+              if forloop.index == 1
+                assign col_span = 6
+                assign scale = 1
+                assign is_horizontal = true
+                assign is_hero = true
+              else
+                assign col_span = 3
+                assign scale = 0.8
+              endif
+            else
+              if forloop.index == 1
+                assign col_span = 6
+                assign scale = 1
+                assign is_horizontal = true
+                assign is_hero = true
+              elsif forloop.index <= 3
+                assign col_span = 3
+                assign scale = 0.8
+              else
+                assign col_span = 2
+                assign scale = 0.6
+              endif
+          endcase
+        %}
+        {% style %}
+          [data-blog-index="{{ section.id }}-{{ forloop.index }}"] {
+            --col-span: {{ col_span }};
+            --blog-post-card-scale: {{ scale }};
+          }
+
+          @media screen and (max-width: 749px) {
+            [data-blog-index="{{ section.id }}-{{ forloop.index }}"] {
+              --col-span: 6;
+              --blog-post-card-scale: 0.5;
+            }
+          }
+        {% endstyle %}
+
+        <div
+          class="blog-post-item agri-post-card{% if is_horizontal %} blog-post-item--horizontal{% endif %}{% if is_hero %} agri-post-card--hero{% endif %}"
+          data-testid="blog-post-item"
+          data-blog-index="{{ section.id }}-{{ forloop.index }}"
+          data-post-index="{{ forloop.index }}"
+        >
+          <!-- Agri category ribbon -->
+          <div class="agri-card-ribbon" aria-hidden="true">
+            {%- if forloop.index == 1 and items_on_page > 1 -%}
+              <span class="agri-ribbon agri-ribbon--featured">🌟 Featured</span>
+            {%- elsif article.tags contains 'organic' or article.tags contains 'Organic' -%}
+              <span class="agri-ribbon agri-ribbon--organic">🍃 Organic</span>
+            {%- elsif article.tags contains 'tips' or article.tags contains 'Tips' -%}
+              <span class="agri-ribbon agri-ribbon--tips">💡 Farm Tips</span>
+            {%- elsif article.tags contains 'news' or article.tags contains 'News' -%}
+              <span class="agri-ribbon agri-ribbon--news">📰 News</span>
+            {%- else -%}
+              <span class="agri-ribbon agri-ribbon--default">🌾 Field Notes</span>
+            {%- endif -%}
+          </div>
+
+          {% content_for 'block', id: 'static-blog-post-card', type: '_blog-post-card', article: article %}
+
+          <!-- Agri card footer meta -->
+          <div class="agri-card-meta">
+            <span class="agri-card-meta__date">
+              <span aria-hidden="true">🗓️</span>
+              {{ article.published_at | date: "%b %d, %Y" }}
+            </span>
+            {%- if article.read_time -%}
+              <span class="agri-card-meta__read" aria-label="{{ article.read_time }} min read">
+                <span aria-hidden="true">⏱️</span>
+                {{ article.read_time }} min read
+              </span>
+            {%- endif -%}
+            {%- if article.comments_count > 0 -%}
+              <span class="agri-card-meta__comments">
+                <span aria-hidden="true">💬</span>
+                {{ article.comments_count }}
+              </span>
+            {%- endif -%}
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+
+    <!-- Bottom decorative divider -->
+    <div class="agri-blog-footer-vine" aria-hidden="true">
+      <span>🌿</span><span>——</span><span>🌻</span><span>——</span><span>🌿</span><span>——</span><span>🌾</span><span>——</span><span>🌿</span>
+    </div>
+
+  </div>
+</blog-posts-list>
+
+{% stylesheet %}
+  /* ============================================
+     AGRI THEME VARIABLES
+  ============================================ */
+  :root {
+    --agri-soil:        #3d2b1f;
+    --agri-bark:        #6b4226;
+    --agri-leaf:        #3a7d44;
+    --agri-leaf-light:  #5aab65;
+    --agri-moss:        #2d5a27;
+    --agri-wheat:       #c8a84b;
+    --agri-wheat-light: #e8d48a;
+    --agri-cream:       #f5f0e8;
+    --agri-sky:         #eaf4ea;
+    --agri-border:      #c5dfc0;
+    --agri-text:        #2a1f15;
+    --agri-text-mid:    #5a4a38;
+  }
+
+  /* ============================================
+     BLOG SECTION WRAPPER
+  ============================================ */
+  .agri-blog-section {
+    background-color: var(--agri-cream);
+    background-image:
+      radial-gradient(ellipse at 10% 20%, rgba(58,125,68,0.06) 0%, transparent 55%),
+      radial-gradient(ellipse at 90% 80%, rgba(200,168,75,0.08) 0%, transparent 50%);
+    position: relative;
+    padding-bottom: 48px !important;
+  }
+
+
+  /* ============================================
+     DECORATIVE HEADER
+  ============================================ */
+  .agri-blog-header {
+    text-align: center;
+    padding: 28px 16px 16px;
+  }
+
+  .agri-blog-header__vine {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    font-size: 16px;
+    opacity: 0.55;
+    margin-bottom: 14px;
+    flex-wrap: wrap;
+    letter-spacing: 2px;
+  }
+
+  .agri-blog-header__title-wrap {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    margin-bottom: 6px;
+  }
+
+  .agri-blog-header__leaf-left,
+  .agri-blog-header__leaf-right {
+    font-size: 22px;
+    opacity: 0.8;
+  }
+
+  .agri-blog-header__label {
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: clamp(22px, 4vw, 36px);
+    font-weight: 700;
+    color: var(--agri-soil);
+    letter-spacing: 1px;
+    position: relative;
+  }
+
+  /* Wheat-colored underline */
+  .agri-blog-header__label::after {
+    content: '';
+    display: block;
+    height: 3px;
+    background: linear-gradient(90deg, transparent, var(--agri-wheat), transparent);
+    margin-top: 4px;
+    border-radius: 2px;
+  }
+
+  .agri-blog-header__tagline {
+    font-size: 13px;
+    color: var(--agri-text-mid);
+    letter-spacing: 0.5px;
+    font-style: italic;
+  }
+
+  /* ============================================
+     GRID
+  ============================================ */
+  .blog-posts {
+    --page-content-width: var(--narrow-page-width);
+    --page-width: calc(var(--page-content-width) + (var(--page-margin) * 2));
+    --columns-gap: 28px;
+    --rows-gap: 28px;
+  }
+
+  .agri-blog-grid {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 1rem;
+    width: 100%;
+    column-gap: var(--columns-gap);
+    row-gap: var(--rows-gap);
+    padding: 0 4px;
+  }
+
+  /* ============================================
+     CARD BASE
+  ============================================ */
+  .blog-post-item {
+    grid-column: span var(--col-span);
+  }
+
+  .agri-post-card {
+    position: relative;
+    background: #fff;
+    border: 1.5px solid var(--agri-border);
+    border-radius: 14px;
+    overflow: hidden;
+    box-shadow: 0 3px 12px rgba(45, 90, 39, 0.08);
+    transition: transform 0.22s ease, box-shadow 0.22s ease;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .agri-post-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 32px rgba(45, 90, 39, 0.16);
+  }
+
+  /* Card without image — keep border from original */
+  .blog-post-item:not(:has(.blog-post-card__image-container)) {
+    border: 1.5px solid var(--agri-border);
+    padding: 0 1rem 1rem;
+    background: #fff;
+  }
+
+  .blog-post-item:has(.blog-post-card__image-container) {
+    border: none;
+    padding: 0;
+  }
+
+  /* ── Hero card special treatment ──────── */
+  .agri-post-card--hero {
+    border: 2.5px solid var(--agri-wheat);
+    box-shadow: 0 6px 24px rgba(45, 90, 39, 0.13), inset 0 0 0 1px rgba(200,168,75,0.15);
+  }
+
+  .agri-post-card--hero:hover {
+    box-shadow: 0 14px 42px rgba(45, 90, 39, 0.2), inset 0 0 0 1px rgba(200,168,75,0.2);
+  }
+
+  /* Golden left accent bar on hero */
+  .agri-post-card--hero::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 5px;
+    height: 100%;
+    background: linear-gradient(180deg, var(--agri-wheat), var(--agri-leaf));
+    z-index: 2;
+    border-radius: 14px 0 0 14px;
+  }
+
+  /* ============================================
+     RIBBON BADGES
+  ============================================ */
+  .agri-card-ribbon {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    z-index: 10;
+  }
+
+  .agri-ribbon {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.6px;
+    text-transform: uppercase;
+    padding: 4px 10px;
+    border-radius: 20px;
+    line-height: 1;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.12);
+  }
+
+  .agri-ribbon--featured {
+    background: var(--agri-wheat);
+    color: var(--agri-soil);
+    border: 1px solid #a88830;
+  }
+
+  .agri-ribbon--organic {
+    background: var(--agri-leaf);
+    color: #fff;
+    border: 1px solid var(--agri-moss);
+  }
+
+  .agri-ribbon--tips {
+    background: #fff9e6;
+    color: #856404;
+    border: 1px solid #ffc107;
+  }
+
+  .agri-ribbon--news {
+    background: var(--agri-soil);
+    color: var(--agri-cream);
+    border: 1px solid var(--agri-bark);
+  }
+
+  .agri-ribbon--default {
+    background: var(--agri-sky);
+    color: var(--agri-moss);
+    border: 1px solid var(--agri-border);
+  }
+
+  /* ============================================
+     CARD META FOOTER
+  ============================================ */
+  .agri-card-meta {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    padding: 8px 14px 10px;
+    background: var(--agri-sky);
+    border-top: 1px solid var(--agri-border);
+    font-size: 11px;
+    color: var(--agri-text-mid);
+    font-weight: 500;
+    margin-top: auto;
+  }
+
+  .agri-card-meta__date,
+  .agri-card-meta__read,
+  .agri-card-meta__comments {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    white-space: nowrap;
+  }
+
+  /* ============================================
+     BOTTOM VINE DIVIDER
+  ============================================ */
+  .agri-blog-footer-vine {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 40px;
+    font-size: 16px;
+    color: var(--agri-text-mid);
+    opacity: 0.6;
+    letter-spacing: 2px;
+  }
+
+  /* ============================================
+     MOBILE — max-width: 749px
+  ============================================ */
+  @media screen and (max-width: 749px) {
+    .agri-blog-section {
+      padding-bottom: 32px !important;
+    }
+
+    .agri-blog-header {
+      padding: 20px 12px 12px;
+    }
+
+    .agri-blog-header__vine {
+      font-size: 13px;
+      gap: 6px;
+      margin-bottom: 10px;
+    }
+
+    .agri-blog-header__label {
+      font-size: 22px;
+    }
+
+    .agri-blog-header__tagline {
+      font-size: 12px;
+    }
+
+    /* All cards full-width stack on mobile */
+    .agri-blog-grid {
+      grid-template-columns: 1fr !important;
+      column-gap: 0 !important;
+      row-gap: 16px !important;
+      padding: 0;
+    }
+
+    .agri-post-card {
+      border-radius: 10px;
+    }
+
+    .agri-post-card--hero::before {
+      width: 4px;
+    }
+
+    .agri-ribbon {
+      font-size: 9px;
+      padding: 3px 8px;
+    }
+
+    .agri-card-meta {
+      font-size: 10px;
+      padding: 6px 12px 8px;
+      gap: 8px;
+    }
+
+    .agri-blog-footer-vine {
+      font-size: 13px;
+      gap: 5px;
+      margin-top: 28px;
+    }
+
+    /* Hero card — no left bar on mobile, top bar instead */
+    .agri-post-card--hero::before {
+      width: 100%;
+      height: 4px;
+      border-radius: 10px 10px 0 0;
+      background: linear-gradient(90deg, var(--agri-wheat), var(--agri-leaf));
+    }
+  }
+
+  /* ============================================
+     EXTRA SMALL — max-width: 380px
+  ============================================ */
+  @media screen and (max-width: 380px) {
+    .agri-blog-header__label {
+      font-size: 18px;
+    }
+
+    .agri-blog-header__vine {
+      font-size: 11px;
+    }
+
+    .agri-card-meta {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 4px;
+    }
+  }
+
+  /* ============================================
+     HOVER IMAGE ZOOM (CSS only)
+  ============================================ */
+  .agri-post-card .blog-post-card__image-container {
+    overflow: hidden;
+  }
+
+  .agri-post-card .blog-post-card__image-container img {
+    transition: transform 0.4s ease;
+    will-change: transform;
+  }
+
+  .agri-post-card:hover .blog-post-card__image-container img {
+    transform: scale(1.04);
+  }
+
+  /* ============================================
+     STAGGERED FADE-IN ANIMATION
+  ============================================ */
+  @media screen and (prefers-reduced-motion: no-preference) {
+    .agri-post-card {
+      opacity: 0;
+      transform: translateY(20px);
+      animation: agri-card-in 0.45s ease forwards;
+    }
+
+    [data-post-index="1"] { animation-delay: 0.05s; }
+    [data-post-index="2"] { animation-delay: 0.12s; }
+    [data-post-index="3"] { animation-delay: 0.19s; }
+    [data-post-index="4"] { animation-delay: 0.26s; }
+    [data-post-index="5"] { animation-delay: 0.33s; }
+    [data-post-index="6"] { animation-delay: 0.40s; }
+    [data-post-index="7"] { animation-delay: 0.47s; }
+    [data-post-index="8"] { animation-delay: 0.54s; }
+
+    @keyframes agri-card-in {
+      to { opacity: 1; transform: translateY(0); }
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "t:names.blog_posts",
+  "blocks": [
+    { "type": "@theme" },
+    { "type": "@app" },
+    { "type": "text" },
+    { "type": "icon" },
+    { "type": "image" },
+    { "type": "button" },
+    { "type": "video" },
+    { "type": "group" },
+    { "type": "spacer" },
+    { "type": "_divider" }
+  ],
+  "disabled_on": {
+    "groups": ["header"]
+  },
+  "settings": [
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:settings.color_scheme",
+      "default": "scheme-1"
+    },
+    {
+      "type": "header",
+      "content": "t:content.padding"
+    },
+    {
+      "type": "range",
+      "id": "padding-block-start",
+      "label": "t:settings.top",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding-block-end",
+      "label": "t:settings.bottom",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    }
+  ]
+}
+{% endschema %}

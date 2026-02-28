@@ -1,0 +1,973 @@
+{% assign cus_fea_product = section.id | replace: '_', '' | downcase %}
+
+{% style %}
+
+* { font-family: Poppins, sans-serif; }
+  .about-section-{{ cus_fea_product }} {
+    display: block;
+    width: 100%;
+    background-color: {{ section.settings.section_background }};
+    padding: {{ section.settings.section_padding_top }}px {{ section.settings.section_padding_horizontal }}px {{ section.settings.section_padding_bottom }}px;
+  }
+
+  .about-container-{{ cus_fea_product }} {
+    max-width: {{ section.settings.max_width }}px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: {{ section.settings.column_gap }}px;
+    align-items: center;
+  }
+
+  .about-image-column-{{ cus_fea_product }} {
+    width: 100%;
+  }
+
+  .about-image-wrapper-{{ cus_fea_product }} {
+    border-radius: {{ section.settings.image_border_radius }}px;
+    position: relative;
+  }
+
+  .about-product-card-{{ cus_fea_product }} {
+    position: relative;
+    overflow: hidden;
+    border-radius: {{ section.settings.image_border_radius }}px;
+  }
+
+  .about-image-{{ cus_fea_product }} {
+    width: 100%;
+    height: auto;
+    display: block;
+    border-radius: {{ section.settings.image_border_radius }}px;
+  }
+
+  .about-image-placeholder-{{ cus_fea_product }} {
+    width: 100%;
+    aspect-ratio: 1;
+    background-color: #f4f4f4;
+    border-radius: {{ section.settings.image_border_radius }}px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+  }
+
+  .about-image-placeholder-{{ cus_fea_product }} svg {
+    width: 100%;
+    height: 100%;
+    max-width: 400px;
+    max-height: 400px;
+  }
+
+  .about-empty-state-{{ cus_fea_product }} {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 12px 20px;
+    font-size: 14px;
+    color: #666;
+    text-align: center;
+    pointer-events: none;
+  }
+
+  .about-add-to-cart-overlay-{{ cus_fea_product }} {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0));
+    padding: {{ section.settings.overlay_padding }}px;
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+  }
+
+  .about-product-card-{{ cus_fea_product }}:hover .about-add-to-cart-overlay-{{ cus_fea_product }} {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .about-add-to-cart-button-{{ cus_fea_product }} {
+    padding: {{ section.settings.atc_button_padding_vertical }}px {{ section.settings.atc_button_padding_horizontal }}px;
+    background-color: {{ section.settings.atc_button_background }};
+    color: {{ section.settings.atc_button_text_color }};
+    border: {{ section.settings.atc_button_border_width }}px solid {{ section.settings.atc_button_border_color }};
+    border-radius: {{ section.settings.atc_button_border_radius }}px;
+    font-size: {{ section.settings.atc_button_text_size }}px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-transform: {{ section.settings.atc_button_text_transform }};
+  }
+
+  .about-add-to-cart-button-{{ cus_fea_product }}:hover {
+    background-color: {{ section.settings.atc_button_hover_background }};
+    color: {{ section.settings.atc_button_hover_text_color }};
+    border-color: {{ section.settings.atc_button_hover_border_color }};
+  }
+
+  .about-add-to-cart-button-{{ cus_fea_product }}:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  .about-content-column-{{ cus_fea_product }} {
+    width: 100%;
+  }
+
+  .about-tagline-{{ cus_fea_product }} {
+    color: {{ section.settings.tagline_color }};
+    font-size: {{ section.settings.tagline_size }}px;
+    margin: 0 0 {{ section.settings.tagline_margin }}px;
+    font-weight: 500;
+  }
+
+  .about-heading-{{ cus_fea_product }} {
+    color: {{ section.settings.heading_color }};
+    font-size: {{ section.settings.heading_size }}px;
+    font-weight: 700;
+    margin: 0 0 {{ section.settings.heading_margin }}px;
+    line-height: 1.2;
+  }
+
+  .about-subheading-{{ cus_fea_product }} {
+    color: {{ section.settings.text_color }};
+    font-size: {{ section.settings.text_size }}px;
+    line-height: 1.6;
+    margin: 0 0 {{ section.settings.text_margin }}px;
+  }
+
+  .about-vision-section-{{ cus_fea_product }},
+  .about-mission-section-{{ cus_fea_product }} {
+    margin-bottom: {{ section.settings.section_spacing }}px;
+  }
+
+  .about-section-title-{{ cus_fea_product }} {
+    color: {{ section.settings.section_title_color }};
+    font-size: {{ section.settings.section_title_size }}px;
+    font-weight: 700;
+    margin: 0 0 {{ section.settings.section_title_margin }}px;
+  }
+
+  .about-section-text-{{ cus_fea_product }} {
+    color: {{ section.settings.text_color }};
+    font-size: {{ section.settings.text_size }}px;
+    line-height: 1.6;
+    margin: 0;
+  }
+
+  .about-button-{{ cus_fea_product }} {
+    display: inline-block;
+    padding: {{ section.settings.button_padding_vertical }}px {{ section.settings.button_padding_horizontal }}px;
+    background-color: {{ section.settings.button_background }};
+    color: {{ section.settings.button_text_color }};
+    border: {{ section.settings.button_border_width }}px solid {{ section.settings.button_border_color }};
+    border-radius: {{ section.settings.button_border_radius }}px;
+    font-size: {{ section.settings.button_text_size }}px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    margin-top: {{ section.settings.button_margin_top }}px;
+    min-width: 270px;
+    text-align: center;
+  }
+
+  .about-button-{{ cus_fea_product }}:hover {
+    background-color: {{ section.settings.button_hover_background }};
+    color: {{ section.settings.button_hover_text_color }};
+    border-color: {{ section.settings.button_hover_border_color }};
+  }
+
+  @media screen and (max-width: 749px) {
+    .about-container-{{ cus_fea_product }} {
+      grid-template-columns: 1fr;
+      gap: {{ section.settings.mobile_gap }}px;
+    }
+
+    .about-section-{{ cus_fea_product }} {
+      padding: {{ section.settings.mobile_padding_top }}px {{ section.settings.mobile_padding_horizontal }}px {{ section.settings.mobile_padding_bottom }}px;
+    }
+
+    .about-heading-{{ cus_fea_product }} {
+      font-size: {{ section.settings.mobile_heading_size }}px;
+    }
+
+    .about-tagline-{{ cus_fea_product }} {
+      font-size: {{ section.settings.mobile_tagline_size }}px;
+    }
+
+    {% if section.settings.show_atc_on_mobile == false %}
+      .about-add-to-cart-overlay-{{ cus_fea_product }} {
+        display: none;
+      }
+    {% endif %}
+  }
+{% endstyle %}
+
+<about-section-{{ cus_fea_product }} class="about-section-{{ cus_fea_product }}" {{ section.shopify_attributes }}>
+  <div class="about-container-{{ cus_fea_product }}">
+    <div class="about-image-column-{{ cus_fea_product }}">
+      <div class="about-image-wrapper-{{ cus_fea_product }}">
+        {% if section.settings.product_image %}
+          <div class="about-product-card-{{ cus_fea_product }}">
+            <img
+              src="{{ section.settings.product_image | image_url: width: 1000 }}"
+              alt="{{ section.settings.product_image.alt | escape }}"
+              loading="lazy"
+              width="{{ section.settings.product_image.width }}"
+              height="{{ section.settings.product_image.height }}"
+              class="about-image-{{ cus_fea_product }}"
+            >
+            {% if section.settings.featured_product %}
+              <div class="about-add-to-cart-overlay-{{ cus_fea_product }}">
+                <button
+                  type="button"
+                  class="about-add-to-cart-button-{{ cus_fea_product }}"
+                  data-product-id="{{ section.settings.featured_product.id }}"
+                  data-variant-id="{{ section.settings.featured_product.selected_or_first_available_variant.id }}"
+                  {% unless section.settings.featured_product.available %}disabled{% endunless %}
+                >
+                  {% if section.settings.featured_product.available %}
+                    {{ section.settings.atc_button_text }}
+                  {% else %}
+                    {{ section.settings.sold_out_text }}
+                  {% endif %}
+                </button>
+              </div>
+            {% endif %}
+          </div>
+        {% else %}
+          <div class="about-image-placeholder-{{ cus_fea_product }}">
+            {{ 'product-apparel-1' | placeholder_svg_tag }}
+            <div class="about-empty-state-{{ cus_fea_product }}">
+              Add your product showcase image
+            </div>
+          </div>
+        {% endif %}
+      </div>
+    </div>
+
+    <div class="about-content-column-{{ cus_fea_product }}">
+      {% if section.settings.tagline != blank %}
+        <div class="about-tagline-{{ cus_fea_product }}">{{ section.settings.tagline }}</div>
+      {% endif %}
+
+      {% if section.settings.heading != blank %}
+        <h2 class="about-heading-{{ cus_fea_product }}">{{ section.settings.heading }}</h2>
+      {% endif %}
+
+      {% if section.settings.subheading != blank %}
+        <div class="about-subheading-{{ cus_fea_product }}">{{ section.settings.subheading }}</div>
+      {% endif %}
+
+      {% if section.settings.vision_title != blank or section.settings.vision_text != blank %}
+        <div class="about-vision-section-{{ cus_fea_product }}">
+          {% if section.settings.vision_title != blank %}
+            <h3 class="about-section-title-{{ cus_fea_product }}">{{ section.settings.vision_title }}</h3>
+          {% endif %}
+          {% if section.settings.vision_text != blank %}
+            <p class="about-section-text-{{ cus_fea_product }}">{{ section.settings.vision_text }}</p>
+          {% endif %}
+        </div>
+      {% endif %}
+
+      {% if section.settings.mission_title != blank or section.settings.mission_text != blank %}
+        <div class="about-mission-section-{{ cus_fea_product }}">
+          {% if section.settings.mission_title != blank %}
+            <h3 class="about-section-title-{{ cus_fea_product }}">{{ section.settings.mission_title }}</h3>
+          {% endif %}
+          {% if section.settings.mission_text != blank %}
+            <p class="about-section-text-{{ cus_fea_product }}">{{ section.settings.mission_text }}</p>
+          {% endif %}
+        </div>
+      {% endif %}
+
+      {% if section.settings.button_text != blank %}
+        <a href="{{ section.settings.button_link }}" class="about-button-{{ cus_fea_product }}">
+          {{ section.settings.button_text }}
+        </a>
+      {% endif %}
+    </div>
+  </div>
+</about-section-{{ cus_fea_product }}>
+
+<script>
+  (function() {
+    class AiAboutSection{{ cus_fea_product }} extends HTMLElement {
+      constructor() {
+        super();
+      }
+
+      connectedCallback() {
+        this.addToCartButton = this.querySelector('.about-add-to-cart-button-{{ cus_fea_product }}');
+        
+        if (this.addToCartButton) {
+          this.addToCartButton.addEventListener('click', this.handleAddToCart.bind(this));
+        }
+      }
+
+      async handleAddToCart(event) {
+        const button = event.target;
+        const variantId = button.dataset.variantId;
+        
+        if (!variantId || button.disabled) return;
+
+        const originalText = button.textContent;
+        button.disabled = true;
+        button.textContent = '{{ section.settings.adding_text }}';
+
+        try {
+          // Include section IDs so drawer HTML is returned in response
+          const sectionIds = Array.from(
+            document.querySelectorAll('cart-items-component[data-section-id]')
+          ).map(el => el.dataset.sectionId).filter(Boolean);
+
+          const payload = { id: variantId, quantity: 1 };
+          if (sectionIds.length > 0) { payload.sections = sectionIds.join(','); }
+
+          const response = await fetch('/cart/add.js', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+            body: JSON.stringify(payload)
+          });
+
+          if (!response.ok) throw new Error('Failed to add to cart');
+
+          const addData = await response.json();
+
+          button.textContent = '{{ section.settings.added_text }}';
+          setTimeout(() => { button.textContent = originalText; button.disabled = false; }, 2000);
+
+          // Fire CartAddEvent with sections — cart-items-component morphs drawer instantly
+          document.dispatchEvent(new CustomEvent('cart:update', {
+            bubbles: true,
+            detail: {
+              data: {
+                source: 'product-form-component',
+                itemCount: 1,
+                sections: addData.sections || {}
+              }
+            }
+          }));
+
+          // Also fire cart:update for cart-icon count
+          const cartResponse = await fetch('/cart.js');
+          const cart = await cartResponse.json();
+          document.dispatchEvent(new CustomEvent('cart:update', {
+            bubbles: true,
+            detail: { data: { itemCount: cart.item_count, source: 'product-form-component' } }
+          }));
+
+        } catch (error) {
+          console.error('Error adding to cart:', error);
+          button.textContent = '{{ section.settings.error_text }}';
+          setTimeout(() => { button.textContent = originalText; button.disabled = false; }, 2000);
+        }
+      }
+    }
+
+    customElements.define('about-section-{{ cus_fea_product }}', AiAboutSection{{ cus_fea_product }});
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "custom featured product",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "range",
+      "id": "max_width",
+      "label": "Maximum width",
+      "min": 800,
+      "max": 1400,
+      "step": 50,
+      "unit": "px",
+      "default": 1350
+    },
+    {
+      "type": "range",
+      "id": "column_gap",
+      "label": "Column gap",
+      "min": 20,
+      "max": 100,
+      "step": 10,
+      "unit": "px",
+      "default": 60
+    },
+    {
+      "type": "range",
+      "id": "mobile_gap",
+      "label": "Mobile gap",
+      "min": 20,
+      "max": 60,
+      "step": 5,
+      "unit": "px",
+      "default": 40
+    },
+    {
+      "type": "color",
+      "id": "section_background",
+      "label": "Section background",
+      "default": "#f5f5f5"
+    },
+    {
+      "type": "range",
+      "id": "section_padding_top",
+      "label": "Padding top",
+      "min": 0,
+      "max": 100,
+      "step": 10,
+      "unit": "px",
+      "default": 60
+    },
+    {
+      "type": "range",
+      "id": "section_padding_bottom",
+      "label": "Padding bottom",
+      "min": 0,
+      "max": 100,
+      "step": 10,
+      "unit": "px",
+      "default": 60
+    },
+    {
+      "type": "range",
+      "id": "section_padding_horizontal",
+      "label": "Padding horizontal",
+      "min": 0,
+      "max": 100,
+      "step": 10,
+      "unit": "px",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "mobile_padding_top",
+      "label": "Mobile padding top",
+      "min": 0,
+      "max": 80,
+      "step": 5,
+      "unit": "px",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "mobile_padding_bottom",
+      "label": "Mobile padding bottom",
+      "min": 0,
+      "max": 80,
+      "step": 5,
+      "unit": "px",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "mobile_padding_horizontal",
+      "label": "Mobile padding horizontal",
+      "min": 0,
+      "max": 60,
+      "step": 5,
+      "unit": "px",
+      "default": 20
+    },
+    {
+      "type": "header",
+      "content": "Product image"
+    },
+    {
+      "type": "image_picker",
+      "id": "product_image",
+      "label": "Image"
+    },
+    {
+      "type": "product",
+      "id": "featured_product",
+      "label": "Featured product"
+    },
+   
+   
+    {
+      "type": "range",
+      "id": "image_border_radius",
+      "label": "Border radius",
+      "min": 0,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "default": 12
+    },
+    {
+      "type": "header",
+      "content": "Add to cart button"
+    },
+    {
+      "type": "text",
+      "id": "atc_button_text",
+      "label": "Button text",
+      "default": "Add to Cart"
+    },
+    {
+      "type": "text",
+      "id": "adding_text",
+      "label": "Adding text",
+      "default": "Adding..."
+    },
+    {
+      "type": "text",
+      "id": "added_text",
+      "label": "Added text",
+      "default": "Added!"
+    },
+    {
+      "type": "text",
+      "id": "sold_out_text",
+      "label": "Sold out text",
+      "default": "Sold Out"
+    },
+    {
+      "type": "text",
+      "id": "error_text",
+      "label": "Error text",
+      "default": "Error"
+    },
+    {
+      "type": "color",
+      "id": "atc_button_background",
+      "label": "Background",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "atc_button_text_color",
+      "label": "Text color",
+      "default": "#000000"
+    },
+    {
+      "type": "color",
+      "id": "atc_button_border_color",
+      "label": "Border color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "atc_button_hover_background",
+      "label": "Hover background",
+      "default": "#000000"
+    },
+    {
+      "type": "color",
+      "id": "atc_button_hover_text_color",
+      "label": "Hover text color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "atc_button_hover_border_color",
+      "label": "Hover border color",
+      "default": "#000000"
+    },
+    {
+      "type": "range",
+      "id": "atc_button_border_width",
+      "label": "Border width",
+      "min": 0,
+      "max": 4,
+      "step": 1,
+      "unit": "px",
+      "default": 2
+    },
+    {
+      "type": "range",
+      "id": "atc_button_border_radius",
+      "label": "Border radius",
+      "min": 0,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "default": 8
+    },
+    {
+      "type": "range",
+      "id": "atc_button_text_size",
+      "label": "Text size",
+      "min": 12,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "default": 14
+    },
+    {
+      "type": "range",
+      "id": "atc_button_padding_vertical",
+      "label": "Padding vertical",
+      "min": 8,
+      "max": 24,
+      "step": 2,
+      "unit": "px",
+      "default": 14
+    },
+    {
+      "type": "range",
+      "id": "atc_button_padding_horizontal",
+      "label": "Padding horizontal",
+      "min": 16,
+      "max": 60,
+      "step": 2,
+      "unit": "px",
+      "default": 32
+    },
+    {
+      "type": "select",
+      "id": "atc_button_text_transform",
+      "label": "Text transform",
+      "options": [
+        {
+          "value": "none",
+          "label": "None"
+        },
+        {
+          "value": "uppercase",
+          "label": "Uppercase"
+        }
+      ],
+      "default": "uppercase"
+    },
+    {
+      "type": "range",
+      "id": "overlay_padding",
+      "label": "Overlay padding",
+      "min": 10,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "default": 20
+    },
+    {
+      "type": "checkbox",
+      "id": "show_atc_on_mobile",
+      "label": "Show on mobile",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Tagline"
+    },
+    {
+      "type": "text",
+      "id": "tagline",
+      "label": "Tagline",
+      "default": "Innovate. Cultivate. Grow."
+    },
+    {
+      "type": "color",
+      "id": "tagline_color",
+      "label": "Color",
+      "default": "#006F2F"
+    },
+    {
+      "type": "range",
+      "id": "tagline_size",
+      "label": "Size",
+      "min": 10,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "default": 21
+    },
+    {
+      "type": "range",
+      "id": "mobile_tagline_size",
+      "label": "Mobile size",
+      "min": 10,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "default": 12
+    },
+    {
+      "type": "range",
+      "id": "tagline_margin",
+      "label": "Bottom margin",
+      "min": 0,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "default": 12
+    },
+    {
+      "type": "header",
+      "content": "Main heading"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Dedicated to Excellence in Agriculture"
+    },
+    {
+      "type": "color",
+      "id": "heading_color",
+      "label": "Color",
+      "default": "#333333"
+    },
+    {
+      "type": "range",
+      "id": "heading_size",
+      "label": "Size",
+      "min": 20,
+      "max": 60,
+      "step": 2,
+      "unit": "px",
+      "default": 36
+    },
+    {
+      "type": "range",
+      "id": "mobile_heading_size",
+      "label": "Mobile size",
+      "min": 18,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "default": 28
+    },
+    {
+      "type": "range",
+      "id": "heading_margin",
+      "label": "Bottom margin",
+      "min": 0,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "header",
+      "content": "Subheading"
+    },
+    {
+      "type": "textarea",
+      "id": "subheading",
+      "label": "Subheading",
+      "default": "Empowering farmers with innovative plant nutrition solutions. Our products enhance crop productivity and promote sustainable farming practices."
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color",
+      "default": "#666666"
+    },
+    {
+      "type": "range",
+      "id": "text_size",
+      "label": "Text size",
+      "min": 12,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "text_margin",
+      "label": "Bottom margin",
+      "min": 0,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "default": 24
+    },
+    {
+      "type": "header",
+      "content": "Vision section"
+    },
+    {
+      "type": "text",
+      "id": "vision_title",
+      "label": "Title",
+      "default": "Our Vision:"
+    },
+    {
+      "type": "textarea",
+      "id": "vision_text",
+      "label": "Text",
+      "default": "Bhumi Agro aims to be a global leader in specialised, sustainable, & cost-effective agricultural inputs."
+    },
+    {
+      "type": "header",
+      "content": "Mission section"
+    },
+    {
+      "type": "text",
+      "id": "mission_title",
+      "label": "Title",
+      "default": "Mission:"
+    },
+    {
+      "type": "textarea",
+      "id": "mission_text",
+      "label": "Text",
+      "default": "To reduce production cost for small land holder, traditional farmer by providing all range of plant nutrient in best price by providing them necessary training and education about to improve their crop yield in every season."
+    },
+    {
+      "type": "color",
+      "id": "section_title_color",
+      "label": "Section title color",
+      "default": "#006F2F"
+    },
+    {
+      "type": "range",
+      "id": "section_title_size",
+      "label": "Section title size",
+      "min": 14,
+      "max": 28,
+      "step": 1,
+      "unit": "px",
+      "default": 21
+    },
+    {
+      "type": "range",
+      "id": "section_title_margin",
+      "label": "Section title margin",
+      "min": 0,
+      "max": 20,
+      "step": 2,
+      "unit": "px",
+      "default": 8
+    },
+    {
+      "type": "range",
+      "id": "section_spacing",
+      "label": "Section spacing",
+      "min": 10,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "default": 20
+    },
+    {
+      "type": "header",
+      "content": "Button"
+    },
+    {
+      "type": "text",
+      "id": "button_text",
+      "label": "Text",
+      "default": "Explore All Products"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "Link"
+    },
+    {
+      "type": "color",
+      "id": "button_background",
+      "label": "Background",
+      "default": "#F4FCF8"
+    },
+    {
+      "type": "color",
+      "id": "button_text_color",
+      "label": "Text color",
+      "default": "#333333"
+    },
+    {
+      "type": "color",
+      "id": "button_border_color",
+      "label": "Border color",
+      "default": "#2d7a4f"
+    },
+    {
+      "type": "color",
+      "id": "button_hover_background",
+      "label": "Hover background",
+      "default": "#2d7a4f"
+    },
+    {
+      "type": "color",
+      "id": "button_hover_text_color",
+      "label": "Hover text color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "button_hover_border_color",
+      "label": "Hover border color",
+      "default": "#2d7a4f"
+    },
+    {
+      "type": "range",
+      "id": "button_border_width",
+      "label": "Border width",
+      "min": 1,
+      "max": 4,
+      "step": 1,
+      "unit": "px",
+      "default": 2
+    },
+    {
+      "type": "range",
+      "id": "button_border_radius",
+      "label": "Border radius",
+      "min": 0,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "default": 8
+    },
+    {
+      "type": "range",
+      "id": "button_text_size",
+      "label": "Text size",
+      "min": 12,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "button_padding_vertical",
+      "label": "Padding vertical",
+      "min": 8,
+      "max": 24,
+      "step": 2,
+      "unit": "px",
+      "default": 12
+    },
+    {
+      "type": "range",
+      "id": "button_padding_horizontal",
+      "label": "Padding horizontal",
+      "min": 16,
+      "max": 48,
+      "step": 2,
+      "unit": "px",
+      "default": 24
+    },
+    {
+      "type": "range",
+      "id": "button_margin_top",
+      "label": "Top margin",
+      "min": 0,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "default": 24
+    }
+  ],
+  "presets": [
+    {
+      "name": "custom featured product"
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,46 @@
+{% comment %}
+Floating WhatsApp Button
+Replace phone number in settings below
+{% endcomment %}
+
+{% assign whatsapp_number = "+91 883 971 9945" %} 
+{% assign whatsapp_message = "हाय, मुझे आपके प्रोडक्ट्स के बारे मे अधिक जानकरी प्राप्त करनी है" %}
+
+<a 
+  href="https://wa.me/{{ whatsapp_number }}?text={{ whatsapp_message | url_encode }}" 
+  class="floating-whatsapp-btn"
+  target="_blank"
+  rel="noopener"
+  aria-label="Chat on WhatsApp"
+>
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+    <path fill="#fff" d="M16.002 3C9.374 3 4 8.372 4 15c0 2.646.86 5.09 2.316 7.07L4 29l7.17-2.276A11.94 11.94 0 0016.002 27C22.63 27 28 21.628 28 15S22.63 3 16.002 3zm0 21.5c-1.998 0-3.95-.537-5.648-1.554l-.404-.24-4.256 1.35 1.38-4.148-.263-.425A9.458 9.458 0 016.5 15c0-5.247 4.255-9.5 9.502-9.5 5.246 0 9.498 4.253 9.498 9.5s-4.252 9.5-9.498 9.5zm5.218-6.914c-.285-.143-1.685-.83-1.947-.925-.26-.095-.45-.143-.64.143-.19.285-.735.925-.902 1.116-.166.19-.332.214-.617.071-.285-.143-1.202-.443-2.29-1.413-.846-.755-1.417-1.687-1.583-1.972-.166-.285-.018-.439.125-.582.13-.13.285-.332.427-.498.143-.166.19-.285.285-.475.095-.19.047-.356-.024-.498-.071-.143-.64-1.54-.878-2.11-.232-.557-.468-.48-.64-.488l-.547-.01c-.19 0-.498.071-.758.356s-.996.973-.996 2.374c0 1.402 1.02 2.756 1.162 2.946.143.19 2.007 3.065 4.866 4.296.68.293 1.21.468 1.624.599.682.217 1.303.187 1.793.114.547-.082 1.685-.688 1.923-1.354.237-.665.237-1.236.166-1.354-.071-.118-.26-.19-.547-.332z"/>
+  </svg>
+</a>
+
+<style>
+.floating-whatsapp-btn {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  width: 60px;
+  height: 60px;
+  background-color: #25D366;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  z-index: 9999;
+  transition: transform 0.3s ease;
+}
+
+.floating-whatsapp-btn:hover {
+  transform: scale(1.1);
+}
+
+.floating-whatsapp-btn svg {
+  width: 30px;
+  height: 30px;
+}
+</style>
