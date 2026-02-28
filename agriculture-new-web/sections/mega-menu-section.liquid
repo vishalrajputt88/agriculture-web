@@ -1,6 +1,7 @@
 {% comment %}
 Mega Menu Section - Agriculture Theme
-Simple: Sirf Collections with images in dropdown
+Desktop: Full-width dropdown on hover
+Mobile: Hidden (content injected into mobile header drawer via JS)
 {% endcomment %}
 
 <style>
@@ -48,7 +49,7 @@ Simple: Sirf Collections with images in dropdown
 }
 .menu-item.has-mega-menu:hover > a::after { transform: rotate(180deg); }
 
-/* Dropdown */
+/* Desktop Dropdown */
 .mega-menu {
   display: none;
   position: absolute;
@@ -66,8 +67,6 @@ Simple: Sirf Collections with images in dropdown
   margin: 0 auto;
   padding: 0 40px;
 }
-
-/* Collection Grid */
 .mega-collections-grid {
   display: grid;
   grid-template-columns: repeat({{ section.settings.columns }}, 1fr);
@@ -97,113 +96,86 @@ Simple: Sirf Collections with images in dropdown
 .mega-collection-card:nth-child(6) { animation-delay: 0.30s; }
 .mega-collection-card:nth-child(7) { animation-delay: 0.35s; }
 .mega-collection-card:nth-child(8) { animation-delay: 0.40s; }
-
 .mega-collection-img-wrap {
-  position: relative;
-  width: 100%;
-  padding-bottom: 70%;
-  overflow: hidden;
-  background: #e8f5e9;
+  position: relative; width: 100%; padding-bottom: 70%;
+  overflow: hidden; background: #e8f5e9;
 }
 .mega-collection-img-wrap img {
-  position: absolute;
-  inset: 0;
-  width: 100%; height: 100%;
-  object-fit: cover;
-  transition: transform 0.4s ease;
+  position: absolute; inset: 0; width: 100%; height: 100%;
+  object-fit: cover; transition: transform 0.4s ease;
 }
 .mega-collection-card:hover .mega-collection-img-wrap img { transform: scale(1.07); }
 .mega-collection-img-placeholder {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 40px;
-  background: linear-gradient(135deg, #e8f5e9, #c8e6c9);
+  position: absolute; inset: 0; display: flex;
+  align-items: center; justify-content: center;
+  font-size: 40px; background: linear-gradient(135deg, #e8f5e9, #c8e6c9);
 }
 .mega-collection-info {
-  padding: 10px 12px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  background: white;
+  padding: 10px 12px; display: flex;
+  align-items: center; justify-content: space-between; background: white;
 }
 .mega-collection-title {
-  font-size: 13px;
-  font-weight: 700;
-  color: #2e7d32;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  font-size: 13px; font-weight: 700; color: #2e7d32;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
-.mega-collection-arrow {
-  font-size: 14px;
-  color: #4caf50;
-  flex-shrink: 0;
-  transition: transform 0.2s ease;
-}
+.mega-collection-arrow { font-size: 14px; color: #4caf50; flex-shrink: 0; transition: transform 0.2s ease; }
 .mega-collection-card:hover .mega-collection-arrow { transform: translateX(3px); }
-
-.mobile-menu-toggle {
-  display: none;
-  background: transparent;
-  border: none;
-  color: {{ section.settings.menu_text_color }};
-  font-size: 12px;
-  padding: 5px 0;
-  cursor: pointer;
-}
 
 @keyframes fadeUp {
   from { opacity: 0; transform: translateY(-8px); }
   to   { opacity: 1; transform: translateY(0); }
 }
 
+/* MOBILE: Hide desktop mega menu bar entirely */
 @media (max-width: 768px) {
-  .mega-menu-container {
-    display: none !important;
-    position: fixed;
-    bottom: 64px;
-    background: green;
-    width: 100%;
-    border: 2px solid #fff;
-    box-shadow: 9px 2px 18px 5px #00000061;
-    display: inline-flex;
-    justify-content: center;
-    max-width: 112px;
-    margin: 0 auto;
-    text-align: center;
-    align-items: center;
-    border-radius: 10px;
-    right: 37%;
-  }
-  .mobile-menu-toggle { display: block; }
-  .main-menu {
-    display: none;
-    flex-direction: column;
-    width: 112vw;
-    background: #e31e24;
-    position: relative;
-    bottom: 47px;
-    left: 0;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-    z-index: 1000;
-  }
-  .main-menu.active { display: flex; }
-  .menu-item { width: 100%; border-bottom: 1px solid rgba(255,255,255,0.1); }
-  .menu-item > a { padding: 15px 20px; }
-  .mega-menu { width: 90% !important; padding: 15px 0 !important; display: none !important; }
-  .mega-menu-content { padding: 10px 15px !important; }
-  .mega-collections-grid { grid-template-columns: repeat(2, 1fr) !important; gap: 10px !important; }
-  .mega-collection-card { animation: none !important; opacity: 1 !important; }
-  .menu-item.has-mega-menu.mobile-open .mega-menu { display: block !important; }
+  .mega-menu-wrapper { display: none !important; }
 }
+
+/* Mobile Mega Menu styles (injected into drawer) */
+.mobile-mega-menu-section { border-top: 1px solid rgba(0,0,0,0.1); margin-top: 4px; }
+.mobile-mega-menu-item { border-bottom: 1px solid rgba(0,0,0,0.06); }
+.mobile-mega-menu-toggle {
+  display: flex; align-items: center; justify-content: space-between;
+  width: 100%; padding: 13px 20px;
+  background: transparent; border: none;
+  font-size: 14px; font-weight: 600; color: inherit;
+  text-align: left; cursor: pointer; line-height: 1.4;
+}
+.mobile-mega-menu-toggle .mm-arrow {
+  font-size: 10px; transition: transform 0.25s; flex-shrink: 0; margin-left: 8px;
+}
+.mobile-mega-menu-item.mm-open .mobile-mega-menu-toggle .mm-arrow { transform: rotate(180deg); }
+.mobile-mega-menu-submenu { display: none; padding: 4px 12px 12px; background: rgba(0,0,0,0.02); }
+.mobile-mega-menu-item.mm-open .mobile-mega-menu-submenu { display: block; }
+.mobile-mega-collections-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 7px; }
+.mobile-mega-collection-card {
+  display: flex; align-items: center; gap: 7px;
+  padding: 7px 9px; border-radius: 8px;
+  border: 1.5px solid #e0e0e0; background: #fff;
+  text-decoration: none; color: #2e7d32;
+  font-size: 11.5px; font-weight: 600;
+  transition: border-color 0.2s, background 0.2s;
+}
+.mobile-mega-collection-card:hover { border-color: #4caf50; background: #f0faf0; }
+.mobile-mega-collection-card img {
+  width: 32px; height: 32px; border-radius: 5px;
+  object-fit: cover; flex-shrink: 0;
+}
+.mobile-mega-collection-placeholder {
+  width: 32px; height: 32px; border-radius: 5px;
+  background: #e8f5e9; display: flex; align-items: center;
+  justify-content: center; font-size: 16px; flex-shrink: 0;
+}
+.mobile-mega-plain-link {
+  display: block; padding: 13px 20px;
+  font-size: 14px; font-weight: 500; color: inherit;
+  text-decoration: none; border-bottom: 1px solid rgba(0,0,0,0.06);
+}
+.mobile-mega-plain-link:last-child { border-bottom: none; }
 </style>
 
 <div class="mega-menu-wrapper">
   <div class="mega-menu-container">
-    <button class="mobile-menu-toggle" onclick="toggleMobileMenu()">&#9776; <span style="display:block;">Category</span></button>
     <nav>
       <ul class="main-menu" id="mainMenu">
         {%- for link in section.settings.main_menu.links -%}
@@ -213,8 +185,7 @@ Simple: Sirf Collections with images in dropdown
             {%- assign item_trimmed = item | strip -%}
             {%- if item_trimmed == link.title -%}{%- assign has_mega = true -%}{%- break -%}{%- endif -%}
           {%- endfor -%}
-
-          <li class="menu-item{%- if has_mega %} has-mega-menu{%- endif -%}" onclick="toggleMegaMenuMobile(event)">
+          <li class="menu-item{%- if has_mega %} has-mega-menu{%- endif -%}">
             <a href="{{ link.url }}">{{ link.title }}</a>
             {%- if has_mega -%}
               <div class="mega-menu">
@@ -258,26 +229,167 @@ Simple: Sirf Collections with images in dropdown
   </div>
 </div>
 
+{%- comment -%} Mobile menu data for drawer injection {%- endcomment -%}
+<script id="mega-menu-mobile-data" type="application/json">
+{
+  "items": [
+    {%- for link in section.settings.main_menu.links -%}
+      {%- assign mega_menu_array = section.settings.mega_menu_items | split: ',' -%}
+      {%- assign has_mega = false -%}
+      {%- for item in mega_menu_array -%}
+        {%- assign item_trimmed = item | strip -%}
+        {%- if item_trimmed == link.title -%}{%- assign has_mega = true -%}{%- break -%}{%- endif -%}
+      {%- endfor -%}
+      {%- if forloop.index > 1 -%},{%- endif -%}
+      {
+        "title": {{ link.title | json }},
+        "url": {{ link.url | json }},
+        "hasMega": {{ has_mega }},
+        "collections": [
+          {%- if has_mega -%}
+            {%- assign col_count = 0 -%}
+            {%- for block in section.blocks -%}
+              {%- assign block_parent = block.settings.parent_menu_item | strip -%}
+              {%- if block.type == 'collection_cards' and block_parent == link.title -%}
+                {%- assign col_ids = 'collection_1,collection_2,collection_3,collection_4,collection_5,collection_6,collection_7,collection_8' | split: ',' -%}
+                {%- for col_id in col_ids -%}
+                  {%- assign col_handle = block.settings[col_id] -%}
+                  {%- if col_handle != blank -%}
+                    {%- assign col = collections[col_handle] -%}
+                    {%- if col_count > 0 -%},{%- endif -%}
+                    {
+                      "title": {{ col.title | json }},
+                      "url": {{ col.url | json }},
+                      "image": {%- if col.image -%}{{ col.image | img_url: '100x' | json }}{%- elsif col.products.first.featured_image -%}{{ col.products.first.featured_image | img_url: '100x' | json }}{%- else -%}null{%- endif -%}
+                    }
+                    {%- assign col_count = col_count | plus: 1 -%}
+                  {%- endif -%}
+                {%- endfor -%}
+              {%- endif -%}
+            {%- endfor -%}
+          {%- endif -%}
+        ]
+      }
+    {%- endfor -%}
+  ]
+}
+</script>
+
 <script>
-function toggleMobileMenu() {
-  document.getElementById('mainMenu').classList.toggle('active');
-}
-function toggleMegaMenuMobile(event) {
-  if (window.innerWidth <= 768) {
-    var item = event.currentTarget;
-    if (item.classList.contains('has-mega-menu')) {
-      event.preventDefault();
-      item.classList.toggle('mobile-open');
+(function() {
+  function injectMobileMegaMenu() {
+    var dataEl = document.getElementById('mega-menu-mobile-data');
+    if (!dataEl) return;
+    var data;
+    try { data = JSON.parse(dataEl.textContent); } catch(e) { return; }
+    if (!data || !data.items || !data.items.length) return;
+
+    // Find the mobile header drawer navigation list (Dawn theme selectors)
+    var drawerNav = document.querySelector(
+      '.menu-drawer__menu, ' +
+      '.menu-drawer__navigation > ul, ' +
+      '.header-drawer .menu-drawer__menu, ' +
+      '[data-header-drawer] ul'
+    );
+    if (!drawerNav) return;
+
+    // Prevent double injection
+    if (drawerNav.querySelector('.mobile-mega-menu-section')) return;
+
+    var wrapper = document.createElement('div');
+    wrapper.className = 'mobile-mega-menu-section';
+
+    data.items.forEach(function(item) {
+      if (item.hasMega && item.collections && item.collections.length > 0) {
+        var li = document.createElement('div');
+        li.className = 'mobile-mega-menu-item';
+
+        var btn = document.createElement('button');
+        btn.className = 'mobile-mega-menu-toggle';
+        btn.setAttribute('type', 'button');
+        btn.setAttribute('aria-expanded', 'false');
+        btn.innerHTML = '<span>' + item.title + '</span><span class="mm-arrow" aria-hidden="true">&#9660;</span>';
+        btn.addEventListener('click', function() {
+          var isOpen = li.classList.toggle('mm-open');
+          btn.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+        });
+
+        var submenu = document.createElement('div');
+        submenu.className = 'mobile-mega-menu-submenu';
+
+        var grid = document.createElement('div');
+        grid.className = 'mobile-mega-collections-grid';
+
+        item.collections.forEach(function(col) {
+          var a = document.createElement('a');
+          a.href = col.url;
+          a.className = 'mobile-mega-collection-card';
+
+          if (col.image) {
+            var img = document.createElement('img');
+            img.src = col.image;
+            img.alt = col.title;
+            img.loading = 'lazy';
+            a.appendChild(img);
+          } else {
+            var ph = document.createElement('div');
+            ph.className = 'mobile-mega-collection-placeholder';
+            ph.setAttribute('aria-hidden', 'true');
+            ph.textContent = '\uD83C\uDF3E';
+            a.appendChild(ph);
+          }
+
+          var span = document.createElement('span');
+          span.textContent = col.title;
+          a.appendChild(span);
+          grid.appendChild(a);
+        });
+
+        submenu.appendChild(grid);
+        li.appendChild(btn);
+        li.appendChild(submenu);
+        wrapper.appendChild(li);
+      } else {
+        var a = document.createElement('a');
+        a.href = item.url;
+        a.className = 'mobile-mega-plain-link';
+        a.textContent = item.title;
+        wrapper.appendChild(a);
+      }
+    });
+
+    drawerNav.appendChild(wrapper);
+  }
+
+  // Run on DOM ready
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', injectMobileMegaMenu);
+  } else {
+    injectMobileMegaMenu();
+  }
+
+  // Retry after delays (drawer may be lazy-rendered)
+  setTimeout(injectMobileMegaMenu, 400);
+  setTimeout(injectMobileMegaMenu, 1200);
+
+  // Listen for drawer open clicks
+  document.addEventListener('click', function(e) {
+    if (e.target.closest('.header__icon--menu, summary[aria-label], .menu-drawer__close-button')) {
+      setTimeout(injectMobileMegaMenu, 100);
     }
-  }
-}
-document.addEventListener('click', function(e) {
-  var menu = document.getElementById('mainMenu');
-  var toggle = document.querySelector('.mobile-menu-toggle');
-  if (menu && toggle && !menu.contains(e.target) && !toggle.contains(e.target)) {
-    menu.classList.remove('active');
-  }
-});
+  });
+
+  // MutationObserver: catch when drawer is rendered into DOM
+  var observer = new MutationObserver(function() {
+    var drawerNav = document.querySelector(
+      '.menu-drawer__menu, .menu-drawer__navigation > ul, .header-drawer .menu-drawer__menu'
+    );
+    if (drawerNav && !drawerNav.querySelector('.mobile-mega-menu-section')) {
+      injectMobileMegaMenu();
+    }
+  });
+  observer.observe(document.body, { childList: true, subtree: true });
+})();
 </script>
 
 {% schema %}

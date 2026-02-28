@@ -75,6 +75,11 @@
 {% stylesheet %}
   .wishlist-block {
     width: 100%;
+    display: block;
+    clear: both;
+    /* Ensure wishlist never gets pulled into product-form-buttons flex row */
+    flex: 1 0 100% !important;
+    min-width: 100% !important;
   }
 
   /* ── Button — same style as screenshot: white bg + blue outline ── */
