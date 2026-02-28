@@ -1,0 +1,271 @@
+{% assign benefits_boxes = section.id | replace: '_', '' | downcase %}
+
+{% style %}
+  .benefits-badge-container-{{ benefits_boxes }} {
+    display: block;
+    width: 100%;
+    padding: {{ section.settings.padding_top }}px 0 {{ section.settings.padding_bottom }}px;
+    background-color: {{ section.settings.section_background_color }};
+  }
+
+  .benefits-badge-wrapper-{{ benefits_boxes }} {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+    max-width: 1380px;
+    margin: 0 auto;
+    padding: 0 20px;
+  }
+
+  .benefits-badge-item-{{ benefits_boxes }} {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    border: 1px solid #E7E7E7;
+    background-color: {{ section.settings.badge_background_color }};
+    border-radius: {{ section.settings.border_radius }}px;
+    padding: 15px 17px;
+    transition: transform 0.2s ease;
+  }
+
+  .benefits-badge-icon-container-{{ benefits_boxes }} {
+    flex-shrink: 0;
+    width: 48px;
+    height: 48px;
+    background-color: {{ section.settings.icon_background_color }};
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .benefits-badge-icon-container-{{ benefits_boxes }} img {
+    width: 24px;
+    height: 24px;
+    object-fit: contain;
+  }
+
+  .benefits-badge-icon-placeholder-{{ benefits_boxes }} {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .benefits-badge-icon-placeholder-{{ benefits_boxes }} svg {
+    width: 24px;
+    height: 24px;
+    opacity: 0.3;
+  }
+
+  .benefits-badge-text-{{ benefits_boxes }} {
+    flex: 1;
+    color: {{ section.settings.text_color }};
+    font-size: 17px;
+    font-weight: 600;
+    line-height: 1.4;
+  }
+
+  @media screen and (max-width: 989px) {
+    .benefits-badge-wrapper-{{ benefits_boxes }} {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+    }
+  }
+
+  @media screen and (max-width: 749px) {
+    .benefits-badge-wrapper-{{ benefits_boxes }} {
+      gap: 12px;
+    }
+
+    .benefits-badge-item-{{ benefits_boxes }} {
+      padding: 5px 10px;
+    }
+ .benefits-badge-text-{{ benefits_boxes }} {
+
+    font-size: 11px;
+  
+  }
+  
+.benefits-badge-icon-container-{{ benefits_boxes }} {
+    width: 30px;
+    height: 30px;
+
+  }
+
+.benefits-badge-item-{{ benefits_boxes }} { border-radius: 8px; gap: 10px; }
+.benefits-badge-icon-{{ benefits_boxes }} { width: 16px; }
+  
+
+  }
+{% endstyle %}
+
+<div class="benefits-badge-container-{{ benefits_boxes }}" {{ section.shopify_attributes }}>
+  <div class="benefits-badge-wrapper-{{ benefits_boxes }}">
+    {% for i in (1..4) %}
+      {% liquid
+        assign feature_title_key = 'feature_' | append: i | append: '_title'
+        assign feature_icon_key = 'feature_' | append: i | append: '_icon'
+        assign feature_title = section.settings[feature_title_key]
+        assign feature_icon = section.settings[feature_icon_key]
+      %}
+
+      <div class="benefits-badge-item-{{ benefits_boxes }}">
+        <div class="benefits-badge-icon-container-{{ benefits_boxes }}">
+          {% if feature_icon %}
+            <img
+              src="{{ feature_icon | image_url: width: 48 }}"
+              alt="{{ feature_title | escape }}"
+              loading="lazy"
+              width="24"
+              height="24"
+            >
+          {% else %}
+            <div class="benefits-badge-icon-placeholder-{{ benefits_boxes }}">
+              {{ 'image' | placeholder_svg_tag }}
+            </div>
+          {% endif %}
+        </div>
+        <div class="benefits-badge-text-{{ benefits_boxes }}">
+          {{ feature_title }}
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Benefits badge",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Section style"
+    },
+    {
+      "type": "color",
+      "id": "section_background_color",
+      "label": "Section background",
+      "default": "#ffffff"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Top padding",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Bottom padding",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "default": 40
+    },
+    {
+      "type": "header",
+      "content": "Badge style"
+    },
+    {
+      "type": "color",
+      "id": "badge_background_color",
+      "label": "Background",
+      "default": "#eef2ef"
+    },
+    {
+      "type": "color",
+      "id": "icon_background_color",
+      "label": "Icon background",
+      "default": "#4a7c59"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text",
+      "default": "#1a1a1a"
+    },
+    {
+      "type": "range",
+      "id": "border_radius",
+      "label": "Border radius",
+      "min": 0,
+      "max": 60,
+      "step": 5,
+      "unit": "px",
+      "default": 40
+    },
+    {
+      "type": "header",
+      "content": "Feature 1"
+    },
+    {
+      "type": "image_picker",
+      "id": "feature_1_icon",
+      "label": "Icon"
+    },
+    {
+      "type": "text",
+      "id": "feature_1_title",
+      "label": "Title",
+      "default": "100% Organic"
+    },
+    {
+      "type": "header",
+      "content": "Feature 2"
+    },
+    {
+      "type": "image_picker",
+      "id": "feature_2_icon",
+      "label": "Icon"
+    },
+    {
+      "type": "text",
+      "id": "feature_2_title",
+      "label": "Title",
+      "default": "Farm Fresh"
+    },
+    {
+      "type": "header",
+      "content": "Feature 3"
+    },
+    {
+      "type": "image_picker",
+      "id": "feature_3_icon",
+      "label": "Icon"
+    },
+    {
+      "type": "text",
+      "id": "feature_3_title",
+      "label": "Title",
+      "default": "Free Delivery"
+    },
+    {
+      "type": "header",
+      "content": "Feature 4"
+    },
+    {
+      "type": "image_picker",
+      "id": "feature_4_icon",
+      "label": "Icon"
+    },
+    {
+      "type": "text",
+      "id": "feature_4_title",
+      "label": "Title",
+      "default": "Eco Friendly"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Benefits badge"
+    }
+  ],
+}
+{% endschema %}

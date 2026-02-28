@@ -1,0 +1,546 @@
+{% assign product_info_tabs = section.id | replace: '_', '' | downcase %}
+
+{% style %}
+  .product-info-{{ product_info_tabs }} {
+    display: block;
+    width: {{ section.settings.desktop_width_percent }}%;
+    max-width: 1280px;
+    background-color: #00718C0D;
+    padding: 20px 40px;
+    margin: 0 auto;
+    border-radius: 10px;
+    margin-top: 150px;
+  }
+
+  .product-info-tabs-{{ product_info_tabs }} {
+    display: flex;
+    gap: 0;
+    border-bottom: 1px solid {{ section.settings.tab_border_color }};
+    margin-bottom: 30px;
+    overflow-x: auto;
+    flex-wrap: wrap;
+  }
+
+  .product-info-tab-{{ product_info_tabs }} {
+    background: none;
+    border: none;
+    padding: 15px 20px;
+    cursor: pointer;
+    font-size: {{ section.settings.tab_font_size }}px;
+    color: {{ section.settings.tab_text_color }};
+    border-bottom: 2px solid transparent;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+  }
+
+  .product-info-tab-{{ product_info_tabs }}:hover {
+    color: {{ section.settings.tab_hover_color }};
+  }
+
+  .product-info-tab-{{ product_info_tabs }}.active {
+    color: {{ section.settings.tab_active_color }};
+    border-bottom-color: {{ section.settings.tab_active_color }};
+  }
+
+  .product-info-hero-{{ product_info_tabs }} {
+    display: flex;
+    gap: 40px;
+    margin-bottom: 40px;
+    align-items: center;
+    position: relative;
+  }
+
+  .product-info-hero-illustration-{{ product_info_tabs }} {
+    flex: 1;
+    max-width: 500px;
+    position: relative;
+  }
+
+  .product-info-hero-illustration-{{ product_info_tabs }} svg {
+    width: 100%;
+    height: auto;
+  }
+
+  .product-info-warning-overlay-{{ product_info_tabs }} {
+    position: absolute;
+    bottom: 20px;
+    left: 20px;
+    background-color: {{ section.settings.warning_bg_color }};
+    color: {{ section.settings.warning_text_color }};
+    padding: 20px;
+    border-radius: 8px;
+    max-width: 250px;
+  }
+
+  .product-info-warning-overlay-{{ product_info_tabs }} ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    font-size: 14px;
+    line-height: 1.8;
+  }
+
+  .product-info-close-btn-{{ product_info_tabs }} {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: rgba(0, 0, 0, 0.1);
+    border: none;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: {{ section.settings.warning_text_color }};
+    font-size: 18px;
+    transition: background 0.3s ease;
+  }
+
+  .product-info-close-btn-{{ product_info_tabs }}:hover {
+    background: rgba(0, 0, 0, 0.2);
+  }
+
+  .product-info-content-{{ product_info_tabs }} {
+    display: none;
+  }
+
+  .product-info-content-{{ product_info_tabs }}.active {
+    display: block;
+  }
+
+  .product-info-video-wrapper-{{ product_info_tabs }} {
+    margin-bottom: 30px;
+    max-width: 800px;
+  }
+
+  .product-info-video-wrapper-{{ product_info_tabs }} video,
+  .product-info-video-wrapper-{{ product_info_tabs }} iframe {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 16 / 9;
+    border-radius: 8px;
+  }
+
+  .product-info-text-{{ product_info_tabs }} {
+    color: {{ section.settings.content_text_color }};
+    font-size: {{ section.settings.content_font_size }}px;
+    line-height: 1.8;
+  }
+
+  .product-info-text-{{ product_info_tabs }} p {
+    margin-bottom: 20px;
+  }
+
+  .product-info-text-{{ product_info_tabs }} ul {
+    margin: 20px 0;
+    padding-left: 20px;
+  }
+
+  .product-info-text-{{ product_info_tabs }} li {
+    margin-bottom: 10px;
+  }
+
+  @media screen and (max-width: 749px) {
+    .product-info-hero-{{ product_info_tabs }} {
+      flex-direction: column;
+    }
+
+    .product-info-tabs-{{ product_info_tabs }} {
+      flex-wrap: nowrap;
+    }
+
+    .product-info-tab-{{ product_info_tabs }} {
+      font-size: 13px;
+      padding: 12px 15px;
+    }
+
+    .product-info-warning-overlay-{{ product_info_tabs }} {
+      position: static;
+      margin-top: 20px;
+      max-width: 100%;
+    }
+  }
+{% endstyle %}
+
+<product-info-tabs-{{ product_info_tabs }} class="product-info-{{ product_info_tabs }}" {{ section.shopify_attributes }}>
+  <div class="product-info-tabs-{{ product_info_tabs }}">
+    <button class="product-info-tab-{{ product_info_tabs }} active" data-tab="video">
+      {{ section.settings.tab_1_label }}
+    </button>
+    <button class="product-info-tab-{{ product_info_tabs }}" data-tab="additional">
+      {{ section.settings.tab_2_label }}
+    </button>
+    <button class="product-info-tab-{{ product_info_tabs }}" data-tab="reviews">
+      {{ section.settings.tab_3_label }}
+    </button>
+    <button class="product-info-tab-{{ product_info_tabs }}" data-tab="faq">
+      {{ section.settings.tab_4_label }}
+    </button>
+    <button class="product-info-tab-{{ product_info_tabs }}" data-tab="description">
+      {{ section.settings.tab_5_label }}
+    </button>
+  </div>
+
+  <div class="product-info-content-{{ product_info_tabs }} active" data-content="video">
+    {% if section.settings.show_hero %}
+      <div class="product-info-hero-{{ product_info_tabs }}">
+        <div class="product-info-hero-illustration-{{ product_info_tabs }}">
+          <svg viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg">
+            <rect x="150" y="80" width="120" height="180" fill="#FFFFFF" stroke="#333333" stroke-width="2" rx="5"/>
+            <rect x="160" y="90" width="100" height="120" fill="#F5F5F5"/>
+            <circle cx="210" cy="130" r="25" fill="#000000"/>
+            <path d="M 185 130 L 210 105 L 235 130" stroke="#FFFFFF" stroke-width="3" fill="none"/>
+            <path d="M 185 130 L 210 155 L 235 130" stroke="#FFFFFF" stroke-width="3" fill="none"/>
+            <polygon points="195,220 210,210 225,220 220,235 200,235" fill="#FF6B6B"/>
+            <circle cx="190" cy="245" r="8" fill="#FFA500"/>
+            <path d="M 182 245 L 198 245 M 190 237 L 190 253" stroke="#000000" stroke-width="2"/>
+            <polygon points="215,235 225,225 235,235 230,250 220,250" fill="#FFD700"/>
+            <path d="M 220 240 L 230 240 M 225 235 L 225 245" stroke="#000000" stroke-width="2"/>
+            <ellipse cx="210" cy="300" rx="40" ry="15" fill="#4A90E2"/>
+            <rect x="190" y="285" width="40" height="15" fill="#4A90E2"/>
+            <ellipse cx="210" cy="285" rx="40" ry="15" fill="#5BA3F5"/>
+            <circle cx="100" cy="200" r="40" fill="#4A90E2"/>
+            <circle cx="100" cy="190" r="35" fill="#5BA3F5"/>
+            <rect x="85" y="170" width="30" height="40" fill="#5BA3F5"/>
+            <rect x="70" y="210" width="60" height="10" fill="#333333"/>
+            <rect x="75" y="220" width="20" height="30" fill="#333333"/>
+            <rect x="105" y="220" width="20" height="30" fill="#333333"/>
+            <polygon points="85,160 100,145 115,160" fill="#FFD700"/>
+            <rect x="95" y="145" width="10" height="15" fill="#FFD700"/>
+          </svg>
+          {% if section.settings.show_warning_overlay %}
+            <div class="product-info-warning-overlay-{{ product_info_tabs }}">
+              <button class="product-info-close-btn-{{ product_info_tabs }}" aria-label="Close">×</button>
+              <ul>
+                <li>{{ section.settings.warning_1 }}</li>
+                <li>{{ section.settings.warning_2 }}</li>
+                <li>{{ section.settings.warning_3 }}</li>
+                <li>{{ section.settings.warning_4 }}</li>
+              </ul>
+            </div>
+          {% endif %}
+        </div>
+      </div>
+    {% endif %}
+
+    {% liquid
+      assign video_source = section.settings.video
+      assign metafield_video = null
+
+      if section.settings.video_metafield_namespace != blank and section.settings.video_metafield_key != blank
+        assign metafield_video = product.metafields[section.settings.video_metafield_namespace][section.settings.video_metafield_key]
+      endif
+
+      if metafield_video != blank
+        assign video_source = metafield_video
+      endif
+    %}
+
+    {% if video_source != blank %}
+      <div class="product-info-video-wrapper-{{ product_info_tabs }}">
+        {{ video_source | video_tag: controls: true, autoplay: false, loop: false, muted: false }}
+      </div>
+    {% endif %}
+
+    <div class="product-info-text-{{ product_info_tabs }}">
+      {{ section.settings.video_content }}
+    </div>
+  </div>
+
+  <div class="product-info-content-{{ product_info_tabs }}" data-content="additional">
+    <div class="product-info-text-{{ product_info_tabs }}">
+      {{ section.settings.additional_content }}
+    </div>
+  </div>
+
+  <div class="product-info-content-{{ product_info_tabs }}" data-content="reviews">
+    <div class="product-info-text-{{ product_info_tabs }}">
+      {{ section.settings.reviews_content }}
+    </div>
+  </div>
+
+  <div class="product-info-content-{{ product_info_tabs }}" data-content="faq">
+    <div class="product-info-text-{{ product_info_tabs }}">
+      {{ section.settings.faq_content }}
+    </div>
+  </div>
+
+  <div class="product-info-content-{{ product_info_tabs }}" data-content="description">
+    <div class="product-info-text-{{ product_info_tabs }}">
+      {{ section.settings.description_content }}
+    </div>
+  </div>
+</product-info-tabs-{{ product_info_tabs }}>
+
+<script>
+  (function() {
+    class ProductInfoTabs extends HTMLElement {
+      constructor() {
+        super();
+      }
+
+      connectedCallback() {
+        this.tabs = this.querySelectorAll('.product-info-tab-{{ product_info_tabs }}');
+        this.contents = this.querySelectorAll('.product-info-content-{{ product_info_tabs }}');
+        this.closeBtn = this.querySelector('.product-info-close-btn-{{ product_info_tabs }}');
+        this.warningOverlay = this.querySelector('.product-info-warning-overlay-{{ product_info_tabs }}');
+
+        this.setupTabs();
+        this.setupCloseButton();
+      }
+
+      setupTabs() {
+        this.tabs.forEach(tab => {
+          tab.addEventListener('click', () => {
+            const targetTab = tab.getAttribute('data-tab');
+            
+            this.tabs.forEach(t => t.classList.remove('active'));
+            this.contents.forEach(c => c.classList.remove('active'));
+            
+            tab.classList.add('active');
+            const targetContent = this.querySelector(`[data-content="${targetTab}"]`);
+            if (targetContent) {
+              targetContent.classList.add('active');
+            }
+          });
+        });
+      }
+
+      setupCloseButton() {
+        if (this.closeBtn && this.warningOverlay) {
+          this.closeBtn.addEventListener('click', () => {
+            this.warningOverlay.style.display = 'none';
+          });
+        }
+      }
+    }
+
+    customElements.define('product-info-tabs-{{ product_info_tabs }}', ProductInfoTabs);
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Product information tabs",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "range",
+      "id": "desktop_width_percent",
+      "label": "Desktop width",
+      "min": 50,
+      "max": 100,
+      "step": 5,
+      "unit": "%",
+      "default": 100
+    },
+   
+   
+    {
+      "type": "header",
+      "content": "Tabs"
+    },
+    {
+      "type": "text",
+      "id": "tab_1_label",
+      "label": "Tab 1 label",
+      "default": "How to Use Video"
+    },
+    {
+      "type": "text",
+      "id": "tab_2_label",
+      "label": "Tab 2 label",
+      "default": "Additional Information"
+    },
+    {
+      "type": "text",
+      "id": "tab_3_label",
+      "label": "Tab 3 label",
+      "default": "Reviews"
+    },
+    {
+      "type": "text",
+      "id": "tab_4_label",
+      "label": "Tab 4 label",
+      "default": "FAQ's"
+    },
+    {
+      "type": "text",
+      "id": "tab_5_label",
+      "label": "Tab 5 label",
+      "default": "Full Product Description"
+    },
+    {
+      "type": "range",
+      "id": "tab_font_size",
+      "label": "Font size",
+      "min": 12,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "default": 14
+    },
+    {
+      "type": "color",
+      "id": "tab_text_color",
+      "label": "Text color",
+      "default": "#666666"
+    },
+    {
+      "type": "color",
+      "id": "tab_hover_color",
+      "label": "Hover color",
+      "default": "#000000"
+    },
+    {
+      "type": "color",
+      "id": "tab_active_color",
+      "label": "Active color",
+      "default": "#000000"
+    },
+    {
+      "type": "color",
+      "id": "tab_border_color",
+      "label": "Border color",
+      "default": "#E6E6E6"
+    },
+    {
+      "type": "header",
+      "content": "Hero section"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_hero",
+      "label": "Show hero illustration",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_warning_overlay",
+      "label": "Show warning overlay",
+      "default": true
+    },
+    {
+      "type": "color",
+      "id": "warning_bg_color",
+      "label": "Warning background",
+      "default": "#8B6F47"
+    },
+    {
+      "type": "color",
+      "id": "warning_text_color",
+      "label": "Warning text",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "text",
+      "id": "warning_1",
+      "label": "Warning 1",
+      "default": "POISONOUS"
+    },
+    {
+      "type": "text",
+      "id": "warning_2",
+      "label": "Warning 2",
+      "default": "CORROSIVE"
+    },
+    {
+      "type": "text",
+      "id": "warning_3",
+      "label": "Warning 3",
+      "default": "FLAMMABLE"
+    },
+    {
+      "type": "text",
+      "id": "warning_4",
+      "label": "Warning 4",
+      "default": "EXPLOSIVE"
+    },
+    {
+      "type": "header",
+      "content": "Video settings"
+    },
+    {
+      "type": "video",
+      "id": "video",
+      "label": "Video"
+    },
+    {
+      "type": "text",
+      "id": "video_metafield_namespace",
+      "label": "Video metafield namespace",
+      "info": "Example: custom"
+    },
+    {
+      "type": "text",
+      "id": "video_metafield_key",
+      "label": "Video metafield key",
+      "info": "Example: how_to_video"
+    },
+    {
+      "type": "paragraph",
+      "content": "If metafield values are provided, the video from the product metafield will be used instead of the video picker above."
+    },
+    {
+      "type": "header",
+      "content": "Content"
+    },
+    {
+      "type": "range",
+      "id": "content_font_size",
+      "label": "Font size",
+      "min": 12,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "default": 14
+    },
+    {
+      "type": "color",
+      "id": "content_text_color",
+      "label": "Text color",
+      "default": "#333333"
+    },
+    {
+      "type": "richtext",
+      "id": "video_content",
+      "label": "How to use video content",
+      "default": "<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p><p>Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>"
+    },
+    {
+      "type": "richtext",
+      "id": "additional_content",
+      "label": "Additional information content",
+      "default": "<p>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.</p><ul><li>Feature 1: High quality materials</li><li>Feature 2: Professional grade</li><li>Feature 3: Safety certified</li></ul>"
+    },
+    {
+      "type": "richtext",
+      "id": "reviews_content",
+      "label": "Reviews content",
+      "default": "<p>Customer reviews and testimonials will appear here.</p>"
+    },
+    {
+      "type": "richtext",
+      "id": "faq_content",
+      "label": "FAQ content",
+      "default": "<p>Frequently asked questions about this product.</p>"
+    },
+    {
+      "type": "richtext",
+      "id": "description_content",
+      "label": "Full description content",
+      "default": "<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.</p><p>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Product information tabs"
+    }
+  ]
+}
+{% endschema %}

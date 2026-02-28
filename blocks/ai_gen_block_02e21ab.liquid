@@ -1,0 +1,634 @@
+{% doc %}
+  @prompt
+    Create a Shopify custom product variant selector section styled as quantity cards.
+    
+    Requirements:
+    
+    Display product variants as card-style buttons in a responsive grid.
+    
+    Each card must show:
+    
+    Variant title (e.g., 100 ML, 200 ML, 1 L)
+    
+    Small subtitle line below title (e.g., "(100 ML x 1)")
+    
+    Bottom green price badge showing calculated price per 100 ml (e.g., ₹358/100 ml)
+    
+    Active selected variant:
+    
+    Dark green background
+    
+    White text
+    
+    Slight shadow
+    
+    Inactive variants:
+    
+    Light green background
+    
+    Dark text
+    
+    Smooth transition (0.3s)
+    
+    Fully clickable cards (selects variant properly)
+    
+    Must sync with Shopify product.variants
+    
+    On click: update selected variant ID and price
+    
+    Hide default dropdown selector
+    
+    Fully responsive (wrap to next line on smaller screens)
+    
+    Clean modern UI with rounded corners (8–12px radius)
+    
+    Ensure proper variant selection and Add to Cart functionality works without breaking Shopify logic.   
+{% enddoc %}
+{% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+
+{% style %}
+  .ai-variant-cards-{{ ai_gen_id }} {
+    display: block;
+    width: {{ block.settings.desktop_width_percent }}%;
+    max-width: 100%;
+  }
+
+  .ai-variant-cards__grid-{{ ai_gen_id }} {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax({{ block.settings.card_min_width }}px, 1fr));
+    gap: {{ block.settings.card_gap }}px;
+    margin-bottom: 20px;
+  }
+
+  .ai-variant-cards__card-{{ ai_gen_id }} {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    padding: {{ block.settings.card_padding }}px;
+    border: {{ block.settings.card_border_width }}px solid {{ block.settings.inactive_border_color }};
+    border-radius: {{ block.settings.card_border_radius }}px;
+    background-color: {{ block.settings.inactive_bg_color }};
+    color: {{ block.settings.inactive_text_color }};
+    cursor: pointer;
+    transition: all 0.3s ease;
+    min-height: {{ block.settings.card_min_height }}px;
+    text-align: center;
+  }
+
+  .ai-variant-cards__card-{{ ai_gen_id }}:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+
+  .ai-variant-cards__card-{{ ai_gen_id }}.active {
+    background-color: {{ block.settings.active_bg_color }};
+    color: {{ block.settings.active_text_color }};
+    border-color: {{ block.settings.active_border_color }};
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  }
+
+  .ai-variant-cards__card-{{ ai_gen_id }}.unavailable {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  .ai-variant-cards__card-{{ ai_gen_id }}.unavailable:hover {
+    transform: none;
+    box-shadow: none;
+  }
+
+  .ai-variant-cards__title-{{ ai_gen_id }} {
+    font-size: {{ block.settings.title_font_size }}px;
+    font-weight: {{ block.settings.title_font_weight }};
+    margin: 0 0 {{ block.settings.title_spacing }}px 0;
+    line-height: 1.2;
+  }
+
+  .ai-variant-cards__subtitle-{{ ai_gen_id }} {
+    font-size: {{ block.settings.subtitle_font_size }}px;
+    margin: 0 0 {{ block.settings.subtitle_spacing }}px 0;
+    opacity: 0.8;
+    line-height: 1.3;
+  }
+
+  .ai-variant-cards__price-badge-{{ ai_gen_id }} {
+    display: inline-block;
+    padding: {{ block.settings.badge_padding_vertical }}px {{ block.settings.badge_padding_horizontal }}px;
+    background-color: {{ block.settings.badge_bg_color }};
+    color: {{ block.settings.badge_text_color }};
+    border-radius: {{ block.settings.badge_border_radius }}px;
+    font-size: {{ block.settings.badge_font_size }}px;
+    font-weight: {{ block.settings.badge_font_weight }};
+    margin-top: auto;
+  }
+
+  .ai-variant-cards__card-{{ ai_gen_id }}.active .ai-variant-cards__price-badge-{{ ai_gen_id }} {
+    background-color: {{ block.settings.badge_active_bg_color }};
+    color: {{ block.settings.badge_active_text_color }};
+  }
+
+  .ai-variant-cards__hidden-select-{{ ai_gen_id }} {
+    display: none;
+  }
+
+  @media screen and (max-width: 749px) {
+    .ai-variant-cards__grid-{{ ai_gen_id }} {
+      grid-template-columns: repeat(auto-fill, minmax({{ block.settings.card_min_width_mobile }}px, 1fr));
+      gap: {{ block.settings.card_gap_mobile }}px;
+    }
+
+    .ai-variant-cards__title-{{ ai_gen_id }} {
+      font-size: {{ block.settings.title_font_size | times: 0.9 }}px;
+    }
+
+    .ai-variant-cards__subtitle-{{ ai_gen_id }} {
+      font-size: {{ block.settings.subtitle_font_size | times: 0.9 }}px;
+    }
+
+    .ai-variant-cards__price-badge-{{ ai_gen_id }} {
+      font-size: {{ block.settings.badge_font_size | times: 0.9 }}px;
+    }
+  }
+{% endstyle %}
+
+<variant-cards-{{ ai_gen_id }}
+  class="ai-variant-cards-{{ ai_gen_id }}"
+  data-product-id="{{ product.id }}"
+  data-base-unit="{{ block.settings.base_unit }}"
+  data-base-quantity="{{ block.settings.base_quantity }}"
+  {{ block.shopify_attributes }}
+>
+  <div class="ai-variant-cards__grid-{{ ai_gen_id }}">
+    {% for variant in product.variants %}
+      {% assign variant_quantity = variant.title | remove: 'ML' | remove: 'ml' | remove: 'L' | remove: 'l' | strip | times: 1 %}
+      {% assign is_liter = false %}
+      {% if variant.title contains 'L' %}
+        {% unless variant.title contains 'ML' %}
+          {% assign is_liter = true %}
+        {% endunless %}
+      {% endif %}
+      {% if is_liter %}
+        {% assign variant_quantity = variant_quantity | times: 1000 %}
+      {% endif %}
+      
+      {% assign price_per_unit = 0 %}
+      {% if variant_quantity > 0 %}
+        {% assign price_per_unit = variant.price | divided_by: variant_quantity | times: block.settings.base_quantity %}
+      {% endif %}
+
+      <div
+        class="ai-variant-cards__card-{{ ai_gen_id }} {% if variant.id == product.selected_or_first_available_variant.id %}active{% endif %} {% unless variant.available %}unavailable{% endunless %}"
+        data-variant-id="{{ variant.id }}"
+        data-variant-price="{{ variant.price }}"
+        data-variant-available="{{ variant.available }}"
+        data-variant-quantity="{{ variant_quantity }}"
+      >
+        <div class="ai-variant-cards__title-{{ ai_gen_id }}">
+          {{ variant.title }}
+        </div>
+        
+        {% if block.settings.show_subtitle %}
+          <div class="ai-variant-cards__subtitle-{{ ai_gen_id }}">
+            ({{ variant.title }} x 1)
+          </div>
+        {% endif %}
+
+        {% if block.settings.show_price_badge %}
+          {% if price_per_unit > 0 %}
+            <div class="ai-variant-cards__price-badge-{{ ai_gen_id }}">
+              {{ price_per_unit | money }}/{{ block.settings.base_quantity }}{{ block.settings.base_unit }}
+            </div>
+          {% endif %}
+        {% endif %}
+      </div>
+    {% endfor %}
+  </div>
+
+  <select
+    name="id"
+    class="ai-variant-cards__hidden-select-{{ ai_gen_id }}"
+    form="{{ product_form_id }}"
+  >
+    {% for variant in product.variants %}
+      <option
+        value="{{ variant.id }}"
+        {% if variant.id == product.selected_or_first_available_variant.id %}selected{% endif %}
+        {% unless variant.available %}disabled{% endunless %}
+      >
+        {{ variant.title }} - {{ variant.price | money }}
+      </option>
+    {% endfor %}
+  </select>
+</variant-cards-{{ ai_gen_id }}>
+
+<script>
+  (function() {
+    class VariantCards{{ ai_gen_id }} extends HTMLElement {
+      constructor() {
+        super();
+        this.cards = this.querySelectorAll('.ai-variant-cards__card-{{ ai_gen_id }}');
+        this.select = this.querySelector('.ai-variant-cards__hidden-select-{{ ai_gen_id }}');
+      }
+
+      connectedCallback() {
+        this.setupEventListeners();
+      }
+
+      setupEventListeners() {
+        this.cards.forEach((card) => {
+          card.addEventListener('click', () => {
+            const variantId = card.dataset.variantId;
+            const isAvailable = card.dataset.variantAvailable === 'true';
+
+            if (!isAvailable) {
+              return;
+            }
+
+            this.cards.forEach((c) => c.classList.remove('active'));
+            card.classList.add('active');
+
+            this.select.value = variantId;
+
+            const changeEvent = new Event('change', { bubbles: true });
+            this.select.dispatchEvent(changeEvent);
+
+            this.updateProductPrice(card.dataset.variantPrice);
+            this.updateUrl(variantId);
+          });
+        });
+      }
+
+      updateProductPrice(price) {
+        const priceElements = document.querySelectorAll('.price__regular .price-item--regular');
+        priceElements.forEach((element) => {
+          const formattedPrice = this.formatMoney(price);
+          element.textContent = formattedPrice;
+        });
+      }
+
+      formatMoney(cents) {
+        const amount = parseFloat(cents) / 100;
+        return new Intl.NumberFormat('en-IN', {
+          style: 'currency',
+          currency: 'INR',
+          minimumFractionDigits: 0,
+          maximumFractionDigits: 2
+        }).format(amount);
+      }
+
+      updateUrl(variantId) {
+        const url = new URL(window.location.href);
+        url.searchParams.set('variant', variantId);
+        window.history.replaceState({}, '', url);
+      }
+    }
+
+    customElements.define('variant-cards-{{ ai_gen_id }}', VariantCards{{ ai_gen_id }});
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Variant quantity cards",
+  "tag": null,
+  "settings": [
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "range",
+      "id": "desktop_width_percent",
+      "label": "Desktop width",
+      "min": 50,
+      "max": 100,
+      "step": 5,
+      "unit": "%",
+      "default": 100
+    },
+    {
+      "type": "range",
+      "id": "card_min_width",
+      "label": "Card minimum width (desktop)",
+      "min": 80,
+      "max": 200,
+      "step": 10,
+      "unit": "px",
+      "default": 120
+    },
+    {
+      "type": "range",
+      "id": "card_min_width_mobile",
+      "label": "Card minimum width (mobile)",
+      "min": 80,
+      "max": 150,
+      "step": 10,
+      "unit": "px",
+      "default": 100
+    },
+    {
+      "type": "range",
+      "id": "card_gap",
+      "label": "Gap between cards (desktop)",
+      "min": 8,
+      "max": 32,
+      "step": 4,
+      "unit": "px",
+      "default": 12
+    },
+    {
+      "type": "range",
+      "id": "card_gap_mobile",
+      "label": "Gap between cards (mobile)",
+      "min": 4,
+      "max": 20,
+      "step": 2,
+      "unit": "px",
+      "default": 8
+    },
+    {
+      "type": "range",
+      "id": "card_min_height",
+      "label": "Card minimum height",
+      "min": 80,
+      "max": 200,
+      "step": 10,
+      "unit": "px",
+      "default": 120
+    },
+    {
+      "type": "range",
+      "id": "card_padding",
+      "label": "Card padding",
+      "min": 8,
+      "max": 32,
+      "step": 2,
+      "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "card_border_radius",
+      "label": "Card border radius",
+      "min": 0,
+      "max": 24,
+      "step": 2,
+      "unit": "px",
+      "default": 12
+    },
+    {
+      "type": "range",
+      "id": "card_border_width",
+      "label": "Card border width",
+      "min": 0,
+      "max": 4,
+      "step": 1,
+      "unit": "px",
+      "default": 2
+    },
+    {
+      "type": "header",
+      "content": "Inactive card colors"
+    },
+    {
+      "type": "color",
+      "id": "inactive_bg_color",
+      "label": "Background",
+      "default": "#e8f5e9"
+    },
+    {
+      "type": "color",
+      "id": "inactive_text_color",
+      "label": "Text",
+      "default": "#1b5e20"
+    },
+    {
+      "type": "color",
+      "id": "inactive_border_color",
+      "label": "Border",
+      "default": "#a5d6a7"
+    },
+    {
+      "type": "header",
+      "content": "Active card colors"
+    },
+    {
+      "type": "color",
+      "id": "active_bg_color",
+      "label": "Background",
+      "default": "#2e7d32"
+    },
+    {
+      "type": "color",
+      "id": "active_text_color",
+      "label": "Text",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "active_border_color",
+      "label": "Border",
+      "default": "#1b5e20"
+    },
+    {
+      "type": "header",
+      "content": "Title"
+    },
+    {
+      "type": "range",
+      "id": "title_font_size",
+      "label": "Font size",
+      "min": 12,
+      "max": 32,
+      "step": 2,
+      "unit": "px",
+      "default": 18
+    },
+    {
+      "type": "select",
+      "id": "title_font_weight",
+      "label": "Font weight",
+      "options": [
+        {
+          "value": "400",
+          "label": "Normal"
+        },
+        {
+          "value": "500",
+          "label": "Medium"
+        },
+        {
+          "value": "600",
+          "label": "Semi-bold"
+        },
+        {
+          "value": "700",
+          "label": "Bold"
+        }
+      ],
+      "default": "600"
+    },
+    {
+      "type": "range",
+      "id": "title_spacing",
+      "label": "Bottom spacing",
+      "min": 0,
+      "max": 20,
+      "step": 2,
+      "unit": "px",
+      "default": 8
+    },
+    {
+      "type": "header",
+      "content": "Subtitle"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_subtitle",
+      "label": "Show subtitle",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "subtitle_font_size",
+      "label": "Font size",
+      "min": 10,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "default": 12
+    },
+    {
+      "type": "range",
+      "id": "subtitle_spacing",
+      "label": "Bottom spacing",
+      "min": 0,
+      "max": 20,
+      "step": 2,
+      "unit": "px",
+      "default": 8
+    },
+    {
+      "type": "header",
+      "content": "Price badge"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_price_badge",
+      "label": "Show price badge",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "base_unit",
+      "label": "Base unit",
+      "default": "ml"
+    },
+    {
+      "type": "range",
+      "id": "base_quantity",
+      "label": "Base quantity for price",
+      "min": 10,
+      "max": 1000,
+      "step": 10,
+      "unit": "ml",
+      "default": 100
+    },
+    {
+      "type": "color",
+      "id": "badge_bg_color",
+      "label": "Background (inactive)",
+      "default": "#66bb6a"
+    },
+    {
+      "type": "color",
+      "id": "badge_text_color",
+      "label": "Text (inactive)",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "badge_active_bg_color",
+      "label": "Background (active)",
+      "default": "#1b5e20"
+    },
+    {
+      "type": "color",
+      "id": "badge_active_text_color",
+      "label": "Text (active)",
+      "default": "#ffffff"
+    },
+    {
+      "type": "range",
+      "id": "badge_font_size",
+      "label": "Font size",
+      "min": 10,
+      "max": 18,
+      "step": 1,
+      "unit": "px",
+      "default": 12
+    },
+    {
+      "type": "select",
+      "id": "badge_font_weight",
+      "label": "Font weight",
+      "options": [
+        {
+          "value": "400",
+          "label": "Normal"
+        },
+        {
+          "value": "500",
+          "label": "Medium"
+        },
+        {
+          "value": "600",
+          "label": "Semi-bold"
+        },
+        {
+          "value": "700",
+          "label": "Bold"
+        }
+      ],
+      "default": "600"
+    },
+    {
+      "type": "range",
+      "id": "badge_padding_vertical",
+      "label": "Vertical padding",
+      "min": 2,
+      "max": 12,
+      "step": 1,
+      "unit": "px",
+      "default": 4
+    },
+    {
+      "type": "range",
+      "id": "badge_padding_horizontal",
+      "label": "Horizontal padding",
+      "min": 4,
+      "max": 20,
+      "step": 2,
+      "unit": "px",
+      "default": 10
+    },
+    {
+      "type": "range",
+      "id": "badge_border_radius",
+      "label": "Border radius",
+      "min": 0,
+      "max": 20,
+      "step": 2,
+      "unit": "px",
+      "default": 12
+    }
+  ],
+  "presets": [
+    {
+      "name": "Variant quantity cards"
+    }
+  ]
+}
+{% endschema %}

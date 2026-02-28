@@ -1,0 +1,528 @@
+{% assign custom_best_selling = section.id | replace: '_', '' | downcase %}
+
+{% style %}
+  .product-grid-{{ custom_best_selling }} {
+    display: block;
+    width: 100%;
+    padding: 40px 0;
+  }
+
+  .product-grid-container-{{ custom_best_selling }} {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+  }
+
+  .product-grid-heading-{{ custom_best_selling }} {
+    text-align: center;
+    margin-bottom: 40px;
+    font-size: 32px;
+    font-weight: 700;
+    color: #000000;
+  }
+
+  .product-grid-items-{{ custom_best_selling }} {
+    display: grid;
+    grid-template-columns: repeat({{ section.settings.products_per_row_desktop }}, 1fr);
+    gap: 24px;
+    margin-bottom: 40px;
+  }
+
+  @media screen and (max-width: 749px) {
+    .product-grid-items-{{ custom_best_selling }} {
+      {% if section.settings.products_per_row_mobile == '1' %}
+        grid-template-columns: 1fr;
+      {% else %}
+        grid-template-columns: repeat(2, 1fr);
+      {% endif %}
+      gap: 16px;
+    }
+  }
+
+  .product-card-{{ custom_best_selling }} {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+        border: 1px solid #D9D9D9;
+    padding: 12px 17px;
+
+  }
+
+  .product-card-media-{{ custom_best_selling }} {
+    position: relative;
+    overflow: hidden;
+    margin-bottom: 12px;
+    aspect-ratio: 1 / 1;
+    background-color: #f5f5f5;
+  }
+
+  .product-card-image-{{ custom_best_selling }} {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: opacity 0.3s ease;
+  }
+
+  .product-card-image-primary-{{ custom_best_selling }} {
+    position: relative;
+    z-index: 2;
+  }
+
+  .product-card-image-secondary-{{ custom_best_selling }} {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 1;
+    opacity: 0;
+  }
+
+  .product-card-media-{{ custom_best_selling }}:hover .product-card-image-primary-{{ custom_best_selling }} {
+    opacity: 0;
+  }
+
+  .product-card-media-{{ custom_best_selling }}:hover .product-card-image-secondary-{{ custom_best_selling }} {
+    opacity: 1;
+  }
+
+  .product-card-badge-{{ custom_best_selling }} {
+   position: absolute;
+    top: 0px;
+    left: 0px;
+    background-color: #E3010F;
+    color: #ffffff;
+    padding: 1px 13px;
+    border-radius: 5px;
+    font-size: 10px;
+    font-weight: 800;
+    z-index: 3;
+  }
+
+  .product-card-info-{{ custom_best_selling }} {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    flex-grow: 1;
+  }
+
+  .product-card-title-{{ custom_best_selling }} {
+    font-size: 12px;
+    font-weight: 600;
+    color: #000000;
+    text-decoration: none;
+    display: block;
+    margin: 0;
+  }
+
+  .product-card-title-{{ custom_best_selling }}:hover {
+    color: #333333;
+  }
+
+  .product-card-meta-{{ custom_best_selling }} {
+    font-size: 12px;
+    color: #666666;
+    background-color: transparent;
+    padding: 0px;
+    border-radius: 4px;
+    display: inline-block;
+    width: fit-content;
+  }
+
+  .product-card-rating-{{ custom_best_selling }} {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 14px;
+    color: #FFD700;
+  }
+
+  .product-card-prices-{{ custom_best_selling }} {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .product-card-price-{{ custom_best_selling }} {
+    font-size: 14px;
+    font-weight: 600;
+    color: #000000;
+  }
+
+  .product-card-compare-price-{{ custom_best_selling }} {
+    font-size: 12px;
+    color: #666666;
+    text-decoration: line-through;
+  }
+
+  .product-card-form-{{ custom_best_selling }} {
+    margin-top: 12px;
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+  }
+
+  .product-card-button-{{ custom_best_selling }} {
+   width: 100%;
+    padding: 6.5px 24px;
+    background-color: #F4FCF8;
+    border: 1px solid #00963F;
+    border-radius: 0px;
+    font-size: 12px;
+    color: #333333;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    appearance: button;
+  }
+
+  .product-card-button-{{ custom_best_selling }}:hover:not(:disabled) {
+    background-color: #00963F;
+    color: #fff;
+  }
+
+  .product-card-button-{{ custom_best_selling }}:disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
+  }
+
+  .product-card-bulk-text-{{ custom_best_selling }} {
+    font-size: 10px;
+    color: #E3010F;
+    font-weight: 600;
+    text-align: center;
+    margin-top: 0px;
+  }
+
+  .product-grid-view-all-{{ custom_best_selling }} {
+    text-align: center;
+    margin-top: 40px;
+  }
+
+  .product-grid-view-all-button-{{ custom_best_selling }} {
+    display: inline-block;
+    padding: 13px 36px;
+    background-color: #00963F;
+    color: #ffffff;
+    text-decoration: none;
+    border-radius: 0px;
+    font-size: 18px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    transition: background-color 0.3s ease;
+  }
+
+  .product-grid-view-all-button-{{ custom_best_selling }}:hover {
+    background-color: #333333;
+  }
+
+  .product-grid-empty-{{ custom_best_selling }} {
+    text-align: center;
+    padding: 60px 20px;
+    color: #666666;
+    font-size: 16px;
+  }
+
+
+  @media (max-width: 767px) { 
+
+  .product-grid-view-all-button-{{ custom_best_selling }} {
+
+    font-size: 14px;
+    
+  }
+
+  }
+{% endstyle %}
+
+<product-grid-{{ custom_best_selling }} class="product-grid-{{ custom_best_selling }}" {{ section.shopify_attributes }}>
+  <div class="product-grid-container-{{ custom_best_selling }}">
+    {% comment %} {% if section.settings.heading != blank %}
+      <h2 class="product-grid-heading-{{ custom_best_selling }}">{{ section.settings.heading }}</h2>
+    {% endif %} {% endcomment %}
+
+    {% if section.settings.collection != blank %}
+      {% assign collection = section.settings.collection %}
+      {% if collection.products.size > 0 %}
+        <div class="product-grid-items-{{ custom_best_selling }}">
+          {% for product in collection.products limit: 12 %}
+            <div class="product-card-{{ custom_best_selling }}">
+              <div class="product-card-media-{{ custom_best_selling }}">
+                <a href="{{ product.url }}">
+                  {% if product.featured_image %}
+                    <img
+                      src="{{ product.featured_image | image_url: width: 600 }}"
+                      alt="{{ product.featured_image.alt | escape }}"
+                      width="600"
+                      height="600"
+                      loading="lazy"
+                      class="product-card-image-{{ custom_best_selling }} product-card-image-primary-{{ custom_best_selling }}"
+                    >
+                  {% else %}
+                    <div class="product-card-image-{{ custom_best_selling }} product-card-image-primary-{{ custom_best_selling }}">
+                      {{ 'product-1' | placeholder_svg_tag }}
+                    </div>
+                  {% endif %}
+
+                  {% if product.images[1] %}
+                    <img
+                      src="{{ product.images[1] | image_url: width: 600 }}"
+                      alt="{{ product.images[1].alt | escape }}"
+                      width="600"
+                      height="600"
+                      loading="lazy"
+                      class="product-card-image-{{ custom_best_selling }} product-card-image-secondary-{{ custom_best_selling }}"
+                    >
+                  {% endif %}
+                </a>
+
+                {% if product.compare_at_price > product.price %}
+                  {% assign discount_percentage = product.compare_at_price | minus: product.price | times: 100 | divided_by: product.compare_at_price %}
+                  <div class="product-card-badge-{{ custom_best_selling }}">
+                    -{{ discount_percentage }}%
+                  </div>
+                {% endif %}
+              </div>
+
+              <div class="product-card-info-{{ custom_best_selling }}">
+
+                 {% if section.settings.show_metafield and section.settings.metafield_reference != blank %}
+                  <div class="product-card-meta-{{ custom_best_selling }}">
+                    {{ section.settings.metafield_reference }}
+                  </div>
+                {% endif %}
+                <a href="{{ product.url }}" class="product-card-title-{{ custom_best_selling }}">
+                  {{ product.title }}
+                </a>
+
+               
+
+                {% if section.settings.show_rating %}
+                  <div class="product-card-rating-{{ custom_best_selling }}">
+                    <span>★★★★★</span>
+                  </div>
+                {% endif %}
+
+                <div class="product-card-prices-{{ custom_best_selling }}">
+                  <span class="product-card-price-{{ custom_best_selling }}">
+                    ₹{{ product.price | divided_by: 100.0 }}
+                  </span>
+                  {% if product.compare_at_price > product.price %}
+                    <span class="product-card-compare-price-{{ custom_best_selling }}">
+                      ₹{{ product.compare_at_price | divided_by: 100.0 }}
+                    </span>
+                  {% endif %}
+                </div>
+
+                {% form 'product', product %}
+                  <input
+                    type="hidden"
+                    name="id"
+                    value="{{ product.selected_or_first_available_variant.id }}"
+                  >
+                  {% if product.available %}
+                    <button
+                      type="submit"
+                      name="add"
+                      class="product-card-button-{{ custom_best_selling }}"
+                      data-product-id="{{ product.id }}"
+                    >
+                      {{ section.settings.button_text }}
+                    </button>
+                  {% else %}
+                    <button
+                      type="button"
+                      class="product-card-button-{{ custom_best_selling }}"
+                      disabled
+                    >
+                      Sold Out
+                    </button>
+                  {% endif %}
+                {% endform %}
+
+                <div class="product-card-bulk-text-{{ custom_best_selling }}">
+                  Discount on Bulk Purchase
+                </div>
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+
+        {% if section.settings.show_view_all %}
+          <div class="product-grid-view-all-{{ custom_best_selling }}">
+            <a href="{{ collection.url }}" class="product-grid-view-all-button-{{ custom_best_selling }}">
+              {{ section.settings.view_all_text }}
+            </a>
+          </div>
+        {% endif %}
+      {% else %}
+        <div class="product-grid-empty-{{ custom_best_selling }}">
+          This collection has no products. Please select a different collection.
+        </div>
+      {% endif %}
+    {% else %}
+      <div class="product-grid-empty-{{ custom_best_selling }}">
+        Please select a collection to display products.
+      </div>
+    {% endif %}
+  </div>
+</product-grid-{{ custom_best_selling }}>
+
+<script>
+  (function() {
+    class ProductGrid extends HTMLElement {
+      constructor() {
+        super();
+      }
+
+      connectedCallback() {
+        this.setupAjaxCart();
+      }
+
+      setupAjaxCart() {
+        const forms = this.querySelectorAll('form[action*="/cart/add"]');
+        
+        forms.forEach((form) => {
+          form.addEventListener('submit', (event) => {
+            event.preventDefault();
+            
+            const button = form.querySelector('.product-card-button-{{ custom_best_selling }}');
+            const originalText = button.textContent;
+            
+            button.disabled = true;
+            button.textContent = 'Adding...';
+            
+            const formData = new FormData(form);
+            
+            fetch('/cart/add.js', {
+              method: 'POST',
+              body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+              button.textContent = 'Added!';
+              
+              setTimeout(() => {
+                button.disabled = false;
+                button.textContent = originalText;
+              }, 1500);
+              
+              if (typeof window.dispatchEvent === 'function') {
+                window.dispatchEvent(new CustomEvent('cart:refresh'));
+              }
+              
+              if (document.querySelector('cart-drawer')) {
+                document.querySelector('cart-drawer').open();
+              }
+            })
+            .catch(error => {
+              button.disabled = false;
+              button.textContent = originalText;
+            });
+          });
+        });
+      }
+    }
+
+    customElements.define('product-grid-{{ custom_best_selling }}', ProductGrid);
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Best selling products",
+  "tag": "section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Best Selling Products"
+    },
+    {
+      "type": "collection",
+      "id": "collection",
+      "label": "Collection"
+    },
+    {
+      "type": "range",
+      "id": "products_per_row_desktop",
+      "label": "Products per row (desktop)",
+      "min": 2,
+      "max": 5,
+      "step": 1,
+      "default": 4
+    },
+    {
+      "type": "select",
+      "id": "products_per_row_mobile",
+      "label": "Products per row (mobile)",
+      "options": [
+        {
+          "value": "1",
+          "label": "1"
+        },
+        {
+          "value": "2",
+          "label": "2"
+        }
+      ],
+      "default": "2"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_rating",
+      "label": "Show rating stars",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "button_text",
+      "label": "Button text",
+      "default": "Add to Cart"
+    },
+    {
+      "type": "header",
+      "content": "Custom metafield"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_metafield",
+      "label": "Show metafield",
+      "default": false
+    },
+    {
+      "type": "text",
+      "id": "metafield_reference",
+      "label": "Metafield reference",
+      "info": "Connect using dynamic source picker to select product metafield"
+    },
+    {
+      "type": "header",
+      "content": "View all button"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_view_all",
+      "label": "Show view all button",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "view_all_text",
+      "label": "Button text",
+      "default": "VIEW ALL BEST SELLING PRODUCTS"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Best selling products"
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,488 @@
+{% assign custom_product_details = block.id | replace: '_', '' | downcase %}
+
+{% style %}
+  .accordion-{{ custom_product_details }} {
+    display: block;
+    width: {{ block.settings.desktop_width_percent }}%;
+    max-width: 100%;
+    background-color: {{ block.settings.background_color }};
+  }
+
+  .accordion-item-{{ custom_product_details }} {
+    border-top: 1px solid {{ block.settings.border_color }};
+  }
+
+  .accordion-item-{{ custom_product_details }}:last-child {
+    border-bottom: 1px solid {{ block.settings.border_color }};
+  }
+
+  .accordion-header-{{ custom_product_details }} {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: {{ block.settings.header_padding_vertical }}px {{ block.settings.header_padding_horizontal }}px;
+    cursor: pointer;
+    background-color: {{ block.settings.background_color }};
+    border: none;
+    width: 100%;
+    text-align: left;
+    transition: background-color 0.3s ease;
+  }
+
+  .accordion-header-{{ custom_product_details }}:hover {
+    background-color: {{ block.settings.hover_background_color }};
+  }
+
+  .accordion-header-{{ custom_product_details }}:focus {
+    outline: 2px solid {{ block.settings.header_text_color }};
+    outline-offset: -2px;
+  }
+
+  .accordion-title-{{ custom_product_details }} {
+    font-size: {{ block.settings.header_font_size }}px;
+    font-weight: {{ block.settings.header_font_weight }};
+    color: {{ block.settings.header_text_color }};
+    margin: 0;
+  }
+
+  .accordion-icon-{{ custom_product_details }} {
+    width: {{ block.settings.icon_size }}px;
+    height: {{ block.settings.icon_size }}px;
+    flex-shrink: 0;
+    transition: transform 0.3s ease;
+    color: {{ block.settings.icon_color }};
+  }
+
+  .accordion-icon-{{ custom_product_details }}.expanded {
+    transform: rotate(180deg);
+  }
+
+  .accordion-content-{{ custom_product_details }} {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease;
+  }
+
+  .accordion-content-{{ custom_product_details }}.expanded {
+    max-height: 1000px;
+  }
+
+  .accordion-content-inner-{{ custom_product_details }} {
+    padding: 0 {{ block.settings.content_padding_horizontal }}px {{ block.settings.content_padding_bottom }}px {{ block.settings.header_padding_horizontal }}px;
+    font-size: {{ block.settings.content_font_size }}px;
+    font-weight: {{ block.settings.content_font_weight }};
+    color: {{ block.settings.content_text_color }};
+    line-height: {{ block.settings.content_line_height }};
+  }
+
+  @media screen and (max-width: 749px) {
+    .accordion-header-{{ custom_product_details }} {
+      padding: {{ block.settings.mobile_header_padding }}px {{ block.settings.mobile_header_padding }}px;
+    }
+
+    .accordion-content-inner-{{ custom_product_details }} {
+      padding: 0 {{ block.settings.mobile_header_padding }}px {{ block.settings.content_padding_bottom }}px {{ block.settings.mobile_header_padding }}px;
+    }
+  }
+{% endstyle %}
+
+<product-accordion-{{ custom_product_details }} class="accordion-{{ custom_product_details }}" {{ block.shopify_attributes }}>
+  {% if block.settings.item_1_enabled %}
+    <div class="accordion-item-{{ custom_product_details }}">
+      <button
+        class="accordion-header-{{ custom_product_details }}"
+        aria-expanded="{{ block.settings.item_1_default_open }}"
+        data-accordion-trigger
+      >
+        <h3 class="accordion-title-{{ custom_product_details }}">{{ block.settings.item_1_title }}</h3>
+        <svg
+          class="accordion-icon-{{ custom_product_details }} {% if block.settings.item_1_default_open %}expanded{% endif %}"
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <polyline points="6 9 12 15 18 9"></polyline>
+        </svg>
+      </button>
+      <div class="accordion-content-{{ custom_product_details }} {% if block.settings.item_1_default_open %}expanded{% endif %}" data-accordion-content>
+        <div class="accordion-content-inner-{{ custom_product_details }}">
+          {{ block.settings.item_1_content }}
+        </div>
+      </div>
+    </div>
+  {% endif %}
+
+  {% if block.settings.item_2_enabled %}
+    <div class="accordion-item-{{ custom_product_details }}">
+      <button
+        class="accordion-header-{{ custom_product_details }}"
+        aria-expanded="{{ block.settings.item_2_default_open }}"
+        data-accordion-trigger
+      >
+        <h3 class="accordion-title-{{ custom_product_details }}">{{ block.settings.item_2_title }}</h3>
+        <svg
+          class="accordion-icon-{{ custom_product_details }} {% if block.settings.item_2_default_open %}expanded{% endif %}"
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <polyline points="6 9 12 15 18 9"></polyline>
+        </svg>
+      </button>
+      <div class="accordion-content-{{ custom_product_details }} {% if block.settings.item_2_default_open %}expanded{% endif %}" data-accordion-content>
+        <div class="accordion-content-inner-{{ custom_product_details }}">
+          {{ block.settings.item_2_content }}
+        </div>
+      </div>
+    </div>
+  {% endif %}
+
+  {% if block.settings.item_3_enabled %}
+    <div class="accordion-item-{{ custom_product_details }}">
+      <button
+        class="accordion-header-{{ custom_product_details }}"
+        aria-expanded="{{ block.settings.item_3_default_open }}"
+        data-accordion-trigger
+      >
+        <h3 class="accordion-title-{{ custom_product_details }}">{{ block.settings.item_3_title }}</h3>
+        <svg
+          class="accordion-icon-{{ custom_product_details }} {% if block.settings.item_3_default_open %}expanded{% endif %}"
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <polyline points="6 9 12 15 18 9"></polyline>
+        </svg>
+      </button>
+      <div class="accordion-content-{{ custom_product_details }} {% if block.settings.item_3_default_open %}expanded{% endif %}" data-accordion-content>
+        <div class="accordion-content-inner-{{ custom_product_details }}">
+          {{ block.settings.item_3_content }}
+        </div>
+      </div>
+    </div>
+  {% endif %}
+</product-accordion-{{ custom_product_details }}>
+
+<script>
+  (function() {
+    class ProductAccordion{{ custom_product_details }} extends HTMLElement {
+      constructor() {
+        super();
+      }
+
+      connectedCallback() {
+        this.triggers = this.querySelectorAll('[data-accordion-trigger]');
+        this.setupEventListeners();
+      }
+
+      setupEventListeners() {
+        this.triggers.forEach((trigger) => {
+          trigger.addEventListener('click', () => {
+            this.toggleAccordion(trigger);
+          });
+
+          trigger.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+              e.preventDefault();
+              this.toggleAccordion(trigger);
+            }
+          });
+        });
+      }
+
+      toggleAccordion(trigger) {
+        const content = trigger.nextElementSibling;
+        const icon = trigger.querySelector('.accordion-icon-{{ custom_product_details }}');
+        const isExpanded = trigger.getAttribute('aria-expanded') === 'true';
+
+        trigger.setAttribute('aria-expanded', !isExpanded);
+        icon.classList.toggle('expanded');
+        content.classList.toggle('expanded');
+      }
+    }
+
+    customElements.define('product-accordion-{{ custom_product_details }}', ProductAccordion{{ custom_product_details }});
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Product details accordion",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Accordion item 1"
+    },
+    {
+      "type": "checkbox",
+      "id": "item_1_enabled",
+      "label": "Enable item 1",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "item_1_title",
+      "label": "Title",
+      "default": "Key Features & Benefits"
+    },
+    {
+      "type": "richtext",
+      "id": "item_1_content",
+      "label": "Content",
+      "default": "<p>Mix 1 level scoop (10g) with 200ml of cold water and consume 15 minutes prior to exercise. Scoops are estimated only, weighing scales are recommended. 1 serving per day maximum.</p>"
+    },
+    {
+      "type": "checkbox",
+      "id": "item_1_default_open",
+      "label": "Open by default",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Accordion item 2"
+    },
+    {
+      "type": "checkbox",
+      "id": "item_2_enabled",
+      "label": "Enable item 2",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "item_2_title",
+      "label": "Title",
+      "default": "Application Scope"
+    },
+    {
+      "type": "richtext",
+      "id": "item_2_content",
+      "label": "Content",
+      "default": "<p>Add your application scope details here.</p>"
+    },
+    {
+      "type": "checkbox",
+      "id": "item_2_default_open",
+      "label": "Open by default",
+      "default": false
+    },
+    {
+      "type": "header",
+      "content": "Accordion item 3"
+    },
+    {
+      "type": "checkbox",
+      "id": "item_3_enabled",
+      "label": "Enable item 3",
+      "default": false
+    },
+    {
+      "type": "text",
+      "id": "item_3_title",
+      "label": "Title",
+      "default": "Additional Information"
+    },
+    {
+      "type": "richtext",
+      "id": "item_3_content",
+      "label": "Content",
+      "default": "<p>Add additional information here.</p>"
+    },
+    {
+      "type": "checkbox",
+      "id": "item_3_default_open",
+      "label": "Open by default",
+      "default": false
+    },
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "range",
+      "id": "desktop_width_percent",
+      "label": "Desktop width",
+      "min": 50,
+      "max": 100,
+      "step": 5,
+      "unit": "%",
+      "default": 100
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "hover_background_color",
+      "label": "Hover background",
+      "default": "#f5f5f5"
+    },
+    {
+      "type": "color",
+      "id": "border_color",
+      "label": "Border",
+      "default": "#e0e0e0"
+    },
+    {
+      "type": "color",
+      "id": "header_text_color",
+      "label": "Header text",
+      "default": "#000000"
+    },
+    {
+      "type": "color",
+      "id": "content_text_color",
+      "label": "Content text",
+      "default": "#666666"
+    },
+    {
+      "type": "color",
+      "id": "icon_color",
+      "label": "Icon",
+      "default": "#333333"
+    },
+    {
+      "type": "header",
+      "content": "Typography"
+    },
+    {
+      "type": "range",
+      "id": "header_font_size",
+      "label": "Header font size",
+      "min": 12,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "header_font_weight",
+      "label": "Header font weight",
+      "min": 400,
+      "max": 700,
+      "step": 100,
+      "default": 600
+    },
+    {
+      "type": "range",
+      "id": "content_font_size",
+      "label": "Content font size",
+      "min": 12,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "default": 14
+    },
+    {
+      "type": "range",
+      "id": "content_font_weight",
+      "label": "Content font weight",
+      "min": 400,
+      "max": 700,
+      "step": 100,
+      "default": 400
+    },
+    {
+      "type": "range",
+      "id": "content_line_height",
+      "label": "Content line height",
+      "min": 1,
+      "max": 2,
+      "step": 0.1,
+      "default": 1.6
+    },
+    {
+      "type": "header",
+      "content": "Spacing"
+    },
+    {
+      "type": "range",
+      "id": "header_padding_vertical",
+      "label": "Header vertical padding",
+      "min": 8,
+      "max": 32,
+      "step": 2,
+      "unit": "px",
+      "default": 18
+    },
+    {
+      "type": "range",
+      "id": "header_padding_horizontal",
+      "label": "Header horizontal padding",
+      "min": 0,
+      "max": 40,
+      "step": 4,
+      "unit": "px",
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "content_padding_horizontal",
+      "label": "Content horizontal padding",
+      "min": 0,
+      "max": 40,
+      "step": 4,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "content_padding_bottom",
+      "label": "Content bottom padding",
+      "min": 8,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "mobile_header_padding",
+      "label": "Mobile padding",
+      "min": 8,
+      "max": 24,
+      "step": 2,
+      "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "header",
+      "content": "Icon"
+    },
+    {
+      "type": "range",
+      "id": "icon_size",
+      "label": "Icon size",
+      "min": 16,
+      "max": 32,
+      "step": 2,
+      "unit": "px",
+      "default": 20
+    }
+  ],
+  "presets": [
+    {
+      "name": "Product details accordion"
+    }
+  ]
+}
+{% endschema %}

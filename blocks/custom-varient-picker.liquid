@@ -1,0 +1,217 @@
+{% if product.has_only_default_variant == false %}
+<div class="custom-variant-wrapper">
+    <h2 class="select_quantity"> Select Quantity </h2>
+  <div class="variant-grid">
+    {% for variant in product.variants %}
+      <div 
+        class="variant-card {% if variant == product.selected_or_first_available_variant %}active{% endif %} {% unless variant.available %}disabled{% endunless %}"
+        data-variant-id="{{ variant.id }}"
+        data-variant-price="{{ variant.price }}"
+      >
+        <div class="variant-title">
+          {{ variant.title }}
+        </div>
+        <div class="variant-subtitle">
+          ({{ variant.title }} x 1)
+        </div>
+        <div class="variant-price">
+         ₹ {{ variant.price | money_without_currency }}/100 ml
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+  <!-- Hidden select to sync Shopify -->
+  <select name="id" class="variant-hidden-select" id="product-select-{{ product.id }}" hidden>
+    {% for variant in product.variants %}
+      <option 
+        value="{{ variant.id }}" 
+        {% if variant == product.selected_or_first_available_variant %}selected{% endif %}
+      >
+        {{ variant.title }}
+      </option>
+    {% endfor %}
+  </select>
+</div>
+{% endif %}
+
+<style>
+{% comment %} .custom-variant-wrapper {
+  margin-bottom: 25px;
+} {% endcomment %}
+
+
+.select_quantity { font-weight: 600; color: #000; font-size: 18px; margin-bottom: 20px; }
+.variant-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+.variant-card {
+  min-width: 110px;
+  max-width: 140px;
+  padding: 5px 10px;
+  border-radius: 12px;
+  background: #e8f5e9;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: 2px solid #d4e9d6;
+  text-align: center;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.variant-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 4px 12px rgba(30, 125, 60, 0.15);
+  border-color: #1e7d3c;
+}
+
+.variant-card.active {
+  background: linear-gradient(135deg, #1e7d3c 0%, #2d9e4f 100%);
+  color: #fff;
+  border-color: #1e7d3c;
+  box-shadow: 0 4px 12px rgba(30, 125, 60, 0.3);
+}
+
+.variant-card.disabled {
+  opacity: 0.4;
+  pointer-events: none;
+  background: #f0f0f0;
+}
+
+.variant-title {
+  font-weight: 700;
+  font-size: 14px;
+  margin-bottom: 4px;
+  letter-spacing: 0.3px;
+}
+
+.variant-card.active .variant-title {
+  color: #fff;
+}
+
+.variant-subtitle {
+  font-size: 10px;
+  margin-top: 2px;
+  margin-bottom: 4px;
+  opacity: 0.75;
+  font-weight: 400;
+}
+
+.variant-card.active .variant-subtitle {
+  opacity: 0.9;
+  color: rgba(255,255,255,0.9);
+}
+
+.variant-price {
+  margin-top: 0px;
+  background: #c8e6c9;
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-size: 10px;
+  font-weight: 600;
+  display: inline-block;
+  color: #1e7d3c;
+}
+
+.variant-card.active .variant-price {
+  background: rgba(255, 255, 255, 0.25);
+  color: #fff;
+  font-weight: 700;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .variant-card {
+    min-width: 100px;
+    max-width: 120px;
+    padding: 14px 10px;
+  }
+  
+  .variant-title {
+    font-size: 16px;
+  }
+  
+  .variant-subtitle {
+    font-size: 10px;
+  }
+  
+  .variant-price {
+    font-size: 12px;
+    padding: 5px 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  .variant-grid {
+    gap: 10px;
+  }
+  
+  .variant-card {
+    min-width: 90px;
+    max-width: 110px;
+    padding: 12px 8px;
+  }
+  
+  .variant-title {
+    font-size: 15px;
+  }
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+
+  const variantCards = document.querySelectorAll('.variant-card');
+
+  variantCards.forEach(function(card) {
+
+    card.addEventListener('click', function() {
+
+      if (card.classList.contains('disabled')) return;
+
+      variantCards.forEach(c => c.classList.remove('active'));
+      card.classList.add('active');
+
+      const variantId = card.dataset.variantId;
+
+      // 🔥 Find existing radio input having same variant ID
+      const realInput = document.querySelector(
+        'input[type="radio"][data-variant-id="' + variantId + '"]'
+      );
+
+      if (!realInput) {
+        console.log("Matching variant radio not found");
+        return;
+      }
+
+      // Trigger real theme variant change
+      realInput.checked = true;
+      realInput.dispatchEvent(new Event('change', { bubbles: true }));
+
+    });
+
+  });
+
+});
+</script>
+
+
+{% schema %}
+{
+  "name": "Custom Variant Selector",
+  "settings": [
+    {
+      "type": "paragraph",
+      "content": "Custom variant selector with green card design. CSS styling is fixed and cannot be modified."
+    }
+  ],
+  "blocks": [],
+  "presets": [
+    {
+      "name": "Custom Variant Selector"
+    }
+  ]
+}
+{% endschema %}
