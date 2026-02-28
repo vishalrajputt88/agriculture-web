@@ -284,33 +284,32 @@ Mobile: Hidden (content injected into mobile header drawer via JS)
     try { data = JSON.parse(dataEl.textContent); } catch(e) { return; }
     if (!data || !data.items || !data.items.length) return;
 
-    // Find the mobile header drawer navigation list (Dawn theme selectors)
-    var drawerNav = document.querySelector(
-      '.menu-drawer__menu, ' +
-      '.menu-drawer__navigation > ul, ' +
-      '.header-drawer .menu-drawer__menu, ' +
-      '[data-header-drawer] ul'
-    );
+    // Horizon drawer: top-level UL has classes menu-drawer__menu AND has-submenu
+    var drawerNav = document.querySelector('ul.menu-drawer__menu.has-submenu');
     if (!drawerNav) return;
 
     // Prevent double injection
     if (drawerNav.querySelector('.mobile-mega-menu-section')) return;
 
-    var wrapper = document.createElement('div');
-    wrapper.className = 'mobile-mega-menu-section';
+    // Use a LI so it sits naturally inside Horizon's UL
+    var wrapperLi = document.createElement('li');
+    wrapperLi.className = 'mobile-mega-menu-section';
+    wrapperLi.style.cssText = 'list-style:none; padding:0; border-top:1px solid rgba(0,0,0,0.1);';
 
     data.items.forEach(function(item) {
       if (item.hasMega && item.collections && item.collections.length > 0) {
-        var li = document.createElement('div');
-        li.className = 'mobile-mega-menu-item';
+        var itemDiv = document.createElement('div');
+        itemDiv.className = 'mobile-mega-menu-item';
 
         var btn = document.createElement('button');
         btn.className = 'mobile-mega-menu-toggle';
         btn.setAttribute('type', 'button');
         btn.setAttribute('aria-expanded', 'false');
-        btn.innerHTML = '<span>' + item.title + '</span><span class="mm-arrow" aria-hidden="true">&#9660;</span>';
+        btn.innerHTML =
+          '<span class="menu-drawer__menu-item-text wrap-text">' + item.title + '</span>' +
+          '<span class="mm-arrow" aria-hidden="true">&#9660;</span>';
         btn.addEventListener('click', function() {
-          var isOpen = li.classList.toggle('mm-open');
+          var isOpen = itemDiv.classList.toggle('mm-open');
           btn.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
         });
 
@@ -346,44 +345,40 @@ Mobile: Hidden (content injected into mobile header drawer via JS)
         });
 
         submenu.appendChild(grid);
-        li.appendChild(btn);
-        li.appendChild(submenu);
-        wrapper.appendChild(li);
+        itemDiv.appendChild(btn);
+        itemDiv.appendChild(submenu);
+        wrapperLi.appendChild(itemDiv);
       } else {
         var a = document.createElement('a');
         a.href = item.url;
-        a.className = 'mobile-mega-plain-link';
-        a.textContent = item.title;
-        wrapper.appendChild(a);
+        a.className = 'mobile-mega-plain-link menu-drawer__menu-item menu-drawer__menu-item--mainlist menu-drawer__animated-element focus-inset';
+        a.innerHTML = '<span class="menu-drawer__menu-item-text wrap-text">' + item.title + '</span>';
+        wrapperLi.appendChild(a);
       }
     });
 
-    drawerNav.appendChild(wrapper);
+    drawerNav.appendChild(wrapperLi);
   }
 
-  // Run on DOM ready
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', injectMobileMegaMenu);
   } else {
     injectMobileMegaMenu();
   }
 
-  // Retry after delays (drawer may be lazy-rendered)
-  setTimeout(injectMobileMegaMenu, 400);
-  setTimeout(injectMobileMegaMenu, 1200);
+  setTimeout(injectMobileMegaMenu, 500);
+  setTimeout(injectMobileMegaMenu, 1500);
 
-  // Listen for drawer open clicks
+  // Horizon hamburger uses <summary> inside header-drawer custom element
   document.addEventListener('click', function(e) {
-    if (e.target.closest('.header__icon--menu, summary[aria-label], .menu-drawer__close-button')) {
-      setTimeout(injectMobileMegaMenu, 100);
+    if (e.target.closest('summary.header__icon--summary, .header__icon--menu')) {
+      setTimeout(injectMobileMegaMenu, 150);
     }
   });
 
-  // MutationObserver: catch when drawer is rendered into DOM
+  // MutationObserver — Horizon lazy-renders the drawer on first open
   var observer = new MutationObserver(function() {
-    var drawerNav = document.querySelector(
-      '.menu-drawer__menu, .menu-drawer__navigation > ul, .header-drawer .menu-drawer__menu'
-    );
+    var drawerNav = document.querySelector('ul.menu-drawer__menu.has-submenu');
     if (drawerNav && !drawerNav.querySelector('.mobile-mega-menu-section')) {
       injectMobileMegaMenu();
     }

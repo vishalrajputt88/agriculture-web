@@ -58,6 +58,9 @@
 </div>
 
 <style>
+/* Hide Horizon default variant-picker when this custom block is present */
+variant-picker { display: none !important; }
+
 .cvs-wrapper {
   margin-bottom: 20px;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
@@ -219,100 +222,35 @@
 
       var variantId    = card.dataset.variantId;
       var variantTitle = card.dataset.variantTitle;
-
       if (nameDisplay) nameDisplay.textContent = variantTitle;
 
-      // Method 1: Update URL with variant param (Shopify standard)
+      // Horizon theme uses <variant-picker> custom element with radio inputs.
+      // Each radio has data-variant-id. We must call .click() on the matching
+      // radio so Horizon's own variantChanged() → fetchUpdatedSection() →
+      // VariantUpdateEvent chain fires — this updates price, ATC button, images, etc.
+      var variantPicker = document.querySelector('variant-picker');
+      if (variantPicker) {
+        var radio = variantPicker.querySelector(
+          'input[type="radio"][data-variant-id="' + variantId + '"]'
+        );
+        if (radio) {
+          if (!radio.checked) radio.click();
+          return; // Horizon handles everything else
+        }
+      }
+
+      // Fallback (no variant-picker found): update hidden form input + URL
+      var idInput = document.querySelector(
+        'product-form-component input[name="id"], ' +
+        'form[data-type="add-to-cart-form"] input[name="id"]'
+      );
+      if (idInput) {
+        idInput.value = variantId;
+        idInput.dispatchEvent(new Event('change', { bubbles: true }));
+      }
       var url = new URL(window.location.href);
       url.searchParams.set('variant', variantId);
       window.history.replaceState({}, '', url.toString());
-
-      // Method 2: Update hidden select (legacy)
-      var hiddenSelect = document.querySelector('select[name="id"]');
-      if (hiddenSelect) {
-        hiddenSelect.value = variantId;
-        hiddenSelect.dispatchEvent(new Event('change', { bubbles: true }));
-      }
-
-      // Method 3: Update Dawn product-form hidden input
-      var variantInput = document.querySelector('[ref="variantId"], input[name="id"][type="hidden"]');
-      if (variantInput) {
-        variantInput.value = variantId;
-        variantInput.dispatchEvent(new Event('change', { bubbles: true }));
-      }
-
-      // Method 4: Dawn variant-radios / select-element component change
-      var selectEl = document.querySelector('variant-radios, variant-selects');
-      if (selectEl) {
-        // Try updating all select elements within the variant component
-        selectEl.querySelectorAll('select').forEach(function(sel) {
-          // Find the option that corresponds to this variant
-          sel.querySelectorAll('option').forEach(function(opt) {
-            if (opt.dataset && opt.dataset.variantId == variantId) {
-              sel.value = opt.value;
-              sel.dispatchEvent(new Event('change', { bubbles: true }));
-            }
-          });
-        });
-      }
-
-      // Method 5: Radio buttons (Dawn theme uses these for variant options)
-      var radioInput = document.querySelector('input[type="radio"][value="' + variantId + '"]')
-                    || document.querySelector('input[type="radio"][data-variant-id="' + variantId + '"]');
-      if (radioInput) {
-        radioInput.checked = true;
-        radioInput.dispatchEvent(new Event('change', { bubbles: true }));
-      }
-
-      // Method 6: Dispatch variant:changed on product-form-component (Dawn)
-      var productForm = document.querySelector('product-form-component');
-      if (productForm) {
-        productForm.dispatchEvent(new CustomEvent('variant:changed', {
-          bubbles: true,
-          detail: { variant: { id: parseInt(variantId, 10), available: !card.classList.contains('cvs-disabled') } }
-        }));
-      }
-
-      // Method 7: Global variant:change event
-      document.dispatchEvent(new CustomEvent('variant:change', {
-        bubbles: true,
-        detail: { variant: { id: parseInt(variantId, 10) } }
-      }));
-
-      // Method 8: Fetch section rendering to update price/availability
-      var productHandle = window.location.pathname.split('/products/')[1];
-      if (productHandle) {
-        productHandle = productHandle.split('?')[0].split('#')[0];
-      }
-      // Update price display if exists
-      var priceEl = document.querySelector('.price--large, .price .price-item--regular, [data-product-price]');
-      if (priceEl && card.dataset.variantPrice) {
-        var priceVal = parseInt(card.dataset.variantPrice, 10);
-        var formatted = new Intl.NumberFormat('en-IN', {
-          style: 'currency', currency: 'INR', maximumFractionDigits: 0
-        }).format(priceVal / 100);
-        // Try to update price via section rendering API
-        var sectionId = document.querySelector('[data-section-id]');
-        if (sectionId) {
-          var sid = sectionId.getAttribute('data-section-id');
-          fetch(window.location.pathname + '?variant=' + variantId + '&section_id=' + sid)
-            .then(function(r) { return r.text(); })
-            .then(function(html) {
-              var doc = new DOMParser().parseFromString(html, 'text/html');
-              // Update price
-              var newPrice = doc.querySelector('.price--large, .price .price-item--regular');
-              if (newPrice && priceEl) priceEl.innerHTML = newPrice.innerHTML;
-              // Update ATC button state
-              var newBtn = doc.querySelector('button[name="add"]');
-              var oldBtn = document.querySelector('button[name="add"]');
-              if (newBtn && oldBtn) {
-                oldBtn.disabled = newBtn.disabled;
-                oldBtn.textContent = newBtn.textContent;
-              }
-            })
-            .catch(function() {});
-        }
-      }
     });
   });
 })();

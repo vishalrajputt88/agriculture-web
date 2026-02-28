@@ -411,8 +411,12 @@
   #plp-{{ sid }} .pgrid { grid-template-columns: repeat(2,1fr) !important; gap: 12px; }
   #plp-{{ sid }} .plp-h1 { font-size: 26px; }
   #plp-{{ sid }} .plp-inner { padding: 14px 14px 40px; }
-  #plp-{{ sid }} .pgrid.list-view .pcard { flex-direction: column; }
-  #plp-{{ sid }} .pgrid.list-view .pc-img { width: 100%; }
+  /* Mobile list-view: horizontal card with smaller image */
+  #plp-{{ sid }} .pgrid.list-view { grid-template-columns: 1fr !important; }
+  #plp-{{ sid }} .pgrid.list-view .pcard { flex-direction: row; min-height: 130px; }
+  #plp-{{ sid }} .pgrid.list-view .pc-img { width: 120px !important; flex-shrink: 0; aspect-ratio: 1/1; }
+  #plp-{{ sid }} .pgrid.list-view .pc-body { flex: 1; padding: 10px 12px 6px; }
+  #plp-{{ sid }} .pgrid.list-view .pc-foot { padding: 0 12px 10px; position: relative; right: auto; bottom: auto; }
   #plp-{{ sid }} .vpill { font-size: 9px; padding: 3px 7px; }
 }
 @media (max-width: 420px) {
@@ -855,63 +859,39 @@
     });
   });
 
-  /* 6. AJAX ADD TO CART */
-  function refreshCartDrawer(cartData) {
-    var count = cartData.item_count;
-    // Update all cart count elements
-    document.querySelectorAll(
-      '.cart-bubble__text-count, [data-cart-count], [data-cart-item-count], ' +
-      '.cart-count, .cart-badge, .cart-item-count, #CartCount, .js-cart-count'
-    ).forEach(function(el) {
-      el.textContent = count > 99 ? '99+' : count;
-      el.removeAttribute('hidden');
-      el.classList.remove('hidden', 'is-hidden', 'visually-hidden');
+  /* 6. AJAX ADD TO CART - Cart refresh for Horizon theme */
+  function refreshCartCount(addedQty, cartData) {
+    var totalCount = cartData ? cartData.item_count : addedQty;
+
+    // Horizon cart-icon listens for 'cart:update' event with this exact shape
+    // source: 'product-form-component' makes Horizon do += (add to existing count)
+    document.dispatchEvent(new CustomEvent('cart:update', {
+      bubbles: true,
+      detail: {
+        resource: cartData || null,
+        sourceId: 'plp-atc',
+        data: {
+          itemCount: addedQty,
+          source: 'product-form-component',
+          sections: {}
+        }
+      }
+    }));
+
+    // Force-update cart bubble count directly as fallback
+    var countEls = document.querySelectorAll(
+      '[ref="cartBubbleCount"], .cart-bubble__count, ' +
+      '.cart-count-bubble, [data-cart-count], .cart-count'
+    );
+    countEls.forEach(function(el) {
+      el.textContent = totalCount > 99 ? '99+' : String(totalCount);
+      el.classList.remove('hidden');
     });
 
-    // Show cart bubble if hidden
-    var bubble = document.querySelector('.cart-bubble');
-    if (bubble) bubble.classList.remove('visually-hidden', 'hidden');
-
-    // Dawn theme: fire cart:open or use cart-notification
-    document.documentElement.dispatchEvent(new CustomEvent('cart:refresh', { bubbles: true }));
-    document.dispatchEvent(new CustomEvent('cart:refresh', { bubbles: true }));
-
-    // Dawn uses section rendering for cart icon bubble
-    var cartIconBubble = document.getElementById('shopify-section-cart-icon-bubble');
-    if (cartIconBubble) {
-      fetch('/?section_id=cart-icon-bubble')
-        .then(function(r) { return r.ok ? r.text() : null; })
-        .then(function(html) {
-          if (!html) return;
-          var tmp = document.createElement('div'); tmp.innerHTML = html;
-          var nw = tmp.querySelector('.shopify-section');
-          if (nw) cartIconBubble.innerHTML = nw.innerHTML;
-        }).catch(function() {});
-    }
-
-    // Dawn cart-notification component
-    var cartNotification = document.querySelector('cart-notification');
-    if (cartNotification && cartNotification.renderContents) {
-      cartNotification.renderContents(cartData);
-    }
-
-    // Dawn cart-drawer component
-    var cartDrawer = document.querySelector('cart-drawer');
-    if (cartDrawer) {
-      // Try to open cart drawer
-      if (typeof cartDrawer.open === 'function') cartDrawer.open();
-      // Or refresh it
-      if (cartDrawer.querySelector && cartDrawer.querySelector('[ref="cartDrawer"]')) {
-        fetch('/cart?section_id=cart-drawer')
-          .then(function(r) { return r.ok ? r.text() : null; })
-          .then(function(html) {
-            if (!html) return;
-            var tmp = document.createElement('div'); tmp.innerHTML = html;
-            var nw = tmp.querySelector('[id="shopify-section-cart-drawer"]');
-            var cartSection = document.getElementById('shopify-section-cart-drawer');
-            if (nw && cartSection) cartSection.innerHTML = nw.innerHTML;
-          }).catch(function() {});
-      }
+    // Show bubble if hidden
+    var bubble = document.querySelector('[ref="cartBubble"], .cart-bubble');
+    if (bubble) {
+      bubble.classList.remove('visually-hidden', 'hidden');
     }
   }
 
@@ -940,7 +920,7 @@
       })
       .then(function (r) { return r.json(); })
       .then(function (cart) {
-        refreshCartDrawer(cart);
+        refreshCartCount(1, cart);
         setTimeout(function () { self.innerHTML = origHTML; self.disabled = false; }, 2000);
       })
       .catch(function (err) {
