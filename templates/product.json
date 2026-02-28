@@ -342,6 +342,7 @@
             "wishlist_button_main": {
               "type": "wishlist-button",
               "name": "Wishlist Button",
+              "disabled": true,
               "settings": {
                 "add_text": "Add to Wishlist",
                 "remove_text": "Remove from Wishlist",
