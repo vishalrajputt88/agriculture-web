@@ -15,7 +15,7 @@
   .accordion-item-{{ custom_product_details }}:last-child {
     border-bottom: 1px solid {{ block.settings.border_color }};
   }
-
+.accordion-header-{{ custom_product_details }}::focus { outline: none; }
   .accordion-header-{{ custom_product_details }} {
     display: flex;
     justify-content: space-between;
@@ -33,10 +33,10 @@
     background-color: {{ block.settings.hover_background_color }};
   }
 
-  .accordion-header-{{ custom_product_details }}:focus {
+  /* .accordion-header-{{ custom_product_details }}:focus {
     outline: 2px solid {{ block.settings.header_text_color }};
     outline-offset: -2px;
-  }
+  } */
 
   .accordion-title-{{ custom_product_details }} {
     font-size: {{ block.settings.header_font_size }}px;

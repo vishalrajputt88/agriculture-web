@@ -361,40 +361,159 @@
 {% endif %}
 
 {% stylesheet %}
-  .buy-buttons-block {
-    --buy-button-preferred-width: 185px;
+  /* =====================================================
+     BUY BUTTONS — Amazon / Flipkart Style
+     [ADD TO CART]  [BUY NOW]
+     ——————— OR ———————
+     [ADD TO WISHLIST]
+     ===================================================== */
 
+  .buy-buttons-block {
+    --btn-orange: #f5a623;
+    --btn-orange-hover: #e09520;
+    --btn-gold-start: #fce96a;
+    --btn-gold-end: #f5a623;
+    --btn-blue: #4a90d9;
+    --btn-height: 54px;
+    --btn-radius: 5px;
+    --buy-button-preferred-width: 185px;
     width: 100%;
   }
 
+  /* ── Main flex wrapper: side-by-side buttons ── */
   .product-form-buttons {
     display: flex;
     flex-wrap: wrap;
+    gap: 10px;
   }
 
   .product-form-buttons:not(:has(.quantity-rules)) {
-    gap: calc(var(--gap-sm) / 2);
+    gap: 10px;
 
     @media screen and (min-width: 750px) {
-      gap: var(--gap-sm);
+      gap: 10px;
     }
   }
 
-  .product-form-buttons > *:not(.quantity-selector-wrapper, .quantity-rules, .quantity-label, .volume-pricing) {
+  /* Non-special children flex equally side by side */
+  .product-form-buttons > *:not(.quantity-selector-wrapper, .quantity-rules, .quantity-label, .volume-pricing, .product-form-text__error) {
     flex: 1 1 var(--buy-button-preferred-width, 0);
     min-width: fit-content;
   }
 
+  /* Stacked mode — buttons full width, one per row */
   .product-form-buttons--stacked
-    > *:not(.quantity-selector-wrapper, .quantity-rules, .quantity-label, .volume-pricing) {
-    flex-basis: 51%;
+    > *:not(.quantity-selector-wrapper, .quantity-rules, .quantity-label, .volume-pricing, .product-form-text__error) {
+    flex: 1 0 100%;
+    min-width: 100%;
   }
 
+  /* ── ADD TO CART — solid orange ── */
+  .add-to-cart-button {
+    height: var(--btn-height);
+    padding-block: 0;
+    width: 100%;
+    border: none;
+    border-radius: var(--btn-radius);
+    background: var(--btn-orange);
+    color: #ffffff;
+    font-size: 13px;
+    font-weight: 800;
+    letter-spacing: 0.6px;
+    text-transform: uppercase;
+    cursor: pointer;
+    box-shadow: 0 3px 10px rgba(245, 166, 35, 0.4);
+    transition: background 0.15s ease, box-shadow 0.15s ease, transform 0.1s ease;
+  }
+
+  .add-to-cart-button:hover:not(:disabled) {
+    background: var(--btn-orange-hover);
+    box-shadow: 0 5px 18px rgba(245, 166, 35, 0.55);
+    transform: translateY(-1px);
+  }
+
+  .add-to-cart-button:active:not(:disabled) {
+    transform: translateY(0);
+    box-shadow: 0 2px 6px rgba(245, 166, 35, 0.3);
+  }
+
+  .add-to-cart-button.button-secondary {
+    text-transform: uppercase;
+  }
+
+  /* ── BUY NOW — gold gradient (accelerated checkout) ── */
+  .accelerated-checkout-block {
+    flex: 1 1 var(--buy-button-preferred-width, 0);
+    min-width: fit-content;
+  }
+
+  .shopify-payment-button__button,
+  .shopify-payment-button__button--unbranded {
+    height: var(--btn-height) !important;
+    min-height: var(--btn-height) !important;
+    width: 100% !important;
+    padding: 0 !important;
+    border: none !important;
+    border-radius: var(--btn-radius) !important;
+    background: linear-gradient(160deg, var(--btn-gold-start) 0%, var(--btn-gold-end) 100%) !important;
+    color: #1a1a1a !important;
+    font-size: 13px !important;
+    font-weight: 800 !important;
+    letter-spacing: 0.6px !important;
+    text-transform: uppercase !important;
+    box-shadow: 0 3px 10px rgba(245, 166, 35, 0.35) !important;
+    transition: filter 0.15s ease, transform 0.1s ease, box-shadow 0.15s ease !important;
+  }
+
+  .shopify-payment-button__button:hover,
+  .shopify-payment-button__button--unbranded:hover {
+    filter: brightness(1.06) !important;
+    box-shadow: 0 5px 18px rgba(245, 166, 35, 0.5) !important;
+    transform: translateY(-1px) !important;
+  }
+
+  .shopify-payment-button__button:active {
+    transform: translateY(0) !important;
+  }
+
+  /* ── OR divider ── */
+  .shopify-payment-button__more-options {
+    display: flex !important;
+    align-items: center !important;
+    gap: 12px !important;
+    width: 100% !important;
+    color: #b0b0b0 !important;
+    font-size: 11px !important;
+    font-weight: 600 !important;
+    letter-spacing: 2px !important;
+    background: none !important;
+    border: none !important;
+    padding: 2px 0 !important;
+    text-transform: uppercase !important;
+    cursor: default !important;
+    pointer-events: none !important;
+  }
+
+  .shopify-payment-button__more-options::before,
+  .shopify-payment-button__more-options::after {
+    content: '' !important;
+    flex: 1 !important;
+    height: 1px !important;
+    background: #e0e0e0 !important;
+  }
+
+  /* ── All product-form buttons base ── */
   .product-form-buttons button {
     width: 100%;
     padding-block: var(--padding-lg);
   }
 
+  /* Override padding-block for our custom buttons so height is respected */
+  .product-form-buttons button.add-to-cart-button {
+    padding-block: 0;
+  }
+
+  /* ── Quantity selector ── */
   .quantity-selector {
     flex-grow: 0;
     flex-shrink: 0;
@@ -448,15 +567,6 @@
     transform: translateY(-50%);
     font-size: 0.5em;
     line-height: 0;
-  }
-
-  .add-to-cart-button {
-    height: var(--height-buy-buttons);
-    text-transform: var(--button-text-case-primary);
-  }
-
-  .add-to-cart-button.button-secondary {
-    text-transform: var(--button-text-case-secondary);
   }
 
   .product-form-text__error {

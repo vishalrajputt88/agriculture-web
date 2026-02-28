@@ -39,7 +39,7 @@
       </p>
     {% endif %}
     
-    {% if block.settings.show_line2 %}
+    {% comment %} {% if block.settings.show_line2 %}
       <p class="product-info-line2-{{ product_info_txt }}">
         {{ block.settings.line2_prefix }}
         {% if product.selected_or_first_available_variant.sku != blank %}
@@ -48,7 +48,7 @@
           {{ block.settings.sku_fallback }}
         {% endif %}
       </p>
-    {% endif %}
+    {% endif %} {% endcomment %}
   </div>
 </div>
 

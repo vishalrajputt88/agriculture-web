@@ -1,202 +1,324 @@
 {% if product.has_only_default_variant == false %}
-<div class="custom-variant-wrapper">
-    <h2 class="select_quantity"> Select Quantity </h2>
-  <div class="variant-grid">
+
+{% assign selected_variant = product.selected_or_first_available_variant %}
+
+<div class="cvs-wrapper">
+  <div class="cvs-header">
+    <span class="cvs-label">Pack Size:</span>
+    <span class="cvs-selected-name" id="cvs-selected-name">{{ selected_variant.title }}</span>
+  </div>
+
+  <div class="cvs-grid" id="cvs-grid">
     {% for variant in product.variants %}
-      <div 
-        class="variant-card {% if variant == product.selected_or_first_available_variant %}active{% endif %} {% unless variant.available %}disabled{% endunless %}"
+      {% assign is_active = false %}
+      {% if variant.id == selected_variant.id %}{% assign is_active = true %}{% endif %}
+
+      {% assign savings = 0 %}
+      {% if variant.compare_at_price > variant.price %}
+        {% assign savings = variant.compare_at_price | minus: variant.price | times: 100 | divided_by: variant.compare_at_price %}
+      {% endif %}
+
+      <div
+        class="cvs-card{% if is_active %} cvs-active{% endif %}{% unless variant.available %} cvs-disabled{% endunless %}"
         data-variant-id="{{ variant.id }}"
         data-variant-price="{{ variant.price }}"
+        data-variant-title="{{ variant.title | escape }}"
       >
-        <div class="variant-title">
-          {{ variant.title }}
-        </div>
-        <div class="variant-subtitle">
-          ({{ variant.title }} x 1)
-        </div>
-        <div class="variant-price">
-         ₹ {{ variant.price | money_without_currency }}/100 ml
+        {% if savings > 0 %}
+          <div class="cvs-badge">{{ savings }}% OFF</div>
+        {% endif %}
+
+        <div class="cvs-card-title">{{ variant.title }}</div>
+        <div class="cvs-card-price">₹{{ variant.price | money_without_currency }}</div>
+
+        {% if variant.compare_at_price > variant.price %}
+          <div class="cvs-card-compare">₹{{ variant.compare_at_price | money_without_currency }}</div>
+        {% endif %}
+
+        {% unless variant.available %}
+          <div class="cvs-soldout-tag">Sold Out</div>
+        {% endunless %}
+
+        <div class="cvs-check">
+          <svg width="10" height="10" viewBox="0 0 24 24" fill="none">
+            <path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
         </div>
       </div>
     {% endfor %}
   </div>
-  <!-- Hidden select to sync Shopify -->
-  <select name="id" class="variant-hidden-select" id="product-select-{{ product.id }}" hidden>
+
+  <select name="id" id="product-select-{{ product.id }}" hidden>
     {% for variant in product.variants %}
-      <option 
-        value="{{ variant.id }}" 
-        {% if variant == product.selected_or_first_available_variant %}selected{% endif %}
-      >
+      <option value="{{ variant.id }}"{% if variant.id == selected_variant.id %} selected{% endif %}>
         {{ variant.title }}
       </option>
     {% endfor %}
   </select>
 </div>
-{% endif %}
 
 <style>
-{% comment %} .custom-variant-wrapper {
-  margin-bottom: 25px;
-} {% endcomment %}
+.cvs-wrapper {
+  margin-bottom: 20px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
 
+/* Header */
+.cvs-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+.cvs-label {
+  font-size: 14px;
+  font-weight: 600;
+  color: #111;
+}
+.cvs-selected-name {
+  font-size: 13px;
+  color: #00963F;
+  font-weight: 700;
+  background: #f0faf4;
+  border: 1px solid #c3e6cb;
+  border-radius: 4px;
+  padding: 2px 8px;
+}
 
-.select_quantity { font-weight: 600; color: #000; font-size: 18px; margin-bottom: 20px; }
-.variant-grid {
+/* Grid */
+.cvs-grid {
   display: flex;
   flex-wrap: wrap;
-  gap: 12px;
-  align-items: flex-start;
+  gap: 10px;
+      row-gap: 20px;
 }
 
-.variant-card {
-  min-width: 110px;
-  max-width: 140px;
-  padding: 5px 10px;
-  border-radius: 12px;
-  background: #e8f5e9;
+/* Card */
+.cvs-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-width: 76px;
+  padding: 10px 12px 12px;
+  border: 1.5px solid #ddd;
+  border-radius: 8px;
+  background: #fff;
   cursor: pointer;
-  transition: all 0.3s ease;
-  border: 2px solid #d4e9d6;
+  transition: border-color 0.18s, box-shadow 0.18s;
   text-align: center;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  gap: 3px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.06);
 }
 
-.variant-card:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 4px 12px rgba(30, 125, 60, 0.15);
-  border-color: #1e7d3c;
+.cvs-card:hover:not(.cvs-disabled) {
+  border-color: #00963F;
+  box-shadow: 0 2px 10px rgba(0,150,63,0.12);
 }
 
-.variant-card.active {
-  background: linear-gradient(135deg, #1e7d3c 0%, #2d9e4f 100%);
+.cvs-card.cvs-active {
+  border: 2px solid #00963F;
+  background: #f6fdf8;
+  box-shadow: 0 2px 12px rgba(0,150,63,0.15);
+}
+
+.cvs-card.cvs-disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  background: #f7f7f7;
+  border-color: #e0e0e0;
+}
+
+/* Discount badge */
+.cvs-badge {
+  position: absolute;
+  top: -9px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #e53935;
   color: #fff;
-  border-color: #1e7d3c;
-  box-shadow: 0 4px 12px rgba(30, 125, 60, 0.3);
-}
-
-.variant-card.disabled {
-  opacity: 0.4;
-  pointer-events: none;
-  background: #f0f0f0;
-}
-
-.variant-title {
+  font-size: 9px;
   font-weight: 700;
-  font-size: 14px;
-  margin-bottom: 4px;
+  padding: 1px 6px;
+  border-radius: 3px;
+  white-space: nowrap;
   letter-spacing: 0.3px;
 }
 
-.variant-card.active .variant-title {
-  color: #fff;
-}
-
-.variant-subtitle {
-  font-size: 10px;
-  margin-top: 2px;
-  margin-bottom: 4px;
-  opacity: 0.75;
-  font-weight: 400;
-}
-
-.variant-card.active .variant-subtitle {
-  opacity: 0.9;
-  color: rgba(255,255,255,0.9);
-}
-
-.variant-price {
-  margin-top: 0px;
-  background: #c8e6c9;
-  padding: 6px 12px;
-  border-radius: 8px;
-  font-size: 10px;
-  font-weight: 600;
-  display: inline-block;
-  color: #1e7d3c;
-}
-
-.variant-card.active .variant-price {
-  background: rgba(255, 255, 255, 0.25);
-  color: #fff;
+/* Card text */
+.cvs-card-title {
+  font-size: 13px;
   font-weight: 700;
+  color: #111;
+  line-height: 1.3;
+  white-space: nowrap;
+}
+.cvs-card.cvs-active .cvs-card-title { color: #00963F; }
+
+.cvs-card-price {
+  font-size: 13px;
+  font-weight: 700;
+  color: #111;
+  margin-top: 2px;
 }
 
-/* Responsive */
-@media (max-width: 768px) {
-  .variant-card {
-    min-width: 100px;
-    max-width: 120px;
-    padding: 14px 10px;
-  }
-  
-  .variant-title {
-    font-size: 16px;
-  }
-  
-  .variant-subtitle {
-    font-size: 10px;
-  }
-  
-  .variant-price {
-    font-size: 12px;
-    padding: 5px 10px;
-  }
+.cvs-card-compare {
+  font-size: 10px;
+  color: #999;
+  text-decoration: line-through;
+  line-height: 1;
 }
 
+.cvs-soldout-tag {
+  font-size: 9px;
+  color: #e53935;
+  font-weight: 600;
+  margin-top: 2px;
+}
+
+/* Green tick on active */
+.cvs-check {
+  display: none;
+  position: absolute;
+  bottom: -1px;
+  right: -1px;
+  width: 18px;
+  height: 18px;
+  background: #00963F;
+  border-radius: 8px 0 8px 0;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+}
+.cvs-card.cvs-active .cvs-check { display: flex; }
+
+/* Mobile */
 @media (max-width: 480px) {
-  .variant-grid {
-    gap: 10px;
-  }
-  
-  .variant-card {
-    min-width: 90px;
-    max-width: 110px;
-    padding: 12px 8px;
-  }
-  
-  .variant-title {
-    font-size: 15px;
-  }
+  .cvs-grid { gap: 8px;  row-gap: 15px; }
+  .cvs-card { min-width: 68px; padding: 10px 8px 12px; }
+  .cvs-card-title { font-size: 12px; }
+  .cvs-card-price { font-size: 12px; }
 }
 </style>
 
 <script>
-document.addEventListener('DOMContentLoaded', function() {
+(function() {
+  var grid = document.getElementById('cvs-grid');
+  if (!grid) return;
+  var cards = grid.querySelectorAll('.cvs-card');
+  var nameDisplay = document.getElementById('cvs-selected-name');
 
-  const variantCards = document.querySelectorAll('.variant-card');
-
-  variantCards.forEach(function(card) {
-
+  cards.forEach(function(card) {
     card.addEventListener('click', function() {
+      if (card.classList.contains('cvs-disabled')) return;
 
-      if (card.classList.contains('disabled')) return;
+      cards.forEach(function(c) { c.classList.remove('cvs-active'); });
+      card.classList.add('cvs-active');
 
-      variantCards.forEach(c => c.classList.remove('active'));
-      card.classList.add('active');
+      var variantId    = card.dataset.variantId;
+      var variantTitle = card.dataset.variantTitle;
 
-      const variantId = card.dataset.variantId;
+      if (nameDisplay) nameDisplay.textContent = variantTitle;
 
-      // 🔥 Find existing radio input having same variant ID
-      const realInput = document.querySelector(
-        'input[type="radio"][data-variant-id="' + variantId + '"]'
-      );
+      // Method 1: Update URL with variant param (Shopify standard)
+      var url = new URL(window.location.href);
+      url.searchParams.set('variant', variantId);
+      window.history.replaceState({}, '', url.toString());
 
-      if (!realInput) {
-        console.log("Matching variant radio not found");
-        return;
+      // Method 2: Update hidden select (legacy)
+      var hiddenSelect = document.querySelector('select[name="id"]');
+      if (hiddenSelect) {
+        hiddenSelect.value = variantId;
+        hiddenSelect.dispatchEvent(new Event('change', { bubbles: true }));
       }
 
-      // Trigger real theme variant change
-      realInput.checked = true;
-      realInput.dispatchEvent(new Event('change', { bubbles: true }));
+      // Method 3: Update Dawn product-form hidden input
+      var variantInput = document.querySelector('[ref="variantId"], input[name="id"][type="hidden"]');
+      if (variantInput) {
+        variantInput.value = variantId;
+        variantInput.dispatchEvent(new Event('change', { bubbles: true }));
+      }
 
+      // Method 4: Dawn variant-radios / select-element component change
+      var selectEl = document.querySelector('variant-radios, variant-selects');
+      if (selectEl) {
+        // Try updating all select elements within the variant component
+        selectEl.querySelectorAll('select').forEach(function(sel) {
+          // Find the option that corresponds to this variant
+          sel.querySelectorAll('option').forEach(function(opt) {
+            if (opt.dataset && opt.dataset.variantId == variantId) {
+              sel.value = opt.value;
+              sel.dispatchEvent(new Event('change', { bubbles: true }));
+            }
+          });
+        });
+      }
+
+      // Method 5: Radio buttons (Dawn theme uses these for variant options)
+      var radioInput = document.querySelector('input[type="radio"][value="' + variantId + '"]')
+                    || document.querySelector('input[type="radio"][data-variant-id="' + variantId + '"]');
+      if (radioInput) {
+        radioInput.checked = true;
+        radioInput.dispatchEvent(new Event('change', { bubbles: true }));
+      }
+
+      // Method 6: Dispatch variant:changed on product-form-component (Dawn)
+      var productForm = document.querySelector('product-form-component');
+      if (productForm) {
+        productForm.dispatchEvent(new CustomEvent('variant:changed', {
+          bubbles: true,
+          detail: { variant: { id: parseInt(variantId, 10), available: !card.classList.contains('cvs-disabled') } }
+        }));
+      }
+
+      // Method 7: Global variant:change event
+      document.dispatchEvent(new CustomEvent('variant:change', {
+        bubbles: true,
+        detail: { variant: { id: parseInt(variantId, 10) } }
+      }));
+
+      // Method 8: Fetch section rendering to update price/availability
+      var productHandle = window.location.pathname.split('/products/')[1];
+      if (productHandle) {
+        productHandle = productHandle.split('?')[0].split('#')[0];
+      }
+      // Update price display if exists
+      var priceEl = document.querySelector('.price--large, .price .price-item--regular, [data-product-price]');
+      if (priceEl && card.dataset.variantPrice) {
+        var priceVal = parseInt(card.dataset.variantPrice, 10);
+        var formatted = new Intl.NumberFormat('en-IN', {
+          style: 'currency', currency: 'INR', maximumFractionDigits: 0
+        }).format(priceVal / 100);
+        // Try to update price via section rendering API
+        var sectionId = document.querySelector('[data-section-id]');
+        if (sectionId) {
+          var sid = sectionId.getAttribute('data-section-id');
+          fetch(window.location.pathname + '?variant=' + variantId + '&section_id=' + sid)
+            .then(function(r) { return r.text(); })
+            .then(function(html) {
+              var doc = new DOMParser().parseFromString(html, 'text/html');
+              // Update price
+              var newPrice = doc.querySelector('.price--large, .price .price-item--regular');
+              if (newPrice && priceEl) priceEl.innerHTML = newPrice.innerHTML;
+              // Update ATC button state
+              var newBtn = doc.querySelector('button[name="add"]');
+              var oldBtn = document.querySelector('button[name="add"]');
+              if (newBtn && oldBtn) {
+                oldBtn.disabled = newBtn.disabled;
+                oldBtn.textContent = newBtn.textContent;
+              }
+            })
+            .catch(function() {});
+        }
+      }
     });
-
   });
-
-});
+})();
 </script>
 
+{% endif %}
 
 {% schema %}
 {
@@ -204,7 +326,7 @@ document.addEventListener('DOMContentLoaded', function() {
   "settings": [
     {
       "type": "paragraph",
-      "content": "Custom variant selector with green card design. CSS styling is fixed and cannot be modified."
+      "content": "Amazon/Flipkart style variant selector. Clean card design with active state, discount badge, and sold out support."
     }
   ],
   "blocks": [],

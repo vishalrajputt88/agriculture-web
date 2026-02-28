@@ -107,11 +107,15 @@
     ></script>
 
     {% capture empty_cart_drawer_content %}
-      <div class="cart-drawer__header">
+      <div class="cart-drawer__header agri-drawer-header">
+        <div class="agri-drawer-header__brand">
+          <span class="agri-drawer-header__leaf">🌾</span>
+          <span class="agri-drawer-header__title">{{ 'content.cart_title' | t }}</span>
+        </div>
         <button
           ref="closeButton"
           on:click="cart-drawer-component/close"
-          class="button close-button cart-drawer__close-button button-unstyled"
+          class="button close-button cart-drawer__close-button agri-close-btn button-unstyled"
           aria-label="{{ 'actions.close_dialog' | t }}"
         >
           <span class="svg-wrapper">
@@ -125,9 +129,10 @@
         aria-label="{{ 'accessibility.cart' | t }}"
       >
         <h2
-          class="cart-drawer__heading h4 cart-drawer__heading--empty"
+          class="cart-drawer__heading h4 cart-drawer__heading--empty agri-empty-heading"
           id="cart-drawer-heading-empty"
         >
+          <span class="agri-empty-icon">🌱</span>
           {{ 'content.your_cart_is_empty' | t }}
         </h2>
 
@@ -179,27 +184,38 @@
               {{ empty_cart_drawer_content }}
             {%- else -%}
               <div
-                class="cart-drawer__header"
+                class="cart-drawer__header agri-drawer-header"
                 id="cart-drawer-header"
               >
-                <h2
-                  class="cart-drawer__heading h4"
-                  id="cart-drawer-heading"
-                >
-                  {{ 'content.cart_title' | t }}
-                  {% render 'cart-bubble' %}
-                </h2>
+                <!-- Agriculture themed header with leaf accent -->
+                <div class="agri-drawer-header__brand">
+                  <span class="agri-drawer-header__leaf">🌾</span>
+                  <h2
+                    class="cart-drawer__heading h4 agri-drawer-header__title"
+                    id="cart-drawer-heading"
+                  >
+                    {{ 'content.cart_title' | t }}
+                    {% render 'cart-bubble' %}
+                  </h2>
+                </div>
 
                 <button
                   ref="closeButton"
                   on:click="cart-drawer-component/close"
-                  class="button close-button cart-drawer__close-button button-unstyled"
+                  class="button close-button cart-drawer__close-button agri-close-btn button-unstyled"
                   aria-label="{{ 'actions.close_dialog' | t }}"
                 >
                   <span class="svg-wrapper">
                     {{- 'icon-close.svg' | inline_asset_content -}}
                   </span>
                 </button>
+              </div>
+
+              <!-- Agriculture seasonal tagline strip -->
+              <div class="agri-seasonal-strip" aria-hidden="true">
+                <span>🌿</span>
+                <span class="agri-seasonal-strip__text">Farm Fresh • Direct to Your Fields</span>
+                <span>🌿</span>
               </div>
 
               <scroll-hint
@@ -237,18 +253,115 @@
 </header-actions>
 
 {% stylesheet %}
+  /* ============================================
+     AGRI THEME — HEADER ACTIONS & CART DRAWER
+  ============================================ */
+  :root {
+    --agri-soil:       #3d2b1f;
+    --agri-leaf:       #3a7d44;
+    --agri-leaf-light: #5aab65;
+    --agri-moss:       #2d5a27;
+    --agri-wheat:      #c8a84b;
+    --agri-cream:      #f5f0e8;
+    --agri-sky:        #eaf4ea;
+    --agri-border:     #c5dfc0;
+  }
+
+  /* ── Drawer Header ─────────────────────── */
+  .agri-drawer-header {
+    background: var(--agri-soil) !important;
+    border-bottom: 3px solid var(--agri-moss) !important;
+    padding-block: 16px !important;
+  }
+
+  .agri-drawer-header__brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .agri-drawer-header__leaf {
+    font-size: 22px;
+    line-height: 1;
+  }
+
+  .agri-drawer-header__title {
+    color: var(--agri-cream) !important;
+    font-weight: 700 !important;
+    margin: 0 !important;
+  }
+
+  /* Keep cart-bubble visible on dark header */
+  .agri-drawer-header .cart-bubble__background {
+    background-color: var(--agri-wheat) !important;
+  }
+  .agri-drawer-header .cart-bubble__text {
+    color: var(--agri-soil) !important;
+  }
+
+  /* ── Close Button ─────────────────────── */
+  .agri-close-btn {
+    color: var(--agri-cream) !important;
+    opacity: 0.8;
+    transition: opacity 0.2s, transform 0.15s;
+  }
+  .agri-close-btn:hover {
+    opacity: 1 !important;
+    transform: rotate(90deg);
+  }
+
+  /* ── Seasonal Strip ───────────────────── */
+  .agri-seasonal-strip {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin-bottom: 10px;
+    background: var(--agri-leaf);
+    padding: 7px 16px;
+    font-size: 10.5px;
+    font-weight: 700;
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
+    color: #d4f0d4;
+  }
+
+  /* ── Empty Cart Heading ───────────────── */
+  .agri-empty-heading {
+    flex-direction: column;
+    gap: 8px;
+  }
+  .agri-empty-icon {
+    font-size: 48px;
+    animation: agri-sway 3s ease-in-out infinite;
+    display: block;
+  }
+  @keyframes agri-sway {
+    0%, 100% { transform: rotate(-6deg); }
+    50%       { transform: rotate(6deg); }
+  }
+
+  /* ── Cart Drawer Dialog ───────────────── */
+  .cart-drawer__dialog {
+    background-color: var(--agri-cream) !important;
+  }
+
+  /* ── Cart Icon Bubble ─────────────────── */
+  .header-actions__cart-icon .cart-bubble__background {
+    background-color: var(--agri-leaf);
+  }
+
+  /* ── Original styles preserved ───────── */
   .header {
     --account-offset-top: calc(
       var(--header-group-height) + (var(--header-height) * var(--transparent-header-offset-boolean))
     );
-
     &[data-sticky-state='active'] {
       --account-offset-top: calc(var(--header-height) - 1px);
     }
   }
 
   .account-button {
-    /* Remove the background color from the color scheme, we want to inherit the color of the header */
     background: transparent;
   }
 
@@ -273,14 +386,12 @@
     --shopify-account-color-accent: var(--color-primary-button-background);
     --shopify-account-color-accent-text: var(--color-primary-button-text);
     --shopify-account-dialog-position-top: var(--account-offset-top);
-
     &:not(:defined) {
       min-width: 44px;
       height: 44px;
       display: flex;
       justify-content: center;
       align-items: center;
-      /* Match the line height of the other buttons */
       line-height: normal;
     }
   }
@@ -299,7 +410,6 @@
   .cart-drawer {
     --cart-drawer-padding: var(--padding-xl) var(--padding-xl);
     --cart-drawer-padding-desktop: var(--padding-xl) var(--padding-2xl);
-
     @media screen and (min-width: 750px) {
       margin-inline-end: calc(var(--gap-xs) * -1);
     }
@@ -322,15 +432,12 @@
     padding: 0;
     border-left: var(--style-border-drawer);
     box-shadow: var(--shadow-drawer);
-    background-color: var(--color-background);
-
     @media screen and (min-width: 750px) {
       width: var(--sidebar-width);
       max-width: 95vw;
     }
   }
 
-  /* Needed to ensure the drawer is full height */
   .cart-drawer__dialog:modal {
     max-height: 100dvh;
     overflow-y: hidden;
@@ -346,7 +453,7 @@
     display: flex;
     flex-direction: column;
     padding: 0;
-    background-color: var(--color-background);
+    background-color: var(--agri-cream);
     flex-grow: 1;
     overflow-y: auto;
   }
@@ -361,7 +468,6 @@
   .cart-drawer__close-button {
     margin-right: calc(var(--padding-sm) * -1);
     top: var(--margin-sm);
-
     @media screen and (max-width: 749px) {
       top: var(--margin-2xs);
     }
@@ -376,24 +482,8 @@
     margin-bottom: var(--margin-md);
   }
 
-  .cart-drawer__items .cart-items__table-row {
-    padding-bottom: var(--gap-xl);
-    border-bottom: var(--style-border-width) solid var(--color-border);
-    margin-bottom: var(--gap-xl);
-  }
-
-  .cart-drawer__items .cart-items__table-row:has(+ .cart-items__nested-line) {
-    border-bottom: none;
-    margin-bottom: 0;
-  }
-
-  .cart-drawer__items .cart-items__table-row:last-child {
-    border-bottom: none;
-  }
-
   .cart-drawer__summary {
     --cart-drawer-summary-padding: var(--padding-lg);
-
     position: sticky;
     bottom: 0;
     z-index: 1;
@@ -403,10 +493,8 @@
     gap: var(--gap-xl);
     padding: var(--cart-drawer-summary-padding);
     margin-top: auto;
-    background-color: var(--color-background);
-    /* stylelint-disable-next-line color-named */
+    background-color: var(--agri-cream);
     mask-image: linear-gradient(to bottom, transparent, black var(--cart-drawer-summary-padding));
-
     @media screen and (min-width: 750px) {
       --cart-drawer-summary-padding: var(--padding-2xl);
     }
@@ -429,7 +517,7 @@
   }
 
   .cart-drawer__summary .cart__summary-totals:not(:has(.cart__subtotal-container:empty)) {
-    border-block-start: var(--style-border-width) solid var(--color-border);
+    border-block-start: var(--style-border-width) solid var(--agri-border);
     padding-block-start: var(--padding-2xl);
   }
 
@@ -449,7 +537,6 @@
     flex-direction: column;
     padding-inline: var(--cart-drawer-padding);
     overflow-y: auto;
-
     @media screen and (min-width: 750px) {
       padding-inline: var(--cart-drawer-padding-desktop);
     }
@@ -457,8 +544,13 @@
 
   .cart-drawer__items .cart-items__table-row {
     padding-bottom: var(--gap-xl);
-    border-bottom: var(--style-border-width) solid var(--color-border);
+    border-bottom: var(--style-border-width) solid var(--agri-border);
     margin-bottom: var(--gap-xl);
+  }
+
+  .cart-drawer__items .cart-items__table-row:has(+ .cart-items__nested-line) {
+    border-bottom: none;
+    margin-bottom: 0;
   }
 
   .cart-drawer__items .cart-items__table-row:last-child {
@@ -481,7 +573,6 @@
   }
 
   .cart-drawer__header {
-    background-color: var(--color-background);
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -491,7 +582,6 @@
     position: sticky;
     top: 0;
     z-index: 1;
-
     @media screen and (min-width: 750px) {
       padding-inline: var(--cart-drawer-padding-desktop);
     }
@@ -501,6 +591,7 @@
     justify-content: right;
     border-bottom: none;
     padding-bottom: 0;
+    background: var(--agri-soil) !important;
   }
 
   .cart-drawer--empty .cart-drawer__heading {
@@ -509,17 +600,13 @@
 
   header-actions {
     display: flex;
-
     @media screen and (max-width: 749px) {
       justify-self: flex-end;
     }
   }
 
   @media screen and (min-width: 750px) {
-    .header-actions--text {
-      gap: var(--gap-xl);
-    }
-
+    .header-actions--text { gap: var(--gap-xl); }
     .header-actions__text-style {
       font-size: var(--header-actions-font-size);
       font-family: var(--header-actions-font-family);
@@ -540,7 +627,6 @@
     --cart-bubble-size: 20px;
     --cart-bubble-top: 4.5px;
     --cart-bubble-right: 2.5px;
-
     position: relative;
   }
 
@@ -577,7 +663,6 @@
   }
 
   .header-actions__cart-icon.header-actions__cart-icon--has-cart svg {
-    /* Create donut mask where the cart bubble sits */
     mask: radial-gradient(
       calc(var(--cart-bubble-size) + 2px) at calc(100% - var(--cart-bubble-right)) var(--cart-bubble-top),
       transparent 45.45%,
@@ -602,7 +687,6 @@
   .cart-bubble--animating .cart-bubble__text {
     --start-y: -1em;
     --start-opacity: 1;
-    /* Set initial transform state before animation starts */
     transform: translate(0, var(--start-y, -1em));
     opacity: var(--start-opacity, 1);
     animation: move-and-fade var(--animation-speed) var(--animation-easing);
@@ -612,7 +696,6 @@
     --cart-bubble-size: 10px;
     --cart-bubble-top: 9px;
     --cart-bubble-right: 9px;
-
     .svg-wrapper {
       --cart-bubble-top: 4px;
       --cart-bubble-right: 4px;
@@ -627,62 +710,30 @@
 
   @media screen and (prefers-reduced-motion: no-preference) {
     html:active-view-transition-type(empty-cart-drawer) {
-      .cart-drawer__close-button {
-        view-transition-name: cart-drawer-close-button;
-      }
-
-      .cart-items-component {
-        view-transition-name: cart-drawer-content;
-      }
+      .cart-drawer__close-button { view-transition-name: cart-drawer-close-button; }
+      .cart-items-component { view-transition-name: cart-drawer-content; }
     }
   }
 
   :active-view-transition {
-    .cart-drawer__header,
-    .cart-drawer__content {
-      background: transparent;
-    }
+    .cart-drawer__header, .cart-drawer__content { background: transparent; }
   }
 
   ::view-transition-old(cart-drawer-content) {
     transform-origin: 50% 33%;
     animation: cart-contents-old var(--spring-d280-b0-duration) var(--spring-d280-b0-easing) forwards;
   }
-
   ::view-transition-new(cart-drawer-content) {
     transform-origin: top center;
     animation: cart-contents-new var(--spring-d280-b0-duration) var(--spring-d280-b0-easing) forwards;
   }
+  @keyframes cart-contents-old { to { scale: 0.92; opacity: 0; } }
+  @keyframes cart-contents-new { from { scale: 1.05; translate: 0 128px; filter: blur(1px); opacity: 0; } }
 
-  @keyframes cart-contents-old {
-    to {
-      scale: 0.92;
-      opacity: 0;
-    }
-  }
-
-  @keyframes cart-contents-new {
-    from {
-      scale: 1.05;
-      translate: 0 128px;
-      filter: blur(1px);
-      opacity: 0;
-    }
-  }
-  .header-actions__text {
-    display: flex;
-    align-items: center;
-  }
+  .header-actions__text { display: flex; align-items: center; }
 
   @media screen and (min-width: 750px) {
-    .header-actions__cart-icon--text {
-      display: flex;
-      align-items: center;
-      gap: var(--gap-xs);
-    }
-
-    .header__column--right .header-actions--text {
-      margin-inline-start: 0;
-    }
+    .header-actions__cart-icon--text { display: flex; align-items: center; gap: var(--gap-xs); }
+    .header__column--right .header-actions--text { margin-inline-start: 0; }
   }
 {% endstylesheet %}

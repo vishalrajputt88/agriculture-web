@@ -321,49 +321,51 @@
         button.textContent = '{{ section.settings.adding_text }}';
 
         try {
+          // Include section IDs so drawer HTML is returned in response
+          const sectionIds = Array.from(
+            document.querySelectorAll('cart-items-component[data-section-id]')
+          ).map(el => el.dataset.sectionId).filter(Boolean);
+
+          const payload = { id: variantId, quantity: 1 };
+          if (sectionIds.length > 0) { payload.sections = sectionIds.join(','); }
+
           const response = await fetch('/cart/add.js', {
             method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-              id: variantId,
-              quantity: 1
-            })
+            headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+            body: JSON.stringify(payload)
           });
 
-          if (!response.ok) {
-            throw new Error('Failed to add to cart');
-          }
+          if (!response.ok) throw new Error('Failed to add to cart');
+
+          const addData = await response.json();
 
           button.textContent = '{{ section.settings.added_text }}';
-          
-          setTimeout(() => {
-            button.textContent = originalText;
-            button.disabled = false;
-          }, 2000);
+          setTimeout(() => { button.textContent = originalText; button.disabled = false; }, 2000);
 
-          const cartCountElements = document.querySelectorAll('[data-cart-count], .cart-count, #cart-icon-bubble');
-          if (cartCountElements.length > 0) {
-            const cartResponse = await fetch('/cart.js');
-            const cart = await cartResponse.json();
-            cartCountElements.forEach(el => {
-              if (el.dataset.cartCount !== undefined) {
-                el.textContent = cart.item_count;
+          // Fire CartAddEvent with sections — cart-items-component morphs drawer instantly
+          document.dispatchEvent(new CustomEvent('cart:update', {
+            bubbles: true,
+            detail: {
+              data: {
+                source: 'product-form-component',
+                itemCount: 1,
+                sections: addData.sections || {}
               }
-            });
-          }
+            }
+          }));
 
-          document.dispatchEvent(new CustomEvent('cart:updated'));
+          // Also fire cart:update for cart-icon count
+          const cartResponse = await fetch('/cart.js');
+          const cart = await cartResponse.json();
+          document.dispatchEvent(new CustomEvent('cart:update', {
+            bubbles: true,
+            detail: { data: { itemCount: cart.item_count, source: 'product-form-component' } }
+          }));
 
         } catch (error) {
           console.error('Error adding to cart:', error);
           button.textContent = '{{ section.settings.error_text }}';
-          
-          setTimeout(() => {
-            button.textContent = originalText;
-            button.disabled = false;
-          }, 2000);
+          setTimeout(() => { button.textContent = originalText; button.disabled = false; }, 2000);
         }
       }
     }

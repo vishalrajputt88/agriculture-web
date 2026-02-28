@@ -1,13 +1,5 @@
 {% comment %}
   FILE: sections/plp-collection.liquid
-  TEMPLATE: templates/collection.json
-  {
-    "sections": { "main": { "type": "plp-collection", "settings": {} } },
-    "order": ["main"]
-  }
-
-  FILTERS: Online Store > Navigation > Filters
-  Enable: Availability, Price, Product type
 {% endcomment %}
 
 {% assign sid = section.id | replace: '_', '' | downcase %}
@@ -15,7 +7,6 @@
 {% assign cols = section.settings.grid_columns | default: '4' %}
 {% assign sort_by = collection.sort_by | default: collection.default_sort_by %}
 
-{% comment %} Active filter count {% endcomment %}
 {% assign afc = 0 %}
 {% for f in collection.filters %}
   {% assign afc = afc | plus: f.active_values.size %}
@@ -30,7 +21,6 @@
 <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;600;700;800&family=Noto+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 
 <style>
-/* ===== VARIABLES ===== */
 #plp-{{ sid }} {
   --gr:      {{ section.settings.color_green }};
   --gr-lt:   {{ section.settings.color_green_light }};
@@ -57,7 +47,7 @@
 }
 #plp-{{ sid }} * { box-sizing: border-box; }
 
-/* ===== TRUST STRIP ===== */
+/* TRUST STRIP */
 #plp-{{ sid }} .trust-strip {
   background: #fff8e1;
   border-bottom: 2px solid #ffe082;
@@ -68,7 +58,6 @@
   overflow-x: auto;
   scrollbar-width: none;
   justify-content: center;
-
 }
 #plp-{{ sid }} .trust-strip::-webkit-scrollbar { display: none; }
 #plp-{{ sid }} .trust-item {
@@ -77,14 +66,14 @@
   color: var(--soil); white-space: nowrap;
 }
 
-/* ===== INNER WRAP ===== */
+/* INNER WRAP */
 #plp-{{ sid }} .plp-inner {
   max-width: 1380px;
   margin: 0 auto;
   padding: 24px 20px 60px;
 }
 
-/* ===== BREADCRUMB ===== */
+/* BREADCRUMB */
 #plp-{{ sid }} .plp-bc {
   display: flex; align-items: center; gap: 6px;
   font-size: 12.5px; color: var(--g3);
@@ -93,7 +82,7 @@
 #plp-{{ sid }} .plp-bc a { color: var(--gr); text-decoration: none; }
 #plp-{{ sid }} .plp-bc a:hover { text-decoration: underline; }
 
-/* ===== HEADING ===== */
+/* HEADING */
 #plp-{{ sid }} .plp-heading { margin-bottom: 20px; }
 #plp-{{ sid }} .plp-h1 {
   font-family: var(--fh);
@@ -101,12 +90,9 @@
   color: var(--dk); letter-spacing: -0.5px; line-height: 1;
 }
 #plp-{{ sid }} .plp-h1 span { color: var(--gr); }
-#plp-{{ sid }} .plp-desc {
-  font-size: 13.5px; color: var(--tx-lt);
-  margin-top: 6px;
-}
+#plp-{{ sid }} .plp-desc { font-size: 13.5px; color: var(--tx-lt); margin-top: 6px; }
 
-/* ===== TWO-COL LAYOUT ===== */
+/* TWO-COL LAYOUT */
 #plp-{{ sid }} .plp-layout {
   display: grid;
   grid-template-columns: 255px 1fr;
@@ -114,7 +100,7 @@
   align-items: start;
 }
 
-/* ===== SIDEBAR ===== */
+/* SIDEBAR */
 #plp-{{ sid }} .plp-sb {
   background: #fff;
   border-radius: var(--rr);
@@ -206,7 +192,7 @@
 }
 #plp-{{ sid }} .pr-apply:hover { background: var(--dk); }
 
-/* ===== TOOLBAR ===== */
+/* TOOLBAR */
 #plp-{{ sid }} .toolbar {
   display: flex; justify-content: space-between; align-items: center;
   margin-bottom: 16px; gap: 10px; flex-wrap: wrap;
@@ -244,7 +230,7 @@
 #plp-{{ sid }} .vbtn.active { background: var(--gr); border-color: var(--gr); color: #fff; }
 #plp-{{ sid }} .vbtn svg { width: 16px; height: 16px; fill: currentColor; }
 
-/* ===== PRODUCT GRID ===== */
+/* PRODUCT GRID */
 #plp-{{ sid }} .pgrid {
   display: grid;
   grid-template-columns: repeat({{ cols }}, 1fr);
@@ -257,12 +243,12 @@
 #plp-{{ sid }} .pgrid.list-view .pcard { flex-direction: row; }
 #plp-{{ sid }} .pgrid.list-view .pc-img { width: 200px; flex-shrink: 0; aspect-ratio: 1/1; }
 #plp-{{ sid }} .pgrid.list-view .pc-body { flex: 1; padding: 18px 18px 10px; }
-#plp-{{ sid }} .pgrid.list-view .pc-foot { padding: 0 18px 18px; }
+#plp-{{ sid }} .pgrid.list-view .pc-foot { padding: 0 18px 18px; position: absolute; right: 0; bottom: 0; }
 #plp-{{ sid }} .pgrid.list-view .pc-title { -webkit-line-clamp: 3; }
 
-/* ===== PRODUCT CARD ===== */
+/* PRODUCT CARD */
 #plp-{{ sid }} .pcard {
-  background: #fff; border-radius: var(--rr);
+  background: #fff; border-radius: 0px;
   border: 1.5px solid var(--g2); overflow: hidden;
   transition: box-shadow .25s, transform .25s, border-color .25s;
   position: relative; display: flex; flex-direction: column;
@@ -281,21 +267,6 @@
 }
 #plp-{{ sid }} .badge-sale { background: var(--rd); color: #fff; }
 #plp-{{ sid }} .badge-new  { background: var(--gld); color: var(--dk); }
-
-/* Wishlist */
-#plp-{{ sid }} .btn-wish {
-  position: absolute; top: 9px; right: 9px;
-  width: 32px; height: 32px; background: rgba(255,255,255,0.93);
-  border-radius: 50%; display: flex; align-items: center; justify-content: center;
-  z-index: 3; cursor: pointer; border: none;
-  opacity: 0; transition: opacity .2s, transform .2s;
-  box-shadow: 0 2px 8px rgba(0,0,0,.12);
-}
-#plp-{{ sid }} .pcard:hover .btn-wish,
-#plp-{{ sid }} .btn-wish.active { opacity: 1; }
-#plp-{{ sid }} .btn-wish:hover { transform: scale(1.15); }
-#plp-{{ sid }} .btn-wish svg { width: 16px; height: 16px; stroke: var(--rd); fill: none; stroke-width: 2; }
-#plp-{{ sid }} .btn-wish.active svg { fill: var(--rd); }
 
 /* Image */
 #plp-{{ sid }} .pc-img {
@@ -326,8 +297,7 @@
 }
 #plp-{{ sid }} .pc-type {
   font-size: 10px; color: var(--gr-lt); font-weight: 700;
-  letter-spacing: .8px; text-transform: uppercase;
-  margin-bottom: 4px;
+  letter-spacing: .8px; text-transform: uppercase; margin-bottom: 4px;
 }
 #plp-{{ sid }} .pc-title {
   font-family: var(--fh); font-size: 14.5px; font-weight: 700;
@@ -352,44 +322,67 @@
   background: #fdecea; padding: 2px 6px; border-radius: 4px;
 }
 
+/* VARIANT PILLS */
+#plp-{{ sid }} .pc-variants {
+  display: flex; flex-wrap: wrap; gap: 5px;
+  margin: 7px 0 4px;
+}
+#plp-{{ sid }} .vpill {
+  padding: 3px 9px;
+  border: 1px solid #c5c5c5;
+  border-radius: 4px;
+  font-size: 10px; font-weight: 500;
+  color: #333; background: #fff;
+  cursor: pointer;
+  transition: all .15s ease;
+  line-height: 1.4; white-space: nowrap;
+}
+#plp-{{ sid }} .vpill:hover:not(.vp-soldout) {
+  border-color: var(--gr); color: var(--gr);
+}
+#plp-{{ sid }} .vpill.vp-active {
+  background: var(--gr); border-color: var(--gr);
+  color: #fff; font-weight: 600;
+}
+#plp-{{ sid }} .vpill.vp-soldout {
+  opacity: 0.38; cursor: not-allowed; text-decoration: line-through;
+}
+
 /* Footer */
 #plp-{{ sid }} .pc-foot { padding: 0 13px 13px; }
 #plp-{{ sid }} .btn-atc {
   width: 100%; padding: 9px 14px;
-  background: var(--gr); color: #fff;
-  font-family: var(--fh); font-size: 13px; font-weight: 700;
-  border: none; border-radius: 7px; cursor: pointer;
-  display: flex; align-items: center; justify-content: center; gap: 6px;
-  transition: background .2s, transform .15s;
+  background: #F4FCF8; color: #000;
+  border: 1px solid #00963F;
+  font-size: 13px; font-weight: 400;
+  border-radius: 0px; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  gap: 6px; transition: background .2s, transform .15s;
 }
-#plp-{{ sid }} .btn-atc:hover { background: var(--dk); transform: scale(1.01); }
+#plp-{{ sid }} .btn-atc:hover { background: #00963F; transform: scale(1.01); color: #fff; }
+#plp-{{ sid }} .btn-atc:hover svg { stroke: #fff; }
 #plp-{{ sid }} .btn-atc:disabled { opacity: .7; cursor: not-allowed; transform: none; }
-#plp-{{ sid }} .btn-atc.added { background: #388e3c; }
-#plp-{{ sid }} .btn-atc svg { width: 15px; height: 15px; stroke: #fff; fill: none; stroke-width: 2; }
-
+#plp-{{ sid }} .btn-atc svg { width: 15px; height: 15px; stroke: #000; fill: none; stroke-width: 2; }
 #plp-{{ sid }} .btn-sold {
   width: 100%; padding: 9px 14px;
   background: var(--g2); color: var(--g3);
   font-family: var(--fh); font-size: 13px; font-weight: 700;
-  border: none; border-radius: 7px; cursor: not-allowed; text-align: center;
+  border: none; border-radius: 0px; cursor: not-allowed; text-align: center;
 }
 
-/* ===== EMPTY ===== */
+/* EMPTY */
 #plp-{{ sid }} .plp-empty {
-  text-align: center; padding: 60px 20px; color: var(--tx-lt);
-  grid-column: 1/-1;
+  text-align: center; padding: 60px 20px; color: var(--tx-lt); grid-column: 1/-1;
 }
 #plp-{{ sid }} .plp-empty .ei { font-size: 56px; margin-bottom: 14px; }
-#plp-{{ sid }} .plp-empty h3 {
-  font-family: var(--fh); font-size: 20px; color: var(--dk); margin-bottom: 8px;
-}
+#plp-{{ sid }} .plp-empty h3 { font-family: var(--fh); font-size: 20px; color: var(--dk); margin-bottom: 8px; }
 #plp-{{ sid }} .plp-empty a {
   display: inline-block; margin-top: 14px; padding: 10px 24px;
   background: var(--gr); color: #fff; border-radius: 7px;
   font-family: var(--fh); font-weight: 700; text-decoration: none;
 }
 
-/* ===== PAGINATION ===== */
+/* PAGINATION */
 #plp-{{ sid }} .plp-pager {
   display: flex; justify-content: center; align-items: center;
   gap: 5px; margin-top: 36px; flex-wrap: wrap;
@@ -406,7 +399,7 @@
 #plp-{{ sid }} .plp-pager .pg-cur { background: var(--gr); border-color: var(--gr); color: #fff; }
 #plp-{{ sid }} .plp-pager .pg-off { opacity: .35; pointer-events: none; }
 
-/* ===== RESPONSIVE ===== */
+/* RESPONSIVE */
 @media (max-width: 1024px) {
   #plp-{{ sid }} .pgrid { grid-template-columns: repeat(3,1fr) !important; }
 }
@@ -420,21 +413,15 @@
   #plp-{{ sid }} .plp-inner { padding: 14px 14px 40px; }
   #plp-{{ sid }} .pgrid.list-view .pcard { flex-direction: column; }
   #plp-{{ sid }} .pgrid.list-view .pc-img { width: 100%; }
+  #plp-{{ sid }} .vpill { font-size: 9px; padding: 3px 7px; }
 }
 @media (max-width: 420px) {
   #plp-{{ sid }} .pgrid { grid-template-columns: 1fr !important; }
-}
-
-
-@media (max-width: 767px) {
-
-
 }
 </style>
 
 <div id="plp-{{ sid }}">
 
-  {% comment %} TRUST STRIP {% endcomment %}
   {% if section.settings.show_trust_strip %}
     <div class="trust-strip">
       {% for block in section.blocks %}
@@ -450,7 +437,6 @@
 
   <div class="plp-inner">
 
-    {% comment %} BREADCRUMB {% endcomment %}
     {% if section.settings.show_breadcrumb %}
       <nav class="plp-bc" aria-label="Breadcrumb">
         <a href="{{ routes.root_url }}">Home</a>
@@ -461,7 +447,6 @@
       </nav>
     {% endif %}
 
-    {% comment %} HEADING {% endcomment %}
     <div class="plp-heading">
       {% assign wtitle = collection.title | split: ' ' %}
       <h1 class="plp-h1">
@@ -478,7 +463,6 @@
 
     <div class="plp-layout">
 
-      {% comment %} ===== SIDEBAR ===== {% endcomment %}
       {% if section.settings.enable_filtering %}
         <aside class="plp-sb" id="sb-{{ sid }}">
           <div class="sb-hd">
@@ -486,7 +470,6 @@
             <h2>{{ section.settings.filter_label | default: 'Filters' }}</h2>
           </div>
 
-          {% comment %} Active filter chips {% endcomment %}
           {% if afc > 0 %}
             <div class="sb-chips">
               {% for filter in collection.filters %}
@@ -498,27 +481,15 @@
             </div>
           {% endif %}
 
-          {% comment %}
-            =====================================================================
-            FIX #1 — FILTER FORM
-            
-            Root cause: The old code did filterForm.submit() on checkbox change.
-            A plain form submit only sends CHECKED inputs — it does NOT carry
-            already-active filters that live only in the URL (not as checked boxes
-            in THIS render). Shopify needs ALL filter params in one URL.
+          {%- comment -%}
+            FILTER FIX:
+            Har filter value ke liye hum directly Shopify ka url_to_add / url_to_remove
+            use karte hain. Checkbox change pe form submit nahi karte — seedha
+            val.url_to_add pe navigate karte hain. Yeh 100% correct URL hai jo
+            Shopify khud generate karta hai, isme existing active filters bhi hote hain.
+          {%- endcomment -%}
 
-            Solution: Instead of submitting the form, we build the full URL
-            ourselves using URLSearchParams, merging:
-              • every currently-checked checkbox in the form
-              • the price-range inputs (if filled)
-              • sort_by
-            Then we navigate to that URL so Shopify's server-side filtering works.
-            =====================================================================
-          {% endcomment %}
-          <form id="filter-form-{{ sid }}" action="{{ collection.url }}" method="get" data-filter-form>
-            {%- comment -%} sort_by hidden so price-range "Apply" button keeps sort {%- endcomment -%}
-            <input type="hidden" name="sort_by" value="{{ sort_by }}">
-
+          <div id="filter-form-{{ sid }}">
             {% for filter in collection.filters %}
               <div class="fg open" data-filter-group="{{ filter.label | handleize }}">
                 <button type="button" class="fg-btn" aria-expanded="true">
@@ -530,13 +501,16 @@
 
                     {% when 'boolean', 'list' %}
                       {% for val in filter.values %}
-                        <label class="fl-label">
+                        <label class="fl-label"
+                          data-url-add="{{ val.url_to_add }}"
+                          data-url-remove="{{ val.url_to_remove }}"
+                          data-active="{{ val.active }}"
+                        >
                           <input
                             type="checkbox"
-                            name="{{ val.param_name }}"
-                            value="{{ val.value }}"
                             {% if val.active %}checked{% endif %}
                             {% if val.count == 0 and val.active == false %}disabled{% endif %}
+                            onchange="(function(lbl){ window.location.href = lbl.dataset.active === 'true' ? lbl.dataset.urlRemove : lbl.dataset.urlAdd; })(this.closest('label'))"
                           >
                           {{ val.label }}
                           <span class="fl-cnt">({{ val.count }})</span>
@@ -544,50 +518,58 @@
                       {% endfor %}
 
                     {% when 'price_range' %}
-                      <div class="pr-row">
-                        <div class="pr-field">
-                          <span class="pr-sym">₹</span>
-                          <input
-                            type="number" min="0"
-                            max="{{ filter.range_max | divided_by: 100.0 }}"
-                            name="{{ filter.min_value.param_name }}"
-                            id="pr-min-{{ sid }}"
-                            value="{{ filter.min_value.value | divided_by: 100.0 | default: '' }}"
-                            placeholder="0"
-                          >
+                      <form action="{{ collection.url }}" method="get" id="price-form-{{ sid }}-{{ forloop.index }}">
+                        {%- comment -%} Existing active list/boolean filters preserve karo {%- endcomment -%}
+                        {% for f2 in collection.filters %}
+                          {% if f2.type != 'price_range' %}
+                            {% for val in f2.active_values %}
+                              <input type="hidden" name="{{ val.param_name }}" value="{{ val.value }}">
+                            {% endfor %}
+                          {% endif %}
+                        {% endfor %}
+                        <input type="hidden" name="sort_by" value="{{ sort_by }}">
+
+                        <div class="pr-row">
+                          <div class="pr-field">
+                            <span class="pr-sym">₹</span>
+                            <input
+                              type="number" min="0"
+                              max="{{ filter.range_max | divided_by: 100.0 }}"
+                              name="{{ filter.min_value.param_name }}"
+                              value="{{ filter.min_value.value | divided_by: 100.0 | default: '' }}"
+                              placeholder="0"
+                            >
+                          </div>
+                          <span style="font-size:12px;color:#9e9e9e">to</span>
+                          <div class="pr-field">
+                            <span class="pr-sym">₹</span>
+                            <input
+                              type="number" min="0"
+                              max="{{ filter.range_max | divided_by: 100.0 }}"
+                              name="{{ filter.max_value.param_name }}"
+                              value="{{ filter.max_value.value | divided_by: 100.0 | default: '' }}"
+                              placeholder="{{ filter.range_max | divided_by: 100 }}"
+                            >
+                          </div>
                         </div>
-                        <span style="font-size:12px;color:#9e9e9e">to</span>
-                        <div class="pr-field">
-                          <span class="pr-sym">₹</span>
-                          <input
-                            type="number" min="0"
-                            max="{{ filter.range_max | divided_by: 100.0 }}"
-                            name="{{ filter.max_value.param_name }}"
-                            id="pr-max-{{ sid }}"
-                            value="{{ filter.max_value.value | divided_by: 100.0 | default: '' }}"
-                            placeholder="{{ filter.range_max | divided_by: 100 }}"
-                          >
-                        </div>
-                      </div>
-                      <p class="pr-hint">Highest: {{ filter.range_max | money_without_trailing_zeros }}</p>
-                      <button type="submit" class="pr-apply">Apply</button>
+                        <p class="pr-hint">Highest: {{ filter.range_max | money_without_trailing_zeros }}</p>
+                        <button type="submit" class="pr-apply">Apply</button>
+                      </form>
 
                   {% endcase %}
                 </div>
               </div>
             {% endfor %}
-          </form>
+          </div>
         </aside>
       {% endif %}
 
-      {% comment %} ===== PRODUCTS AREA ===== {% endcomment %}
       <div>
-        {% comment %} TOOLBAR {% endcomment %}
         <div class="toolbar">
           <div class="tb-left">
             <strong>{{ collection.products_count }}</strong>
             {{ collection.products_count | pluralize: 'product', 'products' }}
-            {% if afc > 0 %}<span> &middot; filtered</span>{% endif %}
+            {% if afc > 0 %}<span> · filtered</span>{% endif %}
           </div>
           <div class="tb-right">
             {% if section.settings.enable_filtering %}
@@ -627,7 +609,6 @@
           </div>
         </div>
 
-        {% comment %} PRODUCT GRID {% endcomment %}
         {% paginate collection.products by ppp %}
 
           {% if collection.products.size > 0 %}
@@ -648,7 +629,12 @@
                 {% assign age_d = now_s | minus: cre_s | divided_by: 86400 %}
                 {% if age_d <= 30 %}{% assign is_new = true %}{% endif %}
 
-                {% assign fv = product.selected_or_first_available_variant %}
+                {%- comment -%} Pehla available variant {%- endcomment -%}
+                {%- assign fv = nil -%}
+                {%- for v in product.variants -%}
+                  {%- if v.available and fv == nil -%}{%- assign fv = v -%}{%- endif -%}
+                {%- endfor -%}
+                {%- if fv == nil -%}{%- assign fv = product.variants.first -%}{%- endif -%}
 
                 <article class="pcard" itemscope itemtype="https://schema.org/Product">
 
@@ -657,17 +643,6 @@
                   {% elsif is_new %}
                     <span class="badge-new">NEW</span>
                   {% endif %}
-
-                  <button
-                    class="btn-wish{% if customer and customer.tags contains product.id %} active{% endif %}"
-                    data-pid="{{ product.id }}"
-                    aria-label="Add to wishlist"
-                    title="Wishlist"
-                  >
-                    <svg viewBox="0 0 24 24">
-                      <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
-                    </svg>
-                  </button>
 
                   <a href="{{ product.url | within: collection }}" class="pc-img" aria-label="{{ product.title }}">
                     {% if product.featured_image %}
@@ -691,24 +666,45 @@
                     <a href="{{ product.url | within: collection }}" class="pc-title" itemprop="name">
                       {{ product.title }}
                     </a>
+
                     <div class="pc-price" itemprop="offers" itemscope itemtype="https://schema.org/Offer">
                       <meta itemprop="priceCurrency" content="{{ cart.currency.iso_code }}">
-                      <span class="p-now" itemprop="price" content="{{ product.price | divided_by: 100.0 }}">
-                        {{ product.price | money }}
+                      <span class="p-now" data-price-display itemprop="price" content="{{ fv.price | divided_by: 100.0 }}">
+                        {{ fv.price | money }}
+                      </span>
+                      <span class="p-was" data-compare-display {% unless fv.compare_at_price > fv.price %}style="display:none"{% endunless %}>
+                        {% if fv.compare_at_price > fv.price %}{{ fv.compare_at_price | money }}{% endif %}
                       </span>
                       {% if has_disc %}
-                        <span class="p-was">{{ product.compare_at_price | money }}</span>
-                        <span class="p-off">{{ disc_pct }}% OFF</span>
+                        <span class="p-off" data-off-display>{{ disc_pct }}% OFF</span>
+                      {% else %}
+                        <span class="p-off" data-off-display style="display:none"></span>
                       {% endif %}
                     </div>
+
+                    {%- comment -%} VARIANT PILLS — sirf agar variants > 1 {%- endcomment -%}
+                    {% if product.variants.size > 1 %}
+                      <div class="pc-variants">
+                        {% for variant in product.variants %}
+                          <button
+                            type="button"
+                            class="vpill{% if variant.id == fv.id %} vp-active{% endif %}{% unless variant.available %} vp-soldout{% endunless %}"
+                            data-variant-id="{{ variant.id }}"
+                            data-price="{{ variant.price }}"
+                            data-compare="{{ variant.compare_at_price | default: 0 }}"
+                            data-available="{{ variant.available }}"
+                          >{{ variant.title }}</button>
+                        {% endfor %}
+                      </div>
+                    {% endif %}
+
                   </div>
 
                   <div class="pc-foot">
-                    {% if fv.available %}
+                    {% if product.available %}
                       <button
                         class="btn-atc"
                         data-variant-id="{{ fv.id }}"
-                        data-product-title="{{ product.title | escape }}"
                         aria-label="Add {{ product.title | escape }} to cart"
                       >
                         <svg viewBox="0 0 24 24">
@@ -727,7 +723,6 @@
               {% endfor %}
             </div>
 
-            {% comment %} PAGINATION {% endcomment %}
             {% if paginate.pages > 1 %}
               <nav class="plp-pager" aria-label="Pagination">
                 {% if paginate.previous %}
@@ -735,7 +730,6 @@
                 {% else %}
                   <span class="pg-off">‹</span>
                 {% endif %}
-
                 {% for part in paginate.parts %}
                   {% if part.is_link %}
                     <a href="{{ part.url }}">{{ part.title }}</a>
@@ -745,7 +739,6 @@
                     <span>{{ part.title }}</span>
                   {% endif %}
                 {% endfor %}
-
                 {% if paginate.next %}
                   <a href="{{ paginate.next.url }}" aria-label="Next">›</a>
                 {% else %}
@@ -775,9 +768,7 @@
   var ROOT = document.getElementById('plp-{{ sid }}');
   if (!ROOT) return;
 
-  /* ─────────────────────────────────────
-     1. COLLAPSIBLE FILTER GROUPS
-  ───────────────────────────────────── */
+  /* 1. COLLAPSIBLE FILTER GROUPS */
   ROOT.querySelectorAll('.fg-btn').forEach(function (btn) {
     btn.addEventListener('click', function () {
       var fg = this.closest('.fg');
@@ -786,68 +777,7 @@
     });
   });
 
-  /* ─────────────────────────────────────
-     2. FILTER FORM — FIX ✅
-     
-     ROOT CAUSE of "In Stock → No products found":
-     filterForm.submit() sends only the HTML form's checked checkboxes.
-     BUT Shopify's filter system works via URL parameters. When you check
-     "In Stock", the param is filter.p.available=1 — but a plain form
-     submit doesn't carry other active filters that are only in the URL.
-     
-     FIX: Build the URL manually using URLSearchParams so ALL active
-     filter params + sort_by are included every time.
-  ───────────────────────────────────── */
-  var filterForm = document.getElementById('filter-form-{{ sid }}');
-
-  function buildFilterURL() {
-    var params = new URLSearchParams();
-
-    /* 1. Add sort_by */
-    var sortEl = document.getElementById('sort-sel-{{ sid }}');
-    params.set('sort_by', sortEl ? sortEl.value : '{{ sort_by }}');
-
-    /* 2. Add all checked checkboxes */
-    filterForm.querySelectorAll('input[type=checkbox]:checked').forEach(function (cb) {
-      params.append(cb.name, cb.value);
-    });
-
-    /* 3. Add price range if filled */
-    filterForm.querySelectorAll('input[type=number]').forEach(function (inp) {
-      if (inp.value !== '') {
-        params.set(inp.name, Math.round(parseFloat(inp.value) * 100)); /* Shopify expects cents */
-      }
-    });
-
-    return '{{ collection.url }}?' + params.toString();
-  }
-
-  if (filterForm) {
-    /* Checkbox change → navigate with full URL */
-    filterForm.querySelectorAll('input[type=checkbox]').forEach(function (cb) {
-      cb.addEventListener('change', function () {
-        window.location.href = buildFilterURL();
-      });
-    });
-
-    /* Price range "Apply" button → also use buildFilterURL */
-    filterForm.querySelectorAll('.pr-apply').forEach(function (btn) {
-      btn.addEventListener('click', function (e) {
-        e.preventDefault();
-        window.location.href = buildFilterURL();
-      });
-    });
-
-    /* Prevent accidental native form submit */
-    filterForm.addEventListener('submit', function (e) {
-      e.preventDefault();
-      window.location.href = buildFilterURL();
-    });
-  }
-
-  /* ─────────────────────────────────────
-     3. SORT — preserve existing filters when sort changes
-  ───────────────────────────────────── */
+  /* 2. SORT */
   var sortSel = document.getElementById('sort-sel-{{ sid }}');
   if (sortSel) {
     sortSel.addEventListener('change', function () {
@@ -857,9 +787,7 @@
     });
   }
 
-  /* ─────────────────────────────────────
-     4. GRID / LIST VIEW TOGGLE
-  ───────────────────────────────────── */
+  /* 3. GRID / LIST VIEW TOGGLE */
   var grid = document.getElementById('pgrid-{{ sid }}');
   var btnG = document.getElementById('vbtn-g-{{ sid }}');
   var btnL = document.getElementById('vbtn-l-{{ sid }}');
@@ -868,52 +796,129 @@
     if (!grid) return;
     if (v === 'list') {
       grid.classList.add('list-view');
-      btnL.classList.add('active');    btnL.setAttribute('aria-pressed','true');
-      btnG.classList.remove('active'); btnG.setAttribute('aria-pressed','false');
+      btnL.classList.add('active');    btnL.setAttribute('aria-pressed', 'true');
+      btnG.classList.remove('active'); btnG.setAttribute('aria-pressed', 'false');
     } else {
       grid.classList.remove('list-view');
-      btnG.classList.add('active');    btnG.setAttribute('aria-pressed','true');
-      btnL.classList.remove('active'); btnL.setAttribute('aria-pressed','false');
+      btnG.classList.add('active');    btnG.setAttribute('aria-pressed', 'true');
+      btnL.classList.remove('active'); btnL.setAttribute('aria-pressed', 'false');
     }
-    try { localStorage.setItem('ba_view_{{ sid }}', v); } catch (e) {}
+    try { localStorage.setItem('ba_view', v); } catch (e) {}
   }
 
   if (btnG) btnG.addEventListener('click', function () { setView('grid'); });
   if (btnL) btnL.addEventListener('click', function () { setView('list'); });
+  try { if (localStorage.getItem('ba_view') === 'list') setView('list'); } catch (e) {}
 
-  try {
-    var saved = localStorage.getItem('ba_view_{{ sid }}');
-    if (saved === 'list') setView('list');
-  } catch (e) {}
-
-  /* ─────────────────────────────────────
-     5. MOBILE FILTER SIDEBAR TOGGLE
-  ───────────────────────────────────── */
+  /* 4. MOBILE FILTER TOGGLE */
   var mobBtn  = document.getElementById('mob-filter-btn-{{ sid }}');
   var sidebar = document.getElementById('sb-{{ sid }}');
   if (mobBtn && sidebar) {
-    mobBtn.addEventListener('click', function () {
-      sidebar.classList.toggle('mob-open');
-    });
+    mobBtn.addEventListener('click', function () { sidebar.classList.toggle('mob-open'); });
   }
 
-  /* ─────────────────────────────────────
-     6. AJAX ADD TO CART — FIX ✅
+  /* 5. VARIANT PILLS */
+  ROOT.querySelectorAll('.pcard').forEach(function (card) {
+    var pills     = card.querySelectorAll('.vpill');
+    var atcBtn    = card.querySelector('.btn-atc');
+    var priceEl   = card.querySelector('[data-price-display]');
+    var compareEl = card.querySelector('[data-compare-display]');
+    var offEl     = card.querySelector('[data-off-display]');
 
-     ROOT CAUSE of "cart only shows after page refresh":
-     Shopify themes use their own cart drawer/bubble system.
-     Just updating textContent on some elements isn't enough — the
-     theme needs to know the cart changed.
+    pills.forEach(function (pill) {
+      pill.addEventListener('click', function () {
+        if (this.dataset.available === 'false') return;
 
-     FIX: After a successful /cart/add.js we:
-       a) Update item count on ALL known cart selectors
-       b) Fire the standard Shopify cart events that themes listen to
-       c) Try to open the cart drawer if the theme exposes one
-  ───────────────────────────────────── */
+        pills.forEach(function (p) { p.classList.remove('vp-active'); });
+        this.classList.add('vp-active');
+
+        if (atcBtn) atcBtn.dataset.variantId = this.dataset.variantId;
+
+        var price   = parseInt(this.dataset.price, 10);
+        var compare = parseInt(this.dataset.compare, 10);
+        var fmt     = new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 });
+
+        if (priceEl)   priceEl.textContent = fmt.format(price / 100);
+        if (compareEl) {
+          if (compare > price) {
+            compareEl.textContent   = fmt.format(compare / 100);
+            compareEl.style.display = '';
+            var pct = Math.round((compare - price) * 100 / compare);
+            if (offEl) { offEl.textContent = pct + '% OFF'; offEl.style.display = ''; }
+          } else {
+            compareEl.textContent   = '';
+            compareEl.style.display = 'none';
+            if (offEl) { offEl.textContent = ''; offEl.style.display = 'none'; }
+          }
+        }
+      });
+    });
+  });
+
+  /* 6. AJAX ADD TO CART */
+  function refreshCartDrawer(cartData) {
+    var count = cartData.item_count;
+    // Update all cart count elements
+    document.querySelectorAll(
+      '.cart-bubble__text-count, [data-cart-count], [data-cart-item-count], ' +
+      '.cart-count, .cart-badge, .cart-item-count, #CartCount, .js-cart-count'
+    ).forEach(function(el) {
+      el.textContent = count > 99 ? '99+' : count;
+      el.removeAttribute('hidden');
+      el.classList.remove('hidden', 'is-hidden', 'visually-hidden');
+    });
+
+    // Show cart bubble if hidden
+    var bubble = document.querySelector('.cart-bubble');
+    if (bubble) bubble.classList.remove('visually-hidden', 'hidden');
+
+    // Dawn theme: fire cart:open or use cart-notification
+    document.documentElement.dispatchEvent(new CustomEvent('cart:refresh', { bubbles: true }));
+    document.dispatchEvent(new CustomEvent('cart:refresh', { bubbles: true }));
+
+    // Dawn uses section rendering for cart icon bubble
+    var cartIconBubble = document.getElementById('shopify-section-cart-icon-bubble');
+    if (cartIconBubble) {
+      fetch('/?section_id=cart-icon-bubble')
+        .then(function(r) { return r.ok ? r.text() : null; })
+        .then(function(html) {
+          if (!html) return;
+          var tmp = document.createElement('div'); tmp.innerHTML = html;
+          var nw = tmp.querySelector('.shopify-section');
+          if (nw) cartIconBubble.innerHTML = nw.innerHTML;
+        }).catch(function() {});
+    }
+
+    // Dawn cart-notification component
+    var cartNotification = document.querySelector('cart-notification');
+    if (cartNotification && cartNotification.renderContents) {
+      cartNotification.renderContents(cartData);
+    }
+
+    // Dawn cart-drawer component
+    var cartDrawer = document.querySelector('cart-drawer');
+    if (cartDrawer) {
+      // Try to open cart drawer
+      if (typeof cartDrawer.open === 'function') cartDrawer.open();
+      // Or refresh it
+      if (cartDrawer.querySelector && cartDrawer.querySelector('[ref="cartDrawer"]')) {
+        fetch('/cart?section_id=cart-drawer')
+          .then(function(r) { return r.ok ? r.text() : null; })
+          .then(function(html) {
+            if (!html) return;
+            var tmp = document.createElement('div'); tmp.innerHTML = html;
+            var nw = tmp.querySelector('[id="shopify-section-cart-drawer"]');
+            var cartSection = document.getElementById('shopify-section-cart-drawer');
+            if (nw && cartSection) cartSection.innerHTML = nw.innerHTML;
+          }).catch(function() {});
+      }
+    }
+  }
+
   ROOT.querySelectorAll('.btn-atc').forEach(function (btn) {
     btn.addEventListener('click', function () {
       if (this.disabled) return;
-      var variantId = this.getAttribute('data-variant-id');
+      var variantId = this.dataset.variantId;
       var origHTML  = this.innerHTML;
       var self      = this;
 
@@ -921,128 +926,27 @@
       self.innerHTML = '<span>Adding…</span>';
 
       fetch('/cart/add.js', {
-        method:  'POST',
+        method: 'POST',
         headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
         body: JSON.stringify({ id: parseInt(variantId, 10), quantity: 1 })
       })
       .then(function (res) {
-        if (!res.ok) {
-          return res.json().then(function (err) { throw new Error(err.description || 'Error adding to cart'); });
-        }
+        if (!res.ok) return res.json().then(function (e) { throw new Error(e.description || 'Error'); });
         return res.json();
       })
-      .then(function (item) {
-        self.classList.add('added');
-        self.innerHTML = '✓ Added to Cart';
-
-        /* ── Fetch updated cart to get fresh count ── */
-        return fetch('/cart.js', { headers: { 'Accept': 'application/json' } });
+      .then(function (addedItem) {
+        self.innerHTML = '<span>✓ Added!</span>';
+        return fetch('/cart.js', { headers: { Accept: 'application/json' } });
       })
-      .then(function (res) { return res.json(); })
+      .then(function (r) { return r.json(); })
       .then(function (cart) {
-        var count = cart.item_count;
-
-        /* ── a) Update ALL possible cart count selectors ── */
-        var cartSelectors = [
-          '[data-cart-count]',
-          '[data-cart-item-count]',
-          '[data-header-cart-quantity]',
-          '.cart-count',
-          '.cart-badge',
-          '.cart-item-count',
-          '.header-cart-count',
-          '.cart__count',
-          '#cart-count',
-          '#CartCount',
-          '.js-cart-count',
-          '[data-cart-bubble]',
-          '.site-header__cart-count'
-        ];
-        document.querySelectorAll(cartSelectors.join(',')).forEach(function (el) {
-          el.textContent = count;
-          /* Show bubble if it was hidden */
-          el.style.display = count > 0 ? '' : 'none';
-          el.setAttribute('data-count', count);
-          el.removeAttribute('hidden');
-          if (count > 0) el.classList.remove('hidden', 'is-hidden', 'hide');
-        });
-
-        /* ── b) Fire Shopify standard cart events so theme reacts ── */
-        /* Dawn / most modern Shopify themes listen to these */
-        document.dispatchEvent(new CustomEvent('cart:refresh', { bubbles: true, detail: { cart: cart } }));
-        document.dispatchEvent(new CustomEvent('cart:updated', { bubbles: true, detail: { cart: cart } }));
-        /* Some themes use jQuery events */
-        if (window.jQuery) {
-          jQuery(document).trigger('cart.requestComplete', [cart]);
-          jQuery(document).trigger('ajaxCart.afterCartLoad', [cart]);
-        }
-
-        /* ── c) Try to open cart drawer if theme supports it ── */
-        /* Dawn theme */
-        var drawerEl = document.getElementById('cart-drawer') || document.querySelector('cart-drawer');
-        if (drawerEl && typeof drawerEl.renderContents === 'function') {
-          drawerEl.renderContents({ target: { result: cart } });
-        }
-        /* Broadcast "open" event for cart drawers */
-        document.dispatchEvent(new CustomEvent('cart:open', { bubbles: true }));
-
-        /* ── d) Some themes watch for Shopify section renders ── */
-        if (window.Shopify && window.Shopify.onError) { /* noop */ }
-        fetch('/?section_id=cart-icon-bubble').then(function (r) {
-          if (!r.ok) return;
-          return r.text();
-        }).then(function (html) {
-          if (!html) return;
-          /* Replace cart icon bubble if theme uses sections rendering */
-          var tmp = document.createElement('div');
-          tmp.innerHTML = html;
-          var newBubble = tmp.querySelector('.shopify-section');
-          var oldBubble = document.querySelector('#shopify-section-cart-icon-bubble');
-          if (newBubble && oldBubble) oldBubble.innerHTML = newBubble.innerHTML;
-        }).catch(function () { /* section may not exist — that's fine */ });
-
-        /* ── Reset button ── */
-        setTimeout(function () {
-          self.classList.remove('added');
-          self.innerHTML = origHTML;
-          self.disabled  = false;
-        }, 2200);
+        refreshCartDrawer(cart);
+        setTimeout(function () { self.innerHTML = origHTML; self.disabled = false; }, 2000);
       })
       .catch(function (err) {
-        self.innerHTML = origHTML;
-        self.disabled  = false;
-        alert(err.message || 'Could not add to cart. Please try again.');
+        self.innerHTML = origHTML; self.disabled = false;
+        alert(err.message || 'Could not add to cart.');
       });
-    });
-  });
-
-  /* ─────────────────────────────────────
-     7. WISHLIST — localStorage based
-  ───────────────────────────────────── */
-  function getWL() {
-    try { return JSON.parse(localStorage.getItem('ba_wishlist') || '[]'); } catch (e) { return []; }
-  }
-  function saveWL(list) {
-    try { localStorage.setItem('ba_wishlist', JSON.stringify(list)); } catch (e) {}
-  }
-
-  var wl = getWL();
-  ROOT.querySelectorAll('.btn-wish').forEach(function (btn) {
-    if (wl.indexOf(btn.getAttribute('data-pid')) > -1) {
-      btn.classList.add('active');
-    }
-    btn.addEventListener('click', function () {
-      var pid  = this.getAttribute('data-pid');
-      var list = getWL();
-      var idx  = list.indexOf(pid);
-      if (idx > -1) {
-        list.splice(idx, 1);
-        this.classList.remove('active');
-      } else {
-        list.push(pid);
-        this.classList.add('active');
-      }
-      saveWL(list);
     });
   });
 
@@ -1054,124 +958,31 @@
   "name": "PLP Collection Page",
   "tag": "section",
   "settings": [
-    {
-      "type": "header",
-      "content": "Layout"
-    },
-    {
-      "type": "range",
-      "id": "products_per_page",
-      "label": "Products per page",
-      "min": 8, "max": 48, "step": 4, "default": 16
-    },
-    {
-      "type": "select",
-      "id": "grid_columns",
-      "label": "Desktop columns",
-      "options": [
-        { "value": "3", "label": "3 columns" },
-        { "value": "4", "label": "4 columns" },
-        { "value": "5", "label": "5 columns" }
-      ],
-      "default": "4"
-    },
-    {
-      "type": "checkbox",
-      "id": "show_breadcrumb",
-      "label": "Show breadcrumb",
-      "default": true
-    },
-    {
-      "type": "checkbox",
-      "id": "show_trust_strip",
-      "label": "Show trust badge strip",
-      "default": true
-    },
-    {
-      "type": "header",
-      "content": "Filters & Sorting"
-    },
-    {
-      "type": "checkbox",
-      "id": "enable_filtering",
-      "label": "Enable sidebar filters",
-      "default": true,
-      "info": "Online Store → Navigation → Filters — enable Availability, Price, Product type"
-    },
-    {
-      "type": "checkbox",
-      "id": "enable_sorting",
-      "label": "Enable sort dropdown",
-      "default": true
-    },
-    {
-      "type": "text",
-      "id": "filter_label",
-      "label": "Filter heading",
-      "default": "Filters"
-    },
-    {
-      "type": "header",
-      "content": "Labels"
-    },
-    {
-      "type": "text",
-      "id": "cart_btn_label",
-      "label": "Add to cart button text",
-      "default": "Add to Cart"
-    },
-    {
-      "type": "header",
-      "content": "Brand Colors"
-    },
-    {
-      "type": "color",
-      "id": "color_green",
-      "label": "Primary green",
-      "default": "#2d6a2d"
-    },
-    {
-      "type": "color",
-      "id": "color_green_light",
-      "label": "Green light",
-      "default": "#4caf50"
-    },
-    {
-      "type": "color",
-      "id": "color_green_pale",
-      "label": "Green pale",
-      "default": "#e8f5e9"
-    },
-    {
-      "type": "color",
-      "id": "color_red",
-      "label": "Red (sale badge)",
-      "default": "#c62828"
-    },
-    {
-      "type": "color",
-      "id": "color_gold",
-      "label": "Gold (new badge)",
-      "default": "#f9a825"
-    }
+    { "type": "header", "content": "Layout" },
+    { "type": "range", "id": "products_per_page", "label": "Products per page", "min": 8, "max": 48, "step": 4, "default": 16 },
+    { "type": "select", "id": "grid_columns", "label": "Desktop columns", "options": [{ "value": "3", "label": "3 columns" }, { "value": "4", "label": "4 columns" }, { "value": "5", "label": "5 columns" }], "default": "4" },
+    { "type": "checkbox", "id": "show_breadcrumb", "label": "Show breadcrumb", "default": true },
+    { "type": "checkbox", "id": "show_trust_strip", "label": "Show trust badge strip", "default": true },
+    { "type": "header", "content": "Filters & Sorting" },
+    { "type": "checkbox", "id": "enable_filtering", "label": "Enable sidebar filters", "default": true },
+    { "type": "checkbox", "id": "enable_sorting", "label": "Enable sort dropdown", "default": true },
+    { "type": "text", "id": "filter_label", "label": "Filter heading", "default": "Filters" },
+    { "type": "header", "content": "Labels" },
+    { "type": "text", "id": "cart_btn_label", "label": "Add to cart button text", "default": "Add to Cart" },
+    { "type": "header", "content": "Brand Colors" },
+    { "type": "color", "id": "color_green", "label": "Primary green", "default": "#2d6a2d" },
+    { "type": "color", "id": "color_green_light", "label": "Green light", "default": "#4caf50" },
+    { "type": "color", "id": "color_green_pale", "label": "Green pale", "default": "#e8f5e9" },
+    { "type": "color", "id": "color_red", "label": "Red (sale badge)", "default": "#c62828" },
+    { "type": "color", "id": "color_gold", "label": "Gold (new badge)", "default": "#f9a825" }
   ],
   "blocks": [
     {
       "type": "trust_item",
       "name": "Trust Badge",
       "settings": [
-        {
-          "type": "text",
-          "id": "icon",
-          "label": "Emoji icon",
-          "default": "🌱"
-        },
-        {
-          "type": "text",
-          "id": "text",
-          "label": "Badge text",
-          "default": "100% Organic Options"
-        }
+        { "type": "text", "id": "icon", "label": "Emoji icon", "default": "🌱" },
+        { "type": "text", "id": "text", "label": "Badge text", "default": "100% Organic Options" }
       ]
     }
   ],

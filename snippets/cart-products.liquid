@@ -38,13 +38,19 @@
 >
   {% if cart.empty? or force_empty %}
     {%- if shop.customer_accounts_enabled and customer == null -%}
-      <p>
+      <p class="agri-login-text">
         {{ 'actions.log_in_html' | t: link: routes.account_login_url }}
       </p>
     {%- endif -%}
 
+    <div class="agri-empty-state">
+      <span class="agri-empty-state__icon" aria-hidden="true">🌱</span>
+      <p class="agri-empty-state__text">{{ 'content.your_cart_is_empty' | t }}</p>
+      <p class="agri-empty-state__sub">Sow something great today!</p>
+    </div>
+
     <a
-      class="button cart-items__empty-button"
+      class="button cart-items__empty-button agri-empty-btn"
       href="{{ settings.empty_cart_button_link | default: routes.all_products_collection_url }}"
     >
       <span class="button-text">
@@ -89,34 +95,10 @@
               role="row"
               class="cart-items__table-row"
             >
-              <th
-                id="productImage"
-                scope="col"
-                role="columnheader"
-              >
-                {{ 'content.product_image' | t }}
-              </th>
-              <th
-                id="productInformation"
-                scope="col"
-                role="columnheader"
-              >
-                {{ 'content.product_information' | t }}
-              </th>
-              <th
-                id="quantity"
-                scope="col"
-                role="columnheader"
-              >
-                {{ 'content.quantity' | t }}
-              </th>
-              <th
-                id="productTotal"
-                scope="col"
-                role="columnheader"
-              >
-                {{ 'content.product_total' | t }}
-              </th>
+              <th id="productImage" scope="col" role="columnheader">{{ 'content.product_image' | t }}</th>
+              <th id="productInformation" scope="col" role="columnheader">{{ 'content.product_information' | t }}</th>
+              <th id="quantity" scope="col" role="columnheader">{{ 'content.quantity' | t }}</th>
+              <th id="productTotal" scope="col" role="columnheader">{{ 'content.product_total' | t }}</th>
             </tr>
           </thead>
 
@@ -124,7 +106,7 @@
             {% for item in cart.items %}
               <tr
                 role="row"
-                class="cart-items__table-row{% if item.parent_relationship.parent != null %} cart-items__nested-line{% endif %}{% unless item.unit_price_measurement %} cart-items__table-row--full-width-variants{% endunless %}"
+                class="cart-items__table-row agri-item-row{% if item.parent_relationship.parent != null %} cart-items__nested-line{% endif %}{% unless item.unit_price_measurement %} cart-items__table-row--full-width-variants{% endunless %}"
                 ref="cartItemRows[]"
                 data-parent-key="{{ item.parent_relationship.parent.key }}"
                 data-key="{{ item.key }}"
@@ -151,7 +133,7 @@
                     %}
                     <a
                       href="{{ item.url }}"
-                      class="cart-items__media-container"
+                      class="cart-items__media-container agri-media-container"
                       style="--ratio:{{ ratio }};"
                     >
                       {%- liquid
@@ -160,16 +142,22 @@
                     </a>
                   {%- endif %}
                 </td>
+
                 <td
                   class="cart-items__details cart-primary-typography"
                   role="cell"
                   headers="productInformation"
                 >
+                  <!-- Organic badge — only shows if product has "organic" tag -->
+                  {%- if item.product.tags contains 'organic' or item.product.tags contains 'Organic' -%}
+                    <span class="agri-organic-badge" aria-hidden="true">🍃 Organic</span>
+                  {%- endif -%}
+
                   <div class="cart-items__product-info">
                     <p>
                       <a
                         href="{{ item.url }}"
-                        class="cart-items__title"
+                        class="cart-items__title agri-item-title"
                         {% if item.parent_relationship.parent != null %}
                           aria-label="{{ 'accessibility.nested_product' | t: product_title: item.product.title, parent_title: item.parent_relationship.parent.title | escape }}"
                         {% endif %}
@@ -178,9 +166,7 @@
                       </a>
                     </p>
                     {% if item.product.vendor and block_settings.vendor %}
-                      <p>
-                        {{ item.product.vendor }}
-                      </p>
+                      <p class="agri-vendor">{{ item.product.vendor }}</p>
                     {% endif %}
 
                     {%- if item.item_components.size != 0 -%}
@@ -251,12 +237,11 @@
                       {%- endif -%}
 
                       {%- if item.line_level_discount_allocations.size > 0 -%}
-                        <ul
-                          class="list-unstyled"
-                          role="list"
-                        >
+                        <ul class="list-unstyled agri-line-discounts" role="list">
                           {%- for discount in item.line_level_discount_allocations -%}
-                            <li>{{ discount.discount_application.title | escape }}</li>
+                            <li class="agri-line-discount-tag">
+                              🏷️ {{ discount.discount_application.title | escape }}
+                            </li>
                           {%- endfor -%}
                         </ul>
                       {%- endif -%}
@@ -264,44 +249,44 @@
                   </div>
 
                   <div class="cart-items__unit-price-wrapper">
-                    <div>
+                    <div class="agri-price-group">
                       {% if item.original_price != item.final_price %}
                         <span class="visually-hidden">{{ 'content.price_sale' | t }}</span>
-                        <span>{{ item.final_price | money }}</span>
+                        <span class="agri-price-current">{{ item.final_price | money }}</span>
                         <span class="visually-hidden">{{ 'content.price_regular' | t }}</span>
-                        <s class="compare-at-price">
+                        <s class="compare-at-price agri-price-old">
                           {% if item.variant.compare_at_price > item.original_price %}
                             {{ item.variant.compare_at_price | money }}
                           {% else %}
                             {{ item.original_price | money }}
                           {% endif %}
                         </s>
+                        {%- assign savings = item.original_price | minus: item.final_price -%}
+                        {%- if savings > 0 -%}
+                          <span class="agri-save-badge">Save {{ savings | money }}</span>
+                        {%- endif -%}
                       {% else %}
                         {% if item.variant.compare_at_price > item.original_price %}
                           <span class="visually-hidden">{{ 'content.price_sale' | t }}</span>
                         {% else %}
                           <span class="visually-hidden">{{ 'content.price' | t }}</span>
                         {% endif %}
-
-                        <span>{{ item.original_price | money }}</span>
-
+                        <span class="agri-price-current">{{ item.original_price | money }}</span>
                         {% if item.variant.compare_at_price > item.original_price %}
                           <span class="visually-hidden">{{ 'content.price_regular' | t }}</span>
-                          <s class="compare-at-price">{{ item.variant.compare_at_price | money }}</s>
+                          <s class="compare-at-price agri-price-old">{{ item.variant.compare_at_price | money }}</s>
                         {% endif %}
                       {% endif %}
                     </div>
                   </div>
                 </td>
+
                 <td
                   class="cart-items__quantity"
                   role="cell"
                   headers="quantity"
                 >
-                  {% # Here I want to pass some arguments to the quantity block so it knows which value should the input be set to. Though quantity block could be a snippet instead %}
-                  {% assign can_update_quantity = item.instructions.can_update_quantity
-                    | default: true, allow_false: true
-                  %}
+                  {% assign can_update_quantity = item.instructions.can_update_quantity | default: true, allow_false: true %}
                   <div class="cart-items__quantity-controls">
                     {% render 'volume-pricing-info',
                       variant: item.variant,
@@ -319,7 +304,7 @@
                     %}
 
                     <button
-                      class="button cart-items__remove"
+                      class="button cart-items__remove agri-remove-btn"
                       type="button"
                       aria-label="{{ 'accessibility.remove_item' | t: title: item.title | escape }}"
                       on:click="/onLineItemRemove/{{ item.index | plus: 1 }}"
@@ -333,6 +318,7 @@
                     </button>
                   </div>
                 </td>
+
                 <td
                   class="cart-items__error hidden"
                   role="cell"
@@ -352,6 +338,7 @@
                     ></small>
                   </div>
                 </td>
+
                 {%- liquid
                   if settings.currency_code_enabled_cart_items
                     assign price = item.final_line_price | money_with_currency
@@ -362,7 +349,7 @@
                   endif
                 -%}
                 <td
-                  class="cart-items__price cart-secondary-typography"
+                  class="cart-items__price cart-secondary-typography agri-line-total"
                   role="cell"
                   headers="productTotal"
                 >
@@ -383,47 +370,220 @@
 </div>
 
 {% stylesheet %}
+  /* ============================================
+     AGRI THEME — CART PRODUCTS
+  ============================================ */
+  :root {
+    --agri-soil:       #3d2b1f;
+    --agri-leaf:       #3a7d44;
+    --agri-leaf-light: #5aab65;
+    --agri-moss:       #2d5a27;
+    --agri-wheat:      #c8a84b;
+    --agri-cream:      #f5f0e8;
+    --agri-sky:        #eaf4ea;
+    --agri-border:     #c5dfc0;
+  }
+
+  /* ── Wrapper background ─────────────────── */
+  .cart-items__wrapper {
+    background-color: var(--agri-cream);
+  }
+
+  /* ── Empty state ────────────────────────── */
+  .agri-empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 24px 20px 0;
+    text-align: center;
+  }
+  .agri-empty-state__icon {
+    font-size: 52px;
+    display: block;
+    margin-bottom: 10px;
+    animation: agri-sway 3s ease-in-out infinite;
+  }
+  @keyframes agri-sway {
+    0%, 100% { transform: rotate(-6deg); }
+    50%       { transform: rotate(6deg); }
+  }
+  .agri-empty-state__text {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--agri-soil);
+    margin-bottom: 4px;
+  }
+  .agri-empty-state__sub {
+    font-size: 12px;
+    color: #7a6a58;
+    margin-bottom: 0;
+  }
+  .agri-empty-btn {
+    background: linear-gradient(135deg, var(--agri-moss), var(--agri-leaf)) !important;
+    color: #fff !important;
+    border: none !important;
+    border-radius: 8px !important;
+    box-shadow: 0 4px 14px rgba(45, 90, 39, 0.3) !important;
+    transition: transform 0.15s, box-shadow 0.2s !important;
+  }
+  .agri-empty-btn:hover {
+    transform: translateY(-2px) !important;
+    box-shadow: 0 6px 20px rgba(45, 90, 39, 0.4) !important;
+  }
+
+  /* ── Item row card ──────────────────────── */
+  .agri-item-row {
+    background: #ffffff;
+    border: 1.5px solid var(--agri-border) !important;
+    border-radius: 10px !important;
+    padding: 12px !important;
+    box-shadow: 0 2px 8px rgba(58, 125, 68, 0.07);
+    transition: box-shadow 0.2s;
+    overflow: visible !important;
+  }
+  .agri-item-row:hover {
+    box-shadow: 0 4px 16px rgba(58, 125, 68, 0.14);
+  }
+
+  /* ── Product image frame ────────────────── */
+  .agri-media-container {
+    border: 2px solid var(--agri-border) !important;
+    border-radius: 8px !important;
+    background: var(--agri-sky);
+    overflow: hidden;
+  }
+
+  /* ── Organic badge ──────────────────────── */
+  .agri-organic-badge {
+    display: inline-block;
+    background: var(--agri-leaf);
+    color: #fff;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    padding: 2px 7px;
+    border-radius: 0 0 5px 5px;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+
+  /* ── Vendor label ───────────────────────── */
+  .agri-vendor {
+    font-size: 10px !important;
+    font-weight: 700 !important;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--agri-leaf) !important;
+  }
+
+  /* ── Item title ─────────────────────────── */
+  .agri-item-title {
+    color: var(--agri-soil) !important;
+    font-weight: 700 !important;
+  }
+  .agri-item-title:hover {
+    color: var(--agri-leaf) !important;
+    text-decoration: underline !important;
+  }
+
+  /* ── Prices ─────────────────────────────── */
+  .agri-price-group {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 4px;
+  }
+  .agri-price-current {
+    font-weight: 700;
+    color: var(--agri-moss);
+  }
+  .agri-price-old {
+    color: #aaa !important;
+    font-size: 11px !important;
+  }
+  .agri-save-badge {
+    display: inline-block;
+    background: #fff3cd;
+    color: #856404;
+    font-size: 9.5px;
+    font-weight: 700;
+    padding: 1px 5px;
+    border-radius: 4px;
+    border: 1px solid #ffc107;
+    vertical-align: middle;
+  }
+
+  /* ── Line total ─────────────────────────── */
+  .agri-line-total {
+    color: var(--agri-soil) !important;
+    font-weight: 700 !important;
+  }
+
+  /* ── Line discount tags ─────────────────── */
+  .agri-line-discount-tag {
+    display: inline-block;
+    background: #fff3cd;
+    color: #856404;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 2px 7px;
+    border-radius: 4px;
+    border: 1px solid #ffc107;
+    margin-top: 4px;
+  }
+
+  /* ── Quantity selector ──────────────────── */
+  .cart-items .quantity-selector {
+    border: 1.5px solid var(--agri-border) !important;
+    border-radius: 8px !important;
+    background: var(--agri-sky) !important;
+    overflow: hidden;
+  }
+  .cart-items .quantity-selector button {
+    color: var(--agri-leaf) !important;
+    background: transparent !important;
+  }
+  .cart-items .quantity-selector button:hover {
+    background: #c8e6c9 !important;
+  }
+
+  /* ── Remove button ──────────────────────── */
+  .agri-remove-btn {
+    color: #c0392b !important;
+    opacity: 0.5;
+    transition: opacity 0.2s, transform 0.15s !important;
+  }
+  .agri-remove-btn:hover {
+    opacity: 1 !important;
+    transform: scale(1.15) !important;
+    background: transparent !important;
+    box-shadow: none !important;
+  }
+
+  /* ── Original layout styles ─────────────── */
   .cart-items {
     --cart-item-media-width-min: 2.5rem;
     --cart-item-media-width-max: 7.5rem;
-
     container-name: cart-items;
     container-type: inline-size;
     width: 100%;
   }
 
-  .cart-items-disabled {
-    pointer-events: none;
-  }
+  .cart-items-disabled { pointer-events: none; }
 
   .cart-page--empty .cart-items__wrapper {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin-block-start: 0;
-    text-align: center;
+    display: flex; flex-direction: column; align-items: center; margin-block-start: 0; text-align: center;
   }
 
   .cart-drawer:not(:has(.cart-form)) .cart-items__wrapper {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
+    display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center;
   }
 
-  .cart-items__table {
-    width: 100%;
-    border-spacing: 0;
-  }
-
-  .cart-items__table * {
-    margin: 0;
-  }
+  .cart-items__table { width: 100%; border-spacing: 0; }
+  .cart-items__table * { margin: 0; }
 
   .cart-items__table-row {
     --cart-item-price-width: 6rem;
-
     display: grid;
     grid-template-columns: clamp(2.5rem, 15cqi, 7.5rem) minmax(0, 1fr) minmax(var(--cart-item-price-width), auto);
     grid-template-areas:
@@ -436,7 +596,6 @@
     margin-bottom: var(--margin-lg);
   }
 
-  /* Cart drawer: separate grid areas for variants and unit price */
   .cart-drawer .cart-items__table-row--full-width-variants {
     grid-template-columns: clamp(2.5rem, 15cqi, 7.5rem) minmax(0, 1fr) auto;
     grid-template-rows: repeat(4, min-content) 1fr;
@@ -446,42 +605,14 @@
       'media unit_price unit_price'
       'media quantity quantity'
       'media error error';
-
-    .cart-items__details {
-      display: contents;
-    }
-
-    .cart-items__product-info {
-      grid-area: details;
-    }
-
-    .cart-items__variants-wrapper {
-      grid-area: variants;
-
-      &:empty {
-        display: none;
-      }
-
-      p {
-        margin: 0;
-      }
-    }
-
-    .cart-items__unit-price-wrapper {
-      grid-area: unit_price;
-      font-size: var(--font-size--sm);
-    }
-
-    .cart-items__price {
-      min-width: auto;
-      width: max-content;
-    }
+    .cart-items__details { display: contents; }
+    .cart-items__product-info { grid-area: details; }
+    .cart-items__variants-wrapper { grid-area: variants; &:empty { display: none; } p { margin: 0; } }
+    .cart-items__unit-price-wrapper { grid-area: unit_price; font-size: var(--font-size--sm); }
+    .cart-items__price { min-width: auto; width: max-content; }
   }
 
-  .cart-items__table-row.cart-items__nested-line td:first-child {
-    width: 60%;
-    justify-self: right;
-  }
+  .cart-items__table-row.cart-items__nested-line td:first-child { width: 60%; justify-self: right; }
 
   html:active-view-transition-type(page-navigation) .cart-items__table-row {
     /* stylelint-disable-next-line declaration-no-important */
@@ -495,56 +626,23 @@
   }
 
   @keyframes removeRow {
-    0% {
-      height: var(--row-height);
-    }
-
-    100% {
-      opacity: 0;
-      height: 0;
-      padding-bottom: 0;
-      margin-bottom: 0;
-      border-color: transparent;
-    }
+    0%   { height: var(--row-height); }
+    100% { opacity: 0; height: 0; padding-bottom: 0; margin-bottom: 0; border-color: transparent; }
   }
 
-  .cart-items__table-row:last-child {
-    padding-bottom: 0;
-  }
+  .cart-items__table-row:last-child { padding-bottom: 0; }
 
   .cart-items--dividers .cart-items__table-row {
-    border-bottom: 1px solid var(--color-border);
+    border-bottom: 1px solid var(--agri-border);
     margin-bottom: var(--cart-items-gap);
   }
+  .cart-items--dividers .cart-items__table-row:has(+ .cart-items__nested-line) { border-bottom: none; margin-bottom: 0; }
+  .cart-items--dividers .cart-items__table-row:last-of-type { border-block-end: none; padding-block-end: 0; margin-bottom: 0; }
 
-  .cart-items--dividers .cart-items__table-row:has(+ .cart-items__nested-line) {
-    border-bottom: none;
-    margin-bottom: 0;
-  }
-
-  .cart-items--dividers .cart-items__table-row:last-of-type {
-    border-block-end: none;
-    padding-block-end: 0;
-    margin-bottom: 0;
-  }
-
-  .cart-items__details {
-    grid-area: details;
-    color: rgb(var(--color-foreground-rgb) / var(--opacity-70));
-  }
-
-  .cart-items__details > * + *,
-  .cart-items__bundle li {
-    margin-block-start: var(--margin-3xs);
-  }
-
-  .cart-items__details * {
-    font-size: var(--font-size--sm);
-  }
-
-  .cart-items__details a {
-    text-decoration: none;
-  }
+  .cart-items__details { grid-area: details; color: rgb(var(--color-foreground-rgb) / var(--opacity-70)); }
+  .cart-items__details > * + *, .cart-items__bundle li { margin-block-start: var(--margin-3xs); }
+  .cart-items__details * { font-size: var(--font-size--sm); }
+  .cart-items__details a { text-decoration: none; }
 
   .cart-items__title {
     font-size: var(--font-size--md);
@@ -554,20 +652,9 @@
     margin-block-start: calc((var(--font-size--md) - 1lh) / 2);
   }
 
-  .cart-items__variants {
-    display: block;
-  }
-
-
-  .cart-items__variant {
-    display: inline;
-  }
-
-  .cart-items__variant dt,
-  .cart-items__variant dd {
-    display: inline;
-    margin: 0;
-  }
+  .cart-items__variants { display: block; }
+  .cart-items__variant { display: inline; }
+  .cart-items__variant dt, .cart-items__variant dd { display: inline; margin: 0; }
 
   .cart-items__quantity {
     grid-area: quantity;
@@ -591,11 +678,7 @@
     margin-inline-start: calc(-1 * var(--minimum-touch-target) - var(--gap-xs));
   }
 
-  .cart-items__quantity .quantity-selector {
-    display: inline-flex;
-    font-size: var(--font-size--sm);
-    height: auto;
-  }
+  .cart-items__quantity .quantity-selector { display: inline-flex; font-size: var(--font-size--sm); height: auto; }
 
   .cart-items__remove {
     background-color: transparent;
@@ -607,10 +690,7 @@
     padding: 0;
   }
 
-  .cart-items__media {
-    grid-area: media;
-    padding: 0;
-  }
+  .cart-items__media { grid-area: media; padding: 0; }
 
   .cart-items__price {
     grid-area: price;
@@ -622,11 +702,7 @@
     line-height: var(--line-height);
   }
 
-
-  .cart-items__price-unit {
-    font-size: var(--font-size--xs);
-    padding-block-start: var(--padding-2xs);
-  }
+  .cart-items__price-unit { font-size: var(--font-size--xs); padding-block-start: var(--padding-2xs); }
 
   .cart-items__media-container {
     display: flex;
@@ -650,7 +726,6 @@
     padding-block: var(--padding-lg);
   }
 
-  /* Error message */
   .cart-items__error {
     display: flex;
     align-items: flex-start;
@@ -662,58 +737,24 @@
     transform: translateY(0);
     transition: opacity var(--drawer-animation-speed) var(--animation-easing),
       transform var(--drawer-animation-speed) var(--animation-easing);
-
-    @starting-style {
-      opacity: 0;
-      transform: translateY(-0.5rem);
-    }
+    @starting-style { opacity: 0; transform: translateY(-0.5rem); }
   }
 
-  .cart-item__error {
-    display: flex;
-    align-items: flex-start;
-    width: 100%;
-    font-size: var(--font-size--sm);
-    padding-block: var(--padding-2xs);
-  }
-
-  .cart-item__error .svg-wrapper {
-    flex-shrink: 0;
-    width: var(--icon-size-xs);
-    height: var(--icon-size-xs);
-    margin-inline: var(--margin-3xs) var(--margin-xs);
-    margin-block-start: var(--margin-3xs);
-  }
+  .cart-item__error { display: flex; align-items: flex-start; width: 100%; font-size: var(--font-size--sm); padding-block: var(--padding-2xs); }
+  .cart-item__error .svg-wrapper { flex-shrink: 0; width: var(--icon-size-xs); height: var(--icon-size-xs); margin-inline: var(--margin-3xs) var(--margin-xs); margin-block-start: var(--margin-3xs); }
 
   @container cart-items (min-width: 720px) {
-    /* Cart page: original layout */
     .cart-items__table-row {
       --cart-item-price-width: 6rem;
-
       grid-template-columns: 7.5rem 1fr 1fr minmax(var(--cart-item-price-width), auto);
       grid-template-rows: min-content 1fr;
       grid-template-areas:
         'media details quantity price'
         'media details error error';
     }
-
-    .cart-items__quantity,
-    .cart-items__price {
-      grid-area: initial;
-    }
-
-    .cart-items__quantity {
-      margin-top: 0;
-    }
-
-    .cart-items__price {
-      min-height: var(--minimum-touch-target);
-      display: flex;
-      flex-direction: column;
-      align-items: flex-end;
-    }
-
-    /* Cart drawer: separate areas for variants and unit price */
+    .cart-items__quantity, .cart-items__price { grid-area: initial; }
+    .cart-items__quantity { margin-top: 0; }
+    .cart-items__price { min-height: var(--minimum-touch-target); display: flex; flex-direction: column; align-items: flex-end; }
     .cart-drawer .cart-items__table-row--full-width-variants {
       grid-template-rows: min-content min-content min-content 1fr;
       grid-template-areas:
@@ -721,93 +762,28 @@
         'media variants variants variants'
         'media unit_price unit_price unit_price'
         'media error error error';
-
-      .cart-items__quantity,
-      .cart-items__price {
-        grid-area: initial;
-      }
+      .cart-items__quantity, .cart-items__price { grid-area: initial; }
     }
   }
 
-  .cart__subtotal-container,
-  .cart__total-container {
-    display: flex;
-    flex-direction: column;
-  }
-
-  .cart__total-container {
-    row-gap: var(--gap-2xs);
-
-    &.cart__total-container--has-installments {
-      row-gap: var(--gap-xs);
-    }
-  }
-
-  .cart__subtotal-container:empty {
-    display: none;
-  }
-
+  .cart__subtotal-container, .cart__total-container { display: flex; flex-direction: column; }
+  .cart__total-container { row-gap: var(--gap-2xs); &.cart__total-container--has-installments { row-gap: var(--gap-xs); } }
+  .cart__subtotal-container:empty { display: none; }
   .cart__summary-totals {
-    display: flex;
-    flex-direction: column;
-    gap: var(--gap-xl);
-    width: 100%;
-    border-block-start: none;
-
-    &:has(> :first-child:not(.cart__subtotal-container, .cart__total-container)) {
-      padding-block-start: 0;
-      border-block-start: none;
-    }
-
-    @media screen and (min-width: 750px) {
-      padding-block-start: 0;
-    }
+    display: flex; flex-direction: column; gap: var(--gap-xl); width: 100%; border-block-start: none;
+    &:has(> :first-child:not(.cart__subtotal-container, .cart__total-container)) { padding-block-start: 0; border-block-start: none; }
+    @media screen and (min-width: 750px) { padding-block-start: 0; }
   }
+  .cart__subtotal-container, .cart__subtotal-container * { font-size: var(--font-size--sm); }
+  .cart__total { font-weight: var(--font-weight-bold); }
+  .cart__total-label { font-size: var(--font-size--sm); }
+  .cart__total-value { font-size: var(--font-size--xl); @media screen and (max-width: 749px) { font-size: var(--font-size--lg); } }
 
-  .cart__subtotal-container,
-  .cart__subtotal-container * {
-    font-size: var(--font-size--sm);
-  }
+  .cart-primary-typography { font-family: var(--cart-primary-font-family); font-style: var(--cart-primary-font-style); font-weight: var(--cart-primary-font-weight); }
+  .cart-secondary-typography { font-family: var(--cart-secondary-font-family); font-style: var(--cart-secondary-font-style); font-weight: var(--cart-secondary-font-weight); }
 
-  .cart__total {
-    font-weight: var(--font-weight-bold);
-  }
-
-  .cart__total-label {
-    font-size: var(--font-size--sm);
-  }
-
-  .cart__total-value {
-    font-size: var(--font-size--xl);
-
-    @media screen and (max-width: 749px) {
-      font-size: var(--font-size--lg);
-    }
-  }
-
-  .cart-primary-typography {
-    font-family: var(--cart-primary-font-family);
-    font-style: var(--cart-primary-font-style);
-    font-weight: var(--cart-primary-font-weight);
-  }
-
-  .cart-secondary-typography {
-    font-family: var(--cart-secondary-font-family);
-    font-style: var(--cart-secondary-font-style);
-    font-weight: var(--cart-secondary-font-weight);
-  }
-
-  .cart__ctas {
-    width: 100%;
-    display: grid;
-    gap: var(--checkout-button-gap);
-    grid-auto-flow: row;
-    grid-template-columns: 1fr;
-  }
-
-  .cart__additional-checkout-buttons {
-    width: 100%;
-  }
+  .cart__ctas { width: 100%; display: grid; gap: var(--checkout-button-gap); grid-auto-flow: row; grid-template-columns: 1fr; }
+  .cart__additional-checkout-buttons { width: 100%; }
 
   shopify-accelerated-checkout-cart {
     --shopify-accelerated-checkout-inline-alignment: center;
@@ -815,118 +791,256 @@
     --shopify-accelerated-checkout-row-gap: var(--checkout-button-gap, 10px);
   }
 
-  /* Remove animation */
-  .remove-icon-bottom,
-  .remove-icon-top {
-    transition: transform var(--animation-speed) var(--animation-easing);
-  }
-
-  .cart-items__remove:hover .remove-icon-top {
-    transform: translate(calc(-1 * var(--icon-stroke-width)), var(--icon-stroke-width)) rotate(-15deg);
-  }
-
-  .cart-items__remove:is(:hover, :active) .remove-icon-bottom {
-    transform: translateY(var(--icon-stroke-width));
-  }
-
-  .cart-items__table-row.removing .remove-icon-bottom {
-    transform: translateY(0);
-  }
-
-  .cart-items__table-row.removing .remove-icon-top {
-    animation: removeButtonClickedIconTop var(--animation-speed) var(--animation-easing) forwards;
-  }
+  .remove-icon-bottom, .remove-icon-top { transition: transform var(--animation-speed) var(--animation-easing); }
+  .cart-items__remove:hover .remove-icon-top { transform: translate(calc(-1 * var(--icon-stroke-width)), var(--icon-stroke-width)) rotate(-15deg); }
+  .cart-items__remove:is(:hover, :active) .remove-icon-bottom { transform: translateY(var(--icon-stroke-width)); }
+  .cart-items__table-row.removing .remove-icon-bottom { transform: translateY(0); }
+  .cart-items__table-row.removing .remove-icon-top { animation: removeButtonClickedIconTop var(--animation-speed) var(--animation-easing) forwards; }
 
   @keyframes removeButtonClickedIconTop {
-    50% {
-      transform: translate(0, calc(-1 * var(--icon-stroke-width)));
-    }
-
-    100% {
-      transform: translate(0, 0);
-    }
+    50%  { transform: translate(0, calc(-1 * var(--icon-stroke-width))); }
+    100% { transform: translate(0, 0); }
   }
 
-  .cart-items__properties {
-    display: block;
-    margin-block-start: var(--margin-2xs);
-  }
-
-  .cart-items__property {
-    display: block;
-  }
-
-  .cart-items__properties dt,
-  .cart-items__properties dd {
-    display: inline;
-    margin: 0;
-    overflow-wrap: break-word;
-  }
+  .cart-items__properties { display: block; margin-block-start: var(--margin-2xs); }
+  .cart-items__property { display: block; }
+  .cart-items__properties dt, .cart-items__properties dd { display: inline; margin: 0; overflow-wrap: break-word; }
 
   @media screen and (min-width: 750px) {
-    .cart-items .quantity-selector {
-      --quantity-selector-width: 105px;
-      height: var(--button-size-md);
-      width: var(--quantity-selector-width);
-    }
-
-    .cart-items .quantity-selector button {
-      width: var(--button-size-md);
-      height: var(--button-size-md);
-    }
-
-    .cart-items .quantity-selector input {
-      max-width: calc(var(--quantity-selector-width) - var(--button-size-md) * 2);
-    }
+    .cart-items .quantity-selector { --quantity-selector-width: 105px; height: var(--button-size-md); width: var(--quantity-selector-width); }
+    .cart-items .quantity-selector button { width: var(--button-size-md); height: var(--button-size-md); }
+    .cart-items .quantity-selector input { max-width: calc(var(--quantity-selector-width) - var(--button-size-md) * 2); }
   }
 
   @media screen and (prefers-reduced-motion: no-preference) {
     html:active-view-transition-type(empty-cart-drawer) {
-      .cart-items__empty-button,
-      .cart__checkout-button {
+      .cart-items__empty-button, .cart__checkout-button {
         view-transition-name: cart-drawer-primary-action;
-
-        & > .button-text {
-          view-transition-name: cart-drawer-primary-action-text;
-        }
+        & > .button-text { view-transition-name: cart-drawer-primary-action-text; }
       }
     }
   }
 
   ::view-transition-old(cart-drawer-primary-action-text),
-  ::view-transition-new(cart-drawer-primary-action-text) {
-    height: 100%;
-    object-fit: none;
-    overflow: clip;
-    overflow-clip-margin: 1em;
-  }
-
-  ::view-transition-old(cart-drawer-primary-action-text) {
-    animation: cart-drawer-primary-action-text var(--animation-speed) var(--animation-easing) reverse forwards;
-  }
-  ::view-transition-new(cart-drawer-primary-action-text) {
-    animation: cart-drawer-primary-action-text var(--animation-speed) var(--animation-easing) forwards;
-  }
-
-  ::view-transition-old(cart-drawer-primary-action),
-  ::view-transition-new(cart-drawer-primary-action) {
-    height: 100%;
-  }
-
-  ::view-transition-group(cart-drawer-primary-action-text),
-  ::view-transition-group(cart-drawer-primary-action) {
+  ::view-transition-new(cart-drawer-primary-action-text) { height: 100%; object-fit: none; overflow: clip; overflow-clip-margin: 1em; }
+  ::view-transition-old(cart-drawer-primary-action-text) { animation: cart-drawer-primary-action-text var(--animation-speed) var(--animation-easing) reverse forwards; }
+  ::view-transition-new(cart-drawer-primary-action-text) { animation: cart-drawer-primary-action-text var(--animation-speed) var(--animation-easing) forwards; }
+  ::view-transition-old(cart-drawer-primary-action), ::view-transition-new(cart-drawer-primary-action) { height: 100%; }
+  ::view-transition-group(cart-drawer-primary-action-text), ::view-transition-group(cart-drawer-primary-action) {
     animation-duration: var(--spring-d300-b0-duration);
     animation-timing-function: var(--spring-d300-b0-easing);
   }
 
   @keyframes cart-drawer-primary-action-text {
-    from {
-      filter: blur(3px);
-      opacity: 0;
+    from { filter: blur(3px); opacity: 0; }
+    to   { filter: none; opacity: 1; }
+  }
+
+  /* ============================================
+     MOBILE FRIENDLY — max-width: 749px
+  ============================================ */
+  @media screen and (max-width: 749px) {
+
+    /* ── Item card mobile layout ──────────────
+       Image | Title + Price
+              | Qty + Remove
+    ───────────────────────────────────────── */
+    .agri-item-row {
+      padding: 10px !important;
+      border-radius: 10px !important;
+      margin-bottom: 10px !important;
     }
-    to {
-      filter: none;
-      opacity: 1;
+
+    /* Tighter grid on mobile: smaller image, full details */
+    .cart-items__table-row {
+      grid-template-columns: 72px minmax(0, 1fr) !important;
+      grid-template-rows: auto auto auto !important;
+      grid-template-areas:
+        'media details'
+        'media quantity'
+        'media error' !important;
+      column-gap: 10px !important;
+      padding-bottom: 0 !important;
+    }
+
+    /* Price sits inside details column on mobile (top-right corner) */
+    .cart-items__price {
+      grid-area: unset !important;
+      text-align: right !important;
+      min-width: unset !important;
+      font-size: var(--font-size--sm) !important;
+      font-weight: 700 !important;
+    }
+
+    /* Details: price floats to top right */
+    .cart-items__details {
+      display: flex !important;
+      flex-direction: column !important;
+      gap: 3px !important;
+    }
+
+    /* Product info row: title left, price right */
+    .cart-items__product-info {
+      display: flex !important;
+      justify-content: space-between !important;
+      align-items: flex-start !important;
+      gap: 6px !important;
+    }
+
+    /* Move price cell visually next to title */
+    .cart-items__price {
+      order: -1;
+    }
+
+    /* Title font smaller on mobile */
+    .cart-items__title,
+    .agri-item-title {
+      font-size: 13px !important;
+      line-height: 1.3 !important;
+    }
+
+    /* Variants + properties smaller */
+    .cart-items__details * {
+      font-size: 11px !important;
+    }
+
+    /* Organic badge compact */
+    .agri-organic-badge {
+      font-size: 8px !important;
+      padding: 1px 5px !important;
+    }
+
+    /* Save badge compact */
+    .agri-save-badge {
+      font-size: 8.5px !important;
+      padding: 1px 4px !important;
+    }
+
+    /* Price group wraps neatly */
+    .agri-price-group {
+      flex-wrap: wrap !important;
+      gap: 3px !important;
+    }
+
+    .agri-price-current {
+      font-size: 13px !important;
+    }
+
+    .agri-price-old {
+      font-size: 10px !important;
+    }
+
+    /* Quantity controls: smaller touch targets still accessible */
+    .cart-items__quantity {
+      margin-block-start: 6px !important;
+      gap: 6px !important;
+    }
+
+    .cart-items__quantity-controls {
+      gap: 6px !important;
+      flex-wrap: nowrap !important;
+      align-items: center !important;
+    }
+
+    /* Quantity selector smaller on mobile */
+    .cart-items .quantity-selector {
+      --quantity-selector-width: 90px !important;
+      height: 34px !important;
+      width: 90px !important;
+    }
+
+    .cart-items .quantity-selector button {
+      width: 30px !important;
+      height: 34px !important;
+      font-size: 16px !important;
+      min-width: 30px !important;
+    }
+
+    .cart-items .quantity-selector input {
+      max-width: 30px !important;
+      font-size: 13px !important;
+      text-align: center !important;
+    }
+
+    /* Remove button — smaller but still 44px touch area */
+    .agri-remove-btn,
+    .cart-items__remove {
+      width: 36px !important;
+      height: 36px !important;
+      min-width: 36px !important;
+      opacity: 0.6 !important;
+    }
+
+    /* Line total in price cell */
+    .agri-line-total {
+      font-size: 14px !important;
+    }
+
+    /* Image frame on mobile */
+    .agri-media-container {
+      border-radius: 6px !important;
+    }
+
+    /* Empty state smaller on mobile */
+    .agri-empty-state__icon {
+      font-size: 42px !important;
+    }
+    .agri-empty-state__text {
+      font-size: 14px !important;
+    }
+    .cart-items__empty-button.agri-empty-btn {
+      padding-inline: var(--padding-2xl) !important;
+      width: 100% !important;
+      max-width: 280px !important;
+    }
+
+    /* Discount tags smaller */
+    .agri-line-discount-tag {
+      font-size: 9px !important;
+      padding: 1px 5px !important;
+    }
+
+    /* Table full width */
+    .cart-items__table {
+      width: 100% !important;
+    }
+  }
+
+  /* ── Extra small screens (< 380px) ─────── */
+  @media screen and (max-width: 380px) {
+    .agri-item-row {
+      padding: 8px !important;
+    }
+
+    .cart-items__table-row {
+      grid-template-columns: 60px minmax(0, 1fr) !important;
+      column-gap: 8px !important;
+    }
+
+    .agri-item-title,
+    .cart-items__title {
+      font-size: 12px !important;
+    }
+
+    .cart-items .quantity-selector {
+      --quantity-selector-width: 80px !important;
+      width: 80px !important;
+    }
+
+    .cart-items .quantity-selector button {
+      width: 26px !important;
+      min-width: 26px !important;
+    }
+
+    .cart-items .quantity-selector input {
+      max-width: 28px !important;
+    }
+
+    .agri-remove-btn,
+    .cart-items__remove {
+      width: 32px !important;
+      height: 32px !important;
+      min-width: 32px !important;
     }
   }
 {% endstylesheet %}

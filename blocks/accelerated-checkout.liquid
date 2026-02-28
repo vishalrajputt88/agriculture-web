@@ -60,6 +60,27 @@
   .shopify-payment-button__more-options[aria-hidden='true'] {
     display: none;
   }
+
+  /* ── OR divider styling ── */
+  .shopify-payment-button__more-options:not([aria-hidden='true']) {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    background: none;
+    border: none;
+    padding: 2px 0;
+    pointer-events: none;
+    cursor: default;
+  }
+
+  .shopify-payment-button__more-options:not([aria-hidden='true'])::before,
+  .shopify-payment-button__more-options:not([aria-hidden='true'])::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: #e0e0e0;
+  }
 {% endstylesheet %}
 
 {% schema %}

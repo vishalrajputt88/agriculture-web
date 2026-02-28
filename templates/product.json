@@ -339,6 +339,19 @@
               },
               "block_order": []
             },
+            "wishlist_button_main": {
+              "type": "wishlist-button",
+              "name": "Wishlist Button",
+              "settings": {
+                "add_text": "Add to Wishlist",
+                "remove_text": "Remove from Wishlist",
+                "padding-block-start": 4,
+                "padding-block-end": 0,
+                "padding-inline-start": 0,
+                "padding-inline-end": 0
+              },
+              "blocks": {}
+            },
             "promotional_coupon_banner_ggiW36": {
               "type": "promotional-coupon-banner",
               "name": "Promotional coupon banner",
@@ -409,6 +422,7 @@
             "custom_liquid_k3XP4T",
             "custom_varient_picker_mhFFRg",
             "buy_buttons_eYQEYi",
+            "wishlist_button_main",
             "promotional_coupon_banner_ggiW36",
             "product_details_accordion_wDyKf8"
           ]

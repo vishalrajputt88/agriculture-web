@@ -38,6 +38,7 @@ class CartItemsComponent extends Component {
     document.addEventListener(ThemeEvents.cartUpdate, this.#handleCartUpdate);
     document.addEventListener(ThemeEvents.discountUpdate, this.handleDiscountUpdate);
     document.addEventListener(ThemeEvents.quantitySelectorUpdate, this.#debouncedOnChange);
+    document.addEventListener(CartAddEvent.eventName, this.#handleCartAdd); // ← FIX
   }
 
   disconnectedCallback() {
@@ -45,6 +46,7 @@ class CartItemsComponent extends Component {
 
     document.removeEventListener(ThemeEvents.cartUpdate, this.#handleCartUpdate);
     document.removeEventListener(ThemeEvents.quantitySelectorUpdate, this.#debouncedOnChange);
+    document.removeEventListener(CartAddEvent.eventName, this.#handleCartAdd); // ← FIX
   }
 
   /**
@@ -256,6 +258,27 @@ class CartItemsComponent extends Component {
       this.#updateCartQuantitySelectorButtonStates();
     } else {
       sectionRenderer.renderSection(this.sectionId, { cache: false });
+    }
+  };
+
+  /**
+   * Handles CartAddEvent — drawer ke liye cart HTML update karta hai.
+   * @param {CartAddEvent} event
+   */
+  #handleCartAdd = (event) => {
+    // Sirf drawer context mein kaam karo
+    if (!this.isDrawer) return;
+
+    const sections = event instanceof CustomEvent ? event.detail?.data?.sections : null;
+    const sectionId = this.sectionId;
+
+    if (sections?.[sectionId]) {
+      // Section HTML event mein already available hai — morph karo
+      morphSection(sectionId, sections[sectionId], 'hydration');
+      this.#updateCartQuantitySelectorButtonStates();
+    } else {
+      // Fallback — server se fresh fetch karo
+      sectionRenderer.renderSection(sectionId, { cache: false });
     }
   };
 

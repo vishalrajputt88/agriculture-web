@@ -4949,7 +4949,7 @@ product-recommendations:has([data-has-recommendations='false']) {
 h1, h2, h3, h4, h5, h6, div, span, button { font-family: Poppins, sans-serif !important;  }
 
 
-#ProductInformation-template--26132905460001__main .price {     font-size: 30px;
+#ProductInformation-template--19058386075763__main .price {     font-size: 30px;
     font-weight: 700; }
 
 
@@ -4969,3 +4969,51 @@ position: fixed !important;
 
 
 .menu-drawer__menu-item-text { font-size: 15px; }
+
+/* ============================================================
+   WISHLIST BUTTON — Amazon/Flipkart style (blue outlined)
+   Covers: Swym, BA Wishlist, common wishlist app class names
+   ============================================================ */
+.product-form-buttons .swym-button,
+.product-form-buttons [class*="swym"],
+.product-form-buttons .btn-wishlist,
+.product-form-buttons button[data-wishlist],
+.product-form-buttons [class*="wishlist-btn"],
+.product-form-buttons [class*="add-to-wishlist"],
+.product-form-buttons .ba-wishlist-btn,
+.product-form-buttons [data-ba-wishlist] {
+  flex: 1 0 100% !important;
+  width: 100% !important;
+  height: 50px !important;
+  min-height: 50px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 8px !important;
+  background: #ffffff !important;
+  color: #4a90d9 !important;
+  font-size: 13px !important;
+  font-weight: 800 !important;
+  letter-spacing: 0.6px !important;
+  text-transform: uppercase !important;
+  border: 2px solid #4a90d9 !important;
+  border-radius: 5px !important;
+  cursor: pointer !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+  transition: background 0.15s ease, color 0.15s ease, transform 0.1s ease !important;
+  margin-top: 2px !important;
+}
+
+.product-form-buttons .swym-button:hover,
+.product-form-buttons [class*="swym"]:hover,
+.product-form-buttons .btn-wishlist:hover,
+.product-form-buttons button[data-wishlist]:hover,
+.product-form-buttons [class*="wishlist-btn"]:hover,
+.product-form-buttons [class*="add-to-wishlist"]:hover,
+.product-form-buttons .ba-wishlist-btn:hover,
+.product-form-buttons [data-ba-wishlist]:hover {
+  background: #4a90d9 !important;
+  color: #ffffff !important;
+  transform: translateY(-1px) !important;
+}

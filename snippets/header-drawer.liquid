@@ -22,15 +22,6 @@
     assign ratio = block_settings.featured_products_aspect_ratio
   endif
 
-  ##
-  # We only eager load heavy elements of the page when rendering this template
-  # through the Section Rendering API.
-  #
-  # This keeps the initial render lightweight, minimizing the impact on TTFB.
-  # The second render then refreshes the page with additional content.
-  #
-  # At the moment, we check if the Section Rendering API is being used by
-  # checking if section.index is blank.
   assign eager_loading = false
   if section.index == blank
     assign eager_loading = true
@@ -95,9 +86,6 @@
           class="menu-drawer__menu has-submenu"
           role="list"
         >
-          {%- comment -%}
-            Handle menus with fewer than 3 levels of links
-          {%- endcomment -%}
           {% if linklist.levels < 3 %}
             {% assign first_accordion_open = false %}
             {% assign animation_index = 0 %}
@@ -108,9 +96,6 @@
                 class="{%- if block_settings.drawer_accordion -%}menu-drawer__list-item--deep{%- else -%}menu-drawer__list-item--flat{%- endif -%}{% if block_settings.drawer_dividers %} menu-drawer__list-item--divider{% endif %}"
               >
                 {% if block_settings.drawer_accordion and link.links != blank %}
-                  {%- comment -%}
-                    Accordion for links with children, in menus with fewer than 3 levels of links
-                  {%- endcomment -%}
                   {% liquid
                     assign accordion_state = ''
                     if first_accordion_open == false and block_settings.drawer_accordion_expand_first
@@ -175,9 +160,6 @@
                     </details>
                   </accordion-custom>
                 {% elsif block_settings.drawer_accordion == false and link.links != blank %}
-                  {%- comment -%}
-                    Flat menus for links with children, in menus with fewer than 3 levels of links
-                  {%- endcomment -%}
                   <a
                     id="HeaderDrawer-{{ link.handle }}"
                     href="{{ link.url }}"
@@ -229,9 +211,6 @@
                     {%- endfor -%}
                   </ul>
                 {% else %}
-                  {%- comment -%}
-                    Simple links for links with no children (regardless of accordion setting), in menus with fewer than 3 levels of links
-                  {%- endcomment -%}
                   <a
                     id="HeaderDrawer-{{ link.handle }}"
                     href="{{ link.url }}"
@@ -246,9 +225,6 @@
               </li>
             {%- endfor -%}
           {% else %}
-            {%- comment -%}
-              Handle menus with 3 levels of links
-            {%- endcomment -%}
             {% assign animation_index = 0 %}
             {%- for link in linklist.links -%}
               {% assign animation_index = animation_index | plus: 1 %}
@@ -257,9 +233,6 @@
                 style="--menu-drawer-animation-index: {{ animation_index }};"
               >
                 {%- if link.links != blank -%}
-                  {%- comment -%}
-                    Regardless of the Accordion setting, in menus with 3 levels of links, we use a details element to handle the top level of the menu for links that have children.
-                  {%- endcomment -%}
                   <details
                     id="Details-menu-drawer-menu-item-{{ forloop.index }}"
                     class="menu-drawer__menu-container{% if block_settings.drawer_dividers %} menu-drawer__menu-container--divider{% endif %}"
@@ -332,10 +305,6 @@
                               "
                             >
                               {%- if childlink.links == blank -%}
-                                {%- comment -%}
-                                  Simple links for links with no children (regardless of accordion setting), in menus with 3 levels of links
-                                  This link is currently using --parent class style but --child would match the pattern on desktop
-                                {%- endcomment -%}
                                 <a
                                   id="HeaderDrawer-{{ link.handle }}-{{ childlink.handle }}"
                                   href="{{ childlink.url }}"
@@ -364,9 +333,6 @@
                                   endif
                                 %}
                                 {% if block_settings.drawer_accordion %}
-                                  {%- comment -%}
-                                    Accordion for links with children, in menus with 3 levels of links
-                                  {%- endcomment -%}
                                   <accordion-custom {{ accordion_state }}>
                                     <details
                                       id="Details-menu-drawer-{{ link.handle }}-{{ childlink.handle }}"
@@ -428,9 +394,6 @@
                                     </details>
                                   </accordion-custom>
                                 {% else %}
-                                  {%- comment -%}
-                                    Flat menus for links with children, in menus with 3 levels of links
-                                  {%- endcomment -%}
                                   <a
                                     id="HeaderDrawer-{{ link.handle }}-{{ childlink.handle }}"
                                     href="{{ childlink.url }}"
@@ -496,7 +459,6 @@
                             if block_settings.menu_style == 'featured_collections'
                               assign featured_collections = link.links | where: 'type', 'collection_link'
                             endif
-
                             if block_settings.menu_style == 'featured_products'
                               assign collection_linklist = link.links | where: 'type', 'collection_link' | first
                               assign featured_products_collection = collection_linklist.object
@@ -506,7 +468,6 @@
                             assign featured_products_collection = null | sort
                           endif
                         -%}
-
                         {% if featured_collections.size > 0 or featured_products_collection.products_count > 0 %}
                           <div
                             class="menu-drawer__featured-content menu-drawer__featured-content--childlist"
@@ -516,25 +477,14 @@
                               {% if featured_collections.size > 0 %}
                                 {%- for collection in featured_collections limit: max_featured_items -%}
                                   <li class="menu-drawer__featured-content-list-item menu-drawer__featured-content-list-item--collection">
-                                    {% render 'resource-card',
-                                      resource: collection.object,
-                                      resource_type: 'collection',
-                                      style: 'overlay',
-                                      image_aspect_ratio: ratio,
-                                      image_sizes: 'auto, 400px'
-                                    %}
+                                    {% render 'resource-card', resource: collection.object, resource_type: 'collection', style: 'overlay', image_aspect_ratio: ratio, image_sizes: 'auto, 400px' %}
                                   </li>
                                 {%- endfor -%}
                               {% else %}
                                 {% paginate featured_products_collection.products by max_featured_items %}
                                   {%- for product in featured_products_collection.products limit: max_featured_items -%}
                                     <li class="menu-drawer__featured-content-list-item menu-drawer__featured-content-list-item--product">
-                                      {% render 'resource-card',
-                                        resource: product,
-                                        resource_type: 'product',
-                                        image_aspect_ratio: ratio,
-                                        image_sizes: 'auto, 400px'
-                                      %}
+                                      {% render 'resource-card', resource: product, resource_type: 'product', image_aspect_ratio: ratio, image_sizes: 'auto, 400px' %}
                                     </li>
                                   {%- endfor -%}
                                 {% endpaginate %}
@@ -546,9 +496,6 @@
                     </div>
                   </details>
                 {%- else -%}
-                  {%- comment -%}
-                    Simple links for links with no children (regardless of accordion setting), in menus with 3 levels of links
-                  {%- endcomment -%}
                   <a
                     id="HeaderDrawer-{{ link.handle }}"
                     href="{{ link.url }}"
@@ -574,7 +521,6 @@
           if localization.available_languages.size <= 1
             assign show_language = false
           endif
-
           assign show_country = section.settings.show_country
           if localization.available_countries.size <= 1
             assign show_country = false
@@ -588,108 +534,47 @@
             else
               assign flag_shadow_size = 2
             endif
-
             assign localization_font = '--menu-localization-font: var(--font-[localization_font]--family); ' | replace: '[localization_font]', section.settings.localization_font
             assign color_shadow = '--color-shadow: rgb(var(--color-foreground-rgb) / var(--opacity-10-25));'
             assign form_style = localization_font | append: color_shadow
           %}
           {% if show_language and show_country == false %}
             <div class="menu-drawer__localization color-{{ settings.popover_color_scheme }}">
-              {% render 'localization-form',
-                show_country: show_country,
-                show_language: show_language,
-                localization_style: 'drawer',
-                form_style: form_style,
-                form_id: block.id
-              %}
+              {% render 'localization-form', show_country: show_country, show_language: show_language, localization_style: 'drawer', form_style: form_style, form_id: block.id %}
             </div>
           {% else %}
             <drawer-localization-component class="menu-drawer__localization">
-              <details
-                id="drawer-localization"
-                class="drawer-localization"
-                on:toggle="/toggle"
-              >
-                <summary
-                  id="HeaderDrawer-localization"
-                  class="drawer-localization__button h3 link focus-inset"
-                  aria-expanded="false"
-                  on:click="header-drawer/open/submenu"
-                  style="{{ form_style }}"
-                >
+              <details id="drawer-localization" class="drawer-localization" on:toggle="/toggle">
+                <summary id="HeaderDrawer-localization" class="drawer-localization__button h3 link focus-inset" aria-expanded="false" on:click="header-drawer/open/submenu" style="{{ form_style }}">
                   <div class="drawer-localization__button--label h6">
                     {%- if show_country -%}
                       <div class="mobile-localization mobile-localization--country link">
                         {%- if section.settings.country_selector_style == true -%}
-                          <span
-                            class="icon-flag"
-                            style="
-                              background-image: url({{- localization.country | image_url: width: 32 }});
-                              --size-shadow: {{ flag_shadow_size }}px;
-                              --color-shadow: rgb(var(--color-foreground-rgb) / var(--opacity-30-60));
-                            "
-                          ></span>
+                          <span class="icon-flag" style="background-image: url({{- localization.country | image_url: width: 32 }}); --size-shadow: {{ flag_shadow_size }}px; --color-shadow: rgb(var(--color-foreground-rgb) / var(--opacity-30-60));"></span>
                         {%- endif -%}
-                        <span class="currency-code">
-                          {{- localization.country.currency.iso_code -}}
-                        </span>
+                        <span class="currency-code">{{- localization.country.currency.iso_code -}}</span>
                       </div>
                     {%- endif -%}
-
-                    {%- if show_country and show_language -%}
-                      <span>/</span>
-                    {%- endif -%}
-
+                    {%- if show_country and show_language -%}<span>/</span>{%- endif -%}
                     {%- if show_language -%}
                       <div class="mobile-localization mobile-localization--country link">
-                        <span>
-                          {{ localization.language.iso_code | upcase }}
-                        </span>
+                        <span>{{ localization.language.iso_code | upcase }}</span>
                       </div>
                     {%- endif -%}
                   </div>
-                  <span class="svg-wrapper icon-caret icon-caret--forward">
-                    {{- 'icon-caret.svg' | inline_asset_content -}}
-                  </span>
+                  <span class="svg-wrapper icon-caret icon-caret--forward">{{- 'icon-caret.svg' | inline_asset_content -}}</span>
                 </summary>
-
-                <div
-                  class="menu-drawer__submenu has-submenu color-{{ settings.drawer_color_scheme }}"
-                  style=""
-                >
-                  <div
-                    class="menu-drawer__nav-buttons"
-                    ref="navButtons"
-                  >
-                    <button
-                      class="button menu-drawer__back-button link focus-inset"
-                      aria-expanded="true"
-                      on:click="header-drawer/back"
-                    >
-                      <span class="svg-wrapper icon-caret icon-caret--backward">
-                        {{- 'icon-caret.svg' | inline_asset_content -}}
-                      </span>
+                <div class="menu-drawer__submenu has-submenu color-{{ settings.drawer_color_scheme }}" style="">
+                  <div class="menu-drawer__nav-buttons" ref="navButtons">
+                    <button class="button menu-drawer__back-button link focus-inset" aria-expanded="true" on:click="header-drawer/back">
+                      <span class="svg-wrapper icon-caret icon-caret--backward">{{- 'icon-caret.svg' | inline_asset_content -}}</span>
                       {{ 'content.localization_region_and_language' | t }}
                     </button>
-                    <button
-                      class="button close-button menu-drawer__close-button"
-                      type="button"
-                      aria-label="{{ 'actions.close' | t }}"
-                      on:click="header-drawer/close"
-                    >
-                      <span class="svg-wrapper header-drawer-icon header-drawer-icon--close">
-                        {{- 'icon-close.svg' | inline_asset_content -}}
-                      </span>
+                    <button class="button close-button menu-drawer__close-button" type="button" aria-label="{{ 'actions.close' | t }}" on:click="header-drawer/close">
+                      <span class="svg-wrapper header-drawer-icon header-drawer-icon--close">{{- 'icon-close.svg' | inline_asset_content -}}</span>
                     </button>
                   </div>
-
-                  {% render 'localization-form',
-                    show_country: show_country,
-                    show_language: show_language,
-                    localization_style: 'drawer',
-                    form_style: form_style,
-                    form_id: block.id
-                  %}
+                  {% render 'localization-form', show_country: show_country, show_language: show_language, localization_style: 'drawer', form_style: form_style, form_id: block.id %}
                 </div>
               </details>
             </drawer-localization-component>
@@ -701,7 +586,6 @@
         if block_settings.menu_style == 'featured_collections'
           assign top_level_featured_collections = linklist.links | where: 'type', 'collection_link'
         endif
-
         if eager_loading and block_settings.menu_style == 'featured_products'
           for link in linklist.links
             if link.type == 'collection_link'
@@ -716,33 +600,19 @@
         endif
       -%}
       {% if top_level_featured_collections.size > 0 or top_level_featured_products_collection.products_count > 0 %}
-        <div
-          class="menu-drawer__featured-content"
-          style="--menu-drawer-animation-index: {{ linklist.links.size | plus: 1 }};"
-        >
+        <div class="menu-drawer__featured-content" style="--menu-drawer-animation-index: {{ linklist.links.size | plus: 1 }};">
           <ul class="menu-drawer__featured-content-list menu-drawer__animated-element list-unstyled">
             {% if top_level_featured_collections.size > 0 %}
               {%- for collection in top_level_featured_collections limit: max_featured_items -%}
                 <li class="menu-drawer__featured-content-list-item menu-drawer__featured-content-list-item--collection">
-                  {% render 'resource-card',
-                    resource: collection.object,
-                    resource_type: 'collection',
-                    style: 'overlay',
-                    image_aspect_ratio: ratio,
-                    image_sizes: 'auto, 400px'
-                  %}
+                  {% render 'resource-card', resource: collection.object, resource_type: 'collection', style: 'overlay', image_aspect_ratio: ratio, image_sizes: 'auto, 400px' %}
                 </li>
               {%- endfor -%}
             {% elsif top_level_featured_products_collection.products_count > 0 %}
               {% paginate top_level_featured_products_collection.products by max_featured_items %}
                 {%- for product in top_level_featured_products_collection.products limit: max_featured_items -%}
                   <li class="menu-drawer__featured-content-list-item menu-drawer__featured-content-list-item--product">
-                    {% render 'resource-card',
-                      resource: product,
-                      resource_type: 'product',
-                      image_aspect_ratio: ratio,
-                      image_sizes: 'auto, 400px'
-                    %}
+                    {% render 'resource-card', resource: product, resource_type: 'product', image_aspect_ratio: ratio, image_sizes: 'auto, 400px' %}
                   </li>
                 {%- endfor -%}
               {% endpaginate %}
@@ -751,14 +621,14 @@
         </div>
       {% endif %}
     </div>
-    <div
-      class="menu-drawer__backdrop"
-      on:click="header-drawer/close"
-    ></div>
+    <div class="menu-drawer__backdrop" on:click="header-drawer/close"></div>
   </details>
 </header-drawer>
 
 {% stylesheet %}
+  /* ============================================================
+     ORIGINAL STYLES — FULLY PRESERVED
+  ============================================================ */
   .header__icon--menu {
     position: initial;
   }
@@ -862,7 +732,6 @@
     }
   }
 
-  /* When opening a submenu we don't want the first-level menu to be scrollable, so we reset the overflow  */
   .menu-drawer.menu-drawer--has-submenu-opened {
     overflow: initial;
   }
@@ -930,7 +799,6 @@
 
   .menu-drawer__menu {
     --menu-drawer-inline-padding: calc(var(--padding-sm) + 7px);
-
     list-style: none;
     padding-inline: var(--drawer-padding);
     margin-inline: 0;
@@ -1125,9 +993,6 @@
     object-fit: cover;
   }
 
-  /* Fix alignment for collection image mode links without images in drawer */
-
-  /* Target menu items in grids that have images */
   .menu-drawer__menu--grid:has(.menu-drawer__link-image) .menu-drawer__menu-item:not(:has(> .menu-drawer__link-image)) {
     display: flex;
     flex-direction: column;
@@ -1179,7 +1044,6 @@
     text-overflow: ellipsis;
   }
 
-  /** Styles when the country selector is hidden */
   .menu-drawer .language-selector:not(.menu-drawer__submenu *) {
     width: fit-content;
     padding-inline-start: 0;
@@ -1253,7 +1117,6 @@
 
   .menu-drawer__account shop-user-avatar {
     --shop-avatar-size: 2.4rem;
-
     margin-right: 0.55rem;
     margin-left: -0.45rem;
   }
@@ -1266,38 +1129,19 @@
   }
 
   @keyframes menu-drawer-nav-open {
-    0% {
-      visibility: hidden;
-      opacity: 0;
-      transform: translateX(-0.5rem);
-    }
-
-    100% {
-      visibility: visible;
-      opacity: 1;
-      transform: translateX(0);
-    }
+    0% { visibility: hidden; opacity: 0; transform: translateX(-0.5rem); }
+    100% { visibility: visible; opacity: 1; transform: translateX(0); }
   }
 
   @keyframes menu-drawer-subnav-open {
-    0% {
-      visibility: visible;
-      opacity: 1;
-      transform: translateX(0);
-    }
-
-    100% {
-      visibility: hidden;
-      opacity: 0;
-      transform: translateX(-1rem);
-    }
+    0% { visibility: visible; opacity: 1; transform: translateX(0); }
+    100% { visibility: hidden; opacity: 0; transform: translateX(-1rem); }
   }
 
-  /* Drawer Localization Styles */
   .drawer-localization__button .icon-flag {
     width: var(--menu-localization-font-size, var(--icon-size-sm));
     height: var(--menu-localization-font-size, var(--icon-size-sm));
-    clip-path: circle(50%); /* stylelint-disable-line */
+    clip-path: circle(50%);
     background-position: center;
     background-size: cover;
     margin-inline-end: 4px;
@@ -1403,5 +1247,152 @@
 
   .drawer-localization .language-selector .svg-wrapper.icon-caret svg {
     transform: none;
+  }
+
+  /* ============================================================
+     AGRICULTURE THEME — DRAWER OVERRIDES
+     Sirf color + visual styling, koi layout change nahi
+  ============================================================ */
+
+  /* ── Drawer panel background ────────────────── */
+  .menu-drawer {
+    background-color: #f5f0e8 !important;
+    border-right: 2px solid #c5dfc0 !important;
+    box-shadow: 4px 0 24px rgba(45, 90, 39, 0.12) !important;
+  }
+
+  /* ── Top accent stripe on drawer ────────────── */
+  .menu-drawer::before {
+    content: '';
+    display: block;
+    width: 100%;
+    height: 4px;
+    flex-shrink: 0;
+    background: repeating-linear-gradient(
+      90deg,
+      #2d5a27 0px,  #2d5a27 14px,
+      #3a7d44 14px, #3a7d44 24px,
+      #c8a84b 24px, #c8a84b 28px,
+      #5aab65 28px, #5aab65 38px
+    );
+  }
+
+  /* ── Menu trigger icon (hamburger) ─────────── */
+  .menu-drawer-container .header__icon--summary {
+    color: #2d5a27;
+    transition: color 0.2s;
+  }
+  .menu-drawer-container .header__icon--summary:hover {
+    color: #3a7d44;
+  }
+
+  /* ── Close button ────────────────────────────── */
+  .menu-drawer .menu-drawer__close-button {
+    color: #3d2b1f;
+    transition: color 0.2s, transform 0.2s;
+  }
+  .menu-drawer .menu-drawer__close-button:hover {
+    color: #3a7d44;
+    transform: rotate(90deg);
+  }
+
+  /* ── Top-level nav links ─────────────────────── */
+  .menu-drawer .menu-drawer__menu-item--mainlist {
+    color: #3d2b1f !important;
+    font-weight: 700;
+    border-radius: 8px;
+    padding-inline: 8px;
+    margin-inline: -8px;
+    transition: background 0.18s, color 0.18s;
+  }
+  .menu-drawer .menu-drawer__menu-item--mainlist:hover {
+    background: #eaf4ea !important;
+    color: #2d5a27 !important;
+  }
+  .menu-drawer .menu-drawer__menu-item--mainlist.menu-drawer__menu-item--active {
+    color: #2d5a27 !important;
+  }
+
+  /* ── Child links ─────────────────────────────── */
+  .menu-drawer .menu-drawer__menu-item--child,
+  .menu-drawer .menu-drawer__menu-item--parent {
+    color: #5a4a38 !important;
+    transition: color 0.15s, padding-left 0.15s;
+  }
+  .menu-drawer .menu-drawer__menu-item--child:hover,
+  .menu-drawer .menu-drawer__menu-item--parent:hover {
+    color: #3a7d44 !important;
+    padding-left: 4px;
+  }
+  .menu-drawer .menu-drawer__menu-item--child.menu-drawer__menu-item--active {
+    color: #2d5a27 !important;
+    font-weight: 700;
+  }
+
+  /* ── List dividers ───────────────────────────── */
+  .menu-drawer .menu-drawer__list-item--divider {
+    border-block-end: 1px solid #c5dfc0 !important;
+  }
+  .menu-drawer .menu-drawer__menu-container--divider {
+    border-block-end: 1px solid #c5dfc0 !important;
+  }
+
+  /* ── Accordion icon (+ / caret) color ───────── */
+  .menu-drawer .icon-plus svg,
+  .menu-drawer .icon-caret svg {
+    color: #3a7d44;
+  }
+
+  /* ── Back button ─────────────────────────────── */
+  .menu-drawer .menu-drawer__back-button {
+    color: #2d5a27 !important;
+    font-weight: 700;
+  }
+  .menu-drawer .menu-drawer__back-button:hover {
+    color: #3a7d44 !important;
+  }
+
+  /* ── Submenu panel background ────────────────── */
+  .menu-drawer .menu-drawer__submenu {
+    background-color: #f5f0e8 !important;
+  }
+
+  /* ── Nav buttons row (back + close) ─────────── */
+  .menu-drawer .menu-drawer__nav-buttons {
+    background-color: #eaf4ea;
+    border-bottom: 1px solid #c5dfc0;
+  }
+
+  /* ── Backdrop tint — green field feel ───────── */
+  .menu-drawer__backdrop {
+    backdrop-filter: brightness(0.7) sepia(0.15) !important;
+  }
+
+  /* ── Utility links area (localization) ──────── */
+  .menu-drawer .menu-drawer__utility-links {
+    background-color: #eaf4ea;
+    border-top: 1px solid #c5dfc0;
+    padding: 8px 0;
+    margin-inline-start: 0;
+    padding-inline-start: var(--padding-xl);
+  }
+
+  /* ── Localization button ─────────────────────── */
+  .menu-drawer .drawer-localization__button {
+    color: #3d2b1f !important;
+  }
+  .menu-drawer .drawer-localization__button:hover {
+    color: #3a7d44 !important;
+  }
+  .menu-drawer .currency-code {
+    color: #2d5a27;
+    font-weight: 700;
+  }
+
+  /* ── Featured cards section border ──────────── */
+  .menu-drawer .menu-drawer__featured-content {
+    border-top: 1px solid #c5dfc0;
+    background: #eaf4ea;
+    padding-top: 8px;
   }
 {% endstylesheet %}

@@ -24,12 +24,13 @@
         aria-label="{{ 'content.discounts' | t }}"
       >
         {%- for discount in cart.cart_level_discount_applications -%}
-          <li class="cart-discounts__item">
+          <li class="cart-discounts__item agri-discount-item">
             <span class="cart-discounts__label">
+              <span class="agri-discount-icon">🏷️</span>
               {{- 'icon-discount.svg' | inline_asset_content -}}
               {{ discount.title | escape }}
             </span>
-            <span class="cart-discounts__value cart-secondary-typography"
+            <span class="cart-discounts__value cart-secondary-typography agri-discount-value"
               >-{{ discount.total_allocated_amount | money -}}
             </span>
           </li>
@@ -60,11 +61,11 @@
                 open
               {% endif %}
             >
-              <summary class="cart-note__summary">
-                <span class="cart-note__label cart-primary-typography">
+              <summary class="cart-note__summary agri-accordion-summary">
+                <span class="cart-note__label cart-primary-typography agri-accordion-label">
+                  <span class="agri-accordion-icon">📝</span>
                   {{ 'content.seller_note' | t }}
                 </span>
-
                 <span class="cart-totals__icon">
                   {{- 'icon-plus.svg' | inline_asset_content -}}
                 </span>
@@ -81,7 +82,7 @@
                   form="cart-form"
                   on:input="/updateCartNote"
                   id="cart-note"
-                  class="cart-note__instructions"
+                  class="cart-note__instructions agri-textarea"
                   name="note"
                 >{{ cart.note }}</textarea>
               </div>
@@ -89,9 +90,11 @@
           </accordion-custom>
         </cart-note>
       {% endif %}
+
       {% if settings.show_cart_note and settings.show_add_discount_code %}
         <div class="cart-actions__divider"></div>
       {% endif %}
+
       {% if settings.show_add_discount_code %}
         {% liquid
           assign discount_codes = cart.cart_level_discount_applications | where: 'type', 'discount_code' | map: 'title'
@@ -102,10 +105,7 @@
               endif
             endfor
           endfor
-
           assign discount_codes = discount_codes | uniq
-
-          # Evaluate the boolean expression for the disclosure state
           if discount_codes.size == 0
             assign disclosure_expanded = false
           else
@@ -120,9 +120,11 @@
               open
             {% endif %}
           >
-            <summary class="cart-discount__summary">
-              <span class="cart-discount__label cart-primary-typography">{{ 'content.discount' | t }}</span>
-
+            <summary class="cart-discount__summary agri-accordion-summary">
+              <span class="cart-discount__label cart-primary-typography agri-accordion-label">
+                <span class="agri-accordion-icon">🏷️</span>
+                {{ 'content.discount' | t }}
+              </span>
               <span class="cart-totals__icon">
                 {{- 'icon-plus.svg' | inline_asset_content -}}
               </span>
@@ -149,7 +151,7 @@
                       </label>
                       <input
                         id="cart-discount"
-                        class="cart-discount__input"
+                        class="cart-discount__input agri-input"
                         type="text"
                         name="discount"
                         size="8"
@@ -158,7 +160,7 @@
                       >
                       <button
                         type="submit"
-                        class="button cart-discount__button"
+                        class="button cart-discount__button agri-apply-btn"
                       >
                         {{ 'actions.apply' | t }}
                       </button>
@@ -188,10 +190,11 @@
                   <ul class="cart-discount__codes">
                     {% for discount_code in discount_codes %}
                       <li
-                        class="cart-discount__pill"
+                        class="cart-discount__pill agri-discount-pill"
                         data-discount-code="{{ discount_code }}"
                         aria-label="{{ 'accessibility.discount_applied' | t: code: discount_code }}"
                       >
+                        <span class="agri-pill-leaf">🌿</span>
                         <p class="cart-discount__pill-code">
                           {{ discount_code }}
                         </p>
@@ -225,15 +228,17 @@
 
   <div class="cart-totals__container{% if settings.show_installments %} cart-totals__container--has-installments{% endif %}">
     <span
-      class="cart-totals__item cart-totals__total"
+      class="cart-totals__item cart-totals__total agri-total-row"
       role="status"
     >
-      <span class="cart-totals__total-label cart-primary-typography">{{ 'content.cart_estimated_total' | t }}</span>
+      <span class="cart-totals__total-label cart-primary-typography agri-total-label">
+        <span class="agri-total-icon">🌾</span>
+        {{ 'content.cart_estimated_total' | t }}
+      </span>
       <text-component
         ref="cartTotal"
         value="{{ total_price | strip_html }}"
-        class="cart-totals__total-value cart-secondary-typography"
-        {% comment %} Used by payment_terms web component {% endcomment %}
+        class="cart-totals__total-value cart-secondary-typography agri-total-value"
         data-testid="cart-total-value"
         data-cart-subtotal
       >
@@ -247,17 +252,25 @@
         {% endform %}
       </span>
     {% endif %}
-    <div class="cart-totals__item cart-totals__tax-note cart-primary-typography">
+    <div class="cart-totals__item cart-totals__tax-note cart-primary-typography agri-tax-note">
       {% render 'tax-info', has_discounts_enabled: settings.show_add_discount_code %}
     </div>
   </div>
+</div>
+
+<!-- Agriculture trust badges row -->
+<div class="agri-trust-badges" aria-hidden="true">
+  <span class="agri-trust-badge">🌾 100% Natural</span>
+  <span class="agri-trust-badge">🚜 Farm Direct</span>
+  <span class="agri-trust-badge">♻️ Eco Packed</span>
+  <span class="agri-trust-badge">🛡️ Secure Pay</span>
 </div>
 
 <div class="cart__ctas">
   <button
     type="submit"
     id="checkout"
-    class="cart__checkout-button button"
+    class="cart__checkout-button button agri-checkout-btn"
     name="checkout"
     {% if cart == empty %}
       disabled
@@ -265,6 +278,7 @@
     form="cart-form"
   >
     <span class="button-text">
+      <span class="agri-checkout-icon">🔒</span>
       {{ 'content.checkout' | t }}
     </span>
   </button>
@@ -282,323 +296,249 @@
 </div>
 
 {% stylesheet %}
+  /* ============================================
+     AGRI THEME — CART SUMMARY
+  ============================================ */
+
+  /* ── Accordion labels (Discount / Note) ── */
+  .agri-accordion-summary {
+    transition: color 0.2s;
+  }
+  .agri-accordion-summary:hover {
+    color: var(--agri-leaf, #3a7d44) !important;
+  }
+  .agri-accordion-label {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .agri-accordion-icon {
+    font-size: 14px;
+  }
+
+  /* ── Discount input & button ───────────── */
+  .agri-input {
+    border-color: var(--agri-border, #c5dfc0) !important;
+    border-radius: 8px !important;
+    background: var(--agri-sky, #eaf4ea) !important;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  .agri-input:focus {
+    border-color: var(--agri-leaf, #3a7d44) !important;
+    box-shadow: 0 0 0 3px rgba(58, 125, 68, 0.15) !important;
+    outline: none;
+  }
+  .agri-input::placeholder {
+    color: #9ab89a !important;
+  }
+
+  .agri-apply-btn {
+    background: var(--agri-leaf, #3a7d44) !important;
+    color: #fff !important;
+    border: none !important;
+    border-radius: 8px !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.5px;
+    transition: background 0.2s, transform 0.15s !important;
+  }
+  .agri-apply-btn:hover {
+    background: var(--agri-moss, #2d5a27) !important;
+    transform: translateY(-1px);
+  }
+
+  /* ── Discount pill ─────────────────────── */
+  .agri-discount-pill {
+    background: #e8f5e9 !important;
+    border: 1.5px solid var(--agri-border, #c5dfc0) !important;
+    color: var(--agri-moss, #2d5a27) !important;
+    font-weight: 700 !important;
+    gap: 4px !important;
+  }
+  .agri-pill-leaf {
+    font-size: 12px;
+  }
+
+  /* ── Discount applied saving display ───── */
+  .agri-discount-item {
+    background: #fff9e6;
+    border-radius: 6px;
+    padding: 4px 8px;
+    margin-bottom: 4px;
+  }
+  .agri-discount-value {
+    color: #c0392b !important;
+    font-weight: 700 !important;
+  }
+
+  /* ── Textarea ──────────────────────────── */
+  .agri-textarea {
+    border: 1.5px solid var(--agri-border, #c5dfc0) !important;
+    border-radius: 8px !important;
+    background: var(--agri-sky, #eaf4ea) !important;
+    transition: border-color 0.2s;
+  }
+  .agri-textarea:focus {
+    border-color: var(--agri-leaf, #3a7d44) !important;
+    outline: none;
+  }
+
+  /* ── Total row ─────────────────────────── */
+  .agri-total-row {
+    padding: 10px 0 6px;
+    border-top: 2px solid var(--agri-border, #c5dfc0) !important;
+    margin-top: 4px;
+  }
+  .agri-total-label {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--agri-soil, #3d2b1f) !important;
+  }
+  .agri-total-icon {
+    font-size: 16px;
+  }
+  .agri-total-value {
+    color: var(--agri-moss, #2d5a27) !important;
+    font-weight: 700 !important;
+  }
+
+  /* ── Tax note ──────────────────────────── */
+  .agri-tax-note {
+    font-size: var(--font-size--2xs);
+    opacity: 0.75;
+  }
+
+  /* ── Trust badges ──────────────────────── */
+  .agri-trust-badges {
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+    gap: 6px;
+    padding: 10px 14px;
+    margin-bottom: 12px;
+    background: var(--agri-sky, #eaf4ea);
+    border: 1.5px solid var(--agri-border, #c5dfc0);
+    border-radius: 8px;
+  }
+  .agri-trust-badge {
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--agri-moss, #2d5a27);
+    letter-spacing: 0.4px;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+
+  /* ── Checkout button ───────────────────── */
+  .agri-checkout-btn {
+    background: linear-gradient(135deg, var(--agri-moss, #2d5a27), var(--agri-leaf, #3a7d44)) !important;
+    border: none !important;
+    border-radius: 10px !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.5px;
+    box-shadow: 0 4px 16px rgba(45, 90, 39, 0.3) !important;
+    transition: transform 0.15s, box-shadow 0.2s !important;
+    position: relative;
+    overflow: hidden;
+  }
+  .agri-checkout-btn::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, transparent 0%, rgba(255,255,255,0.12) 50%, transparent 100%);
+    transform: translateX(-100%);
+    transition: transform 0.45s;
+  }
+  .agri-checkout-btn:hover::before {
+    transform: translateX(100%);
+  }
+  .agri-checkout-btn:hover {
+    transform: translateY(-2px) !important;
+    box-shadow: 0 6px 22px rgba(45, 90, 39, 0.4) !important;
+  }
+  .agri-checkout-btn:active {
+    transform: translateY(0) !important;
+  }
+  .agri-checkout-btn:disabled {
+    opacity: 0.5 !important;
+    transform: none !important;
+    cursor: not-allowed;
+  }
+  .agri-checkout-icon {
+    margin-right: 6px;
+    font-size: 14px;
+  }
+
+  /* ── Original styles preserved ─────────── */
   .cart-actions {
     display: flex;
     flex-direction: column;
     gap: 0;
-    border-block: 1px solid var(--color-border);
+    border-block: 1px solid var(--agri-border, #c5dfc0);
     padding-block: 0;
     margin-block-start: var(--margin-3xs);
   }
 
   .cart-actions__divider {
-    border-block-start: 1px solid var(--color-border);
+    border-block-start: 1px solid var(--agri-border, #c5dfc0);
   }
 
   .cart-totals:not(:has(.cart-actions)) {
     margin-block-start: var(--margin-3xs);
-    border-block-start: 1px solid var(--color-border);
+    border-block-start: 1px solid var(--agri-border, #c5dfc0);
     padding-block-start: var(--margin-xl);
   }
 
-  .cart-totals__item {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
-
-  .cart-totals__tax-note {
-    color: rgb(var(--color-foreground-rgb) / var(--opacity-subdued-text));
-  }
-
-  .cart-totals__tax-note small {
-    font-size: var(--font-size--2xs);
-  }
-
-  .cart-discounts {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-  }
-
-  .cart-discounts__item {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
-
-  .cart-discounts__label {
-    display: flex;
-    align-items: center;
-    gap: var(--gap-2xs);
-  }
-
-  .cart-discounts__label svg {
-    width: var(--icon-size-sm);
-    height: var(--icon-size-sm);
-    display: inline-block;
-  }
-
-  .cart-totals__original-container,
-  .cart-totals__container {
-    display: flex;
-    flex-direction: column;
-  }
-
-  .cart-totals__container {
-    row-gap: var(--gap-2xs);
-
-    &.cart-totals__container--has-installments {
-      row-gap: var(--gap-xs);
-    }
-  }
-
-  .cart-totals__original-container:empty {
-    display: none;
-  }
-
+  .cart-totals__item { display: flex; align-items: center; justify-content: space-between; }
+  .cart-totals__tax-note { color: rgb(var(--color-foreground-rgb) / var(--opacity-subdued-text)); }
+  .cart-totals__tax-note small { font-size: var(--font-size--2xs); }
+  .cart-discounts { list-style: none; padding: 0; margin: 0; }
+  .cart-discounts__item { display: flex; align-items: center; justify-content: space-between; }
+  .cart-discounts__label { display: flex; align-items: center; gap: var(--gap-2xs); }
+  .cart-discounts__label svg { width: var(--icon-size-sm); height: var(--icon-size-sm); display: inline-block; }
+  .cart-totals__original-container, .cart-totals__container { display: flex; flex-direction: column; }
+  .cart-totals__container { row-gap: var(--gap-2xs); &.cart-totals__container--has-installments { row-gap: var(--gap-xs); } }
+  .cart-totals__original-container:empty { display: none; }
   .cart-totals {
-    display: flex;
-    flex-direction: column;
-    gap: var(--gap-xl);
-    width: 100%;
-    border-block-start: none;
-
-    &:has(> :first-child:not(.cart-totals__original-container, .cart-totals__container)) {
-      padding-block-start: 0;
-      border-block-start: none;
-    }
-
-    @media screen and (min-width: 750px) {
-      padding-block-start: 0;
-    }
+    display: flex; flex-direction: column; gap: var(--gap-xl); width: 100%; border-block-start: none;
+    &:has(> :first-child:not(.cart-totals__original-container, .cart-totals__container)) { padding-block-start: 0; border-block-start: none; }
+    @media screen and (min-width: 750px) { padding-block-start: 0; }
   }
-
-  .cart-totals__original-container,
-  .cart-totals__original-container * {
-    font-size: var(--cart-font-size--sm);
-  }
-
-  .cart-totals__total {
-    align-items: baseline;
-    font-weight: var(--font-weight-bold);
-  }
-
-  .cart-totals__total-label {
-    font-size: var(--cart-font-size--sm);
-  }
-
-  .cart-totals__total-value {
-    font-size: var(--cart-font-size--xl);
-
-    @media screen and (max-width: 749px) {
-      font-size: var(--font-size--lg);
-    }
-  }
-
-  .cart-totals__installments {
-    color: var(--color-foreground);
-    font-size: var(--font-size--2xs);
-  }
-
-  .cart-note {
-    width: 100%;
-  }
-
+  .cart-totals__original-container, .cart-totals__original-container * { font-size: var(--cart-font-size--sm); }
+  .cart-totals__total { align-items: baseline; font-weight: var(--font-weight-bold); }
+  .cart-totals__total-label { font-size: var(--cart-font-size--sm); }
+  .cart-totals__total-value { font-size: var(--cart-font-size--xl); @media screen and (max-width: 749px) { font-size: var(--font-size--lg); } }
+  .cart-totals__installments { color: var(--color-foreground); font-size: var(--font-size--2xs); }
+  .cart-note { width: 100%; }
   @starting-style {
-    .cart-note[open-by-default-on-desktop][open-by-default-on-mobile] .details-content {
-      block-size: auto;
-      opacity: 1;
-      overflow-y: visible;
-    }
+    .cart-note[open-by-default-on-desktop][open-by-default-on-mobile] .details-content { block-size: auto; opacity: 1; overflow-y: visible; }
   }
-
-  .cart-note__inner {
-    padding-block: var(--padding-2xs) var(--padding-sm);
-  }
-
-  .cart-note__summary {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
-
-  .cart-note__summary:hover {
-    color: rgb(var(--color-foreground-rgb) / var(--opacity-subdued-text));
-  }
-
-  .cart-note__label {
-    display: flex;
-    align-items: flex-start;
-    gap: var(--gap-2xs);
-    font-size: var(--font-size--2xs);
-    font-weight: 500;
-  }
-
-  .cart-note__instructions {
-    color: var(--color-input-text);
-    background-color: var(--color-input-background);
-    border-width: var(--style-border-width-inputs);
-    border-color: var(--color-input-border);
-    transition: box-shadow var(--animation-speed) ease;
-    box-shadow: var(--input-box-shadow);
-    min-height: 5.5rem;
-    min-width: 100%;
-    max-width: 100%;
-    font-size: var(--font-size--sm);
-    padding: max(4px, calc(var(--style-border-radius-inputs) * (1 - cos(45deg))));
-  }
-
-  .cart-totals__icon {
-    height: var(--icon-size-xs);
-    width: var(--icon-size-xs);
-    margin: 0;
-  }
-
-  .cart__ctas {
-    width: 100%;
-    display: grid;
-    gap: var(--checkout-button-gap);
-    grid-auto-flow: row;
-    grid-template-columns: 1fr;
-  }
-
-  .cart__ctas .cart__checkout-button {
-    width: 100%;
-    height: clamp(25px, var(--height-buy-buttons), 55px);
-    padding-inline: var(--padding-4xl);
-  }
-
-  .cart-drawer__summary .cart-totals:not(:has(.cart-totals__original-container:empty)) {
-    border-block-start: var(--style-border-width) solid var(--color-border);
-    padding-block-start: var(--padding-2xl);
-  }
-
-  .cart-drawer__summary .cart-note {
-    @media screen and (min-width: 750px) {
-      margin-block-start: var(--margin-3xs);
-    }
-  }
-
-  .cart-discount__input {
-    background-color: var(--color-input-background);
-    color: var(--color-input-text);
-    border-width: var(--style-border-width-inputs);
-    border-color: var(--color-input-border);
-    border-style: solid;
-    border-radius: var(--style-border-radius-inputs);
-    padding: var(--padding-sm) var(--padding-md);
-    height: 100%;
-    flex-grow: 1;
-    min-width: 0;
-    font-size: var(--font-size--sm);
-  }
-
-  .cart-discount__input::placeholder {
-    color: rgb(var(--color-input-text-rgb) / var(--opacity-subdued-text));
-  }
-
-  .cart-discount__pill-code {
-    overflow: hidden;
-    max-width: 100px;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    margin: 0;
-  }
-
-  .cart-discount {
-    width: 100%;
-  }
-
-  .cart-discount__codes {
-    display: none;
-    gap: var(--padding-xs);
-    flex-wrap: wrap;
-    list-style: none;
-    padding-inline: 0;
-    margin: 0;
-  }
-
-  .cart-discount__codes:has(.cart-discount__pill) {
-    display: flex;
-  }
-
-  .cart-discount__button {
-    height: 100%;
-  }
-
-  .cart-discount__content {
-    height: calc(var(--button-size) + var(--padding-2xs) + var(--padding-sm));
-  }
-
-  .cart-discount__pill {
-    display: flex;
-    color: var(--color-foreground);
-    gap: var(--padding-xs);
-    align-items: center;
-    padding: var(--padding-xs) var(--padding-sm);
-    border-radius: var(--style-border-radius-pills);
-    background-color: var(--color-input-background);
-    text-transform: uppercase;
-  }
-
-  .cart-discount__form {
-    display: flex;
-    gap: var(--padding-md);
-    align-items: center;
-    height: 100%;
-    padding-block: var(--padding-2xs) var(--padding-sm);
-  }
-
-  :is(.cart-discount__pill-remove, .cart-discount__pill-remove:hover) {
-    --close-icon-opacity: 0.4;
-
-    color: var(--color-foreground);
-    background-color: transparent;
-    pointer-events: all;
-    cursor: pointer;
-    height: 100%;
-  }
-
-  .cart-discount__error {
-    display: flex;
-    align-items: center;
-    width: 100%;
-    padding-block: var(--padding-2xs) var(--padding-sm);
-  }
-
-  .cart-discount__error .svg-wrapper {
-    flex-shrink: 0;
-    width: var(--icon-size-xs);
-    height: var(--icon-size-xs);
-    margin-inline: var(--margin-3xs) var(--margin-xs);
-  }
-
-  .cart-discount__error-text {
-    margin-block-start: var(--margin-3xs);
-  }
-
-  .cart-discount__summary {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
-
-  .cart-discount__summary:hover {
-    color: rgb(var(--color-foreground-rgb) / var(--opacity-subdued-text));
-  }
-
-  .cart-discount__label {
-    display: flex;
-    align-items: flex-start;
-    gap: var(--gap-2xs);
-    font-size: var(--font-size--2xs);
-    font-weight: 500;
-  }
-
-  @media screen and (min-width: 750px) {
-    .cart-summary--extend {
-      height: 100%;
-    }
-  }
+  .cart-note__inner { padding-block: var(--padding-2xs) var(--padding-sm); }
+  .cart-note__summary { display: flex; align-items: center; justify-content: space-between; }
+  .cart-note__summary:hover { color: rgb(var(--color-foreground-rgb) / var(--opacity-subdued-text)); }
+  .cart-note__label { display: flex; align-items: flex-start; gap: var(--gap-2xs); font-size: var(--font-size--2xs); font-weight: 500; }
+  .cart-note__instructions { color: var(--color-input-text); background-color: var(--color-input-background); border-width: var(--style-border-width-inputs); border-color: var(--color-input-border); transition: box-shadow var(--animation-speed) ease; box-shadow: var(--input-box-shadow); min-height: 5.5rem; min-width: 100%; max-width: 100%; font-size: var(--font-size--sm); padding: max(4px, calc(var(--style-border-radius-inputs) * (1 - cos(45deg)))); }
+  .cart-totals__icon { height: var(--icon-size-xs); width: var(--icon-size-xs); margin: 0; }
+  .cart__ctas { width: 100%; display: grid; gap: var(--checkout-button-gap); grid-auto-flow: row; grid-template-columns: 1fr; }
+  .cart__ctas .cart__checkout-button { width: 100%; height: clamp(25px, var(--height-buy-buttons), 55px); padding-inline: var(--padding-4xl); }
+  .cart-drawer__summary .cart-totals:not(:has(.cart-totals__original-container:empty)) { border-block-start: var(--style-border-width) solid var(--agri-border, #c5dfc0); padding-block-start: var(--padding-2xl); }
+  .cart-drawer__summary .cart-note { @media screen and (min-width: 750px) { margin-block-start: var(--margin-3xs); } }
+  .cart-discount__input { background-color: var(--color-input-background); color: var(--color-input-text); border-width: var(--style-border-width-inputs); border-color: var(--color-input-border); border-style: solid; border-radius: var(--style-border-radius-inputs); padding: var(--padding-sm) var(--padding-md); height: 100%; flex-grow: 1; min-width: 0; font-size: var(--font-size--sm); }
+  .cart-discount__input::placeholder { color: rgb(var(--color-input-text-rgb) / var(--opacity-subdued-text)); }
+  .cart-discount__pill-code { overflow: hidden; max-width: 100px; text-overflow: ellipsis; white-space: nowrap; margin: 0; }
+  .cart-discount { width: 100%; }
+  .cart-discount__codes { display: none; gap: var(--padding-xs); flex-wrap: wrap; list-style: none; padding-inline: 0; margin: 0; }
+  .cart-discount__codes:has(.cart-discount__pill) { display: flex; }
+  .cart-discount__button { height: 100%; }
+  .cart-discount__content { height: calc(var(--button-size) + var(--padding-2xs) + var(--padding-sm)); }
+  .cart-discount__pill { display: flex; color: var(--color-foreground); gap: var(--padding-xs); align-items: center; padding: var(--padding-xs) var(--padding-sm); border-radius: var(--style-border-radius-pills); background-color: var(--color-input-background); text-transform: uppercase; }
+  .cart-discount__form { display: flex; gap: var(--padding-md); align-items: center; height: 100%; padding-block: var(--padding-2xs) var(--padding-sm); }
+  :is(.cart-discount__pill-remove, .cart-discount__pill-remove:hover) { --close-icon-opacity: 0.4; color: var(--color-foreground); background-color: transparent; pointer-events: all; cursor: pointer; height: 100%; }
+  .cart-discount__error { display: flex; align-items: center; width: 100%; padding-block: var(--padding-2xs) var(--padding-sm); }
+  .cart-discount__error .svg-wrapper { flex-shrink: 0; width: var(--icon-size-xs); height: var(--icon-size-xs); margin-inline: var(--margin-3xs) var(--margin-xs); }
+  .cart-discount__error-text { margin-block-start: var(--margin-3xs); }
+  .cart-discount__summary { display: flex; align-items: center; justify-content: space-between; }
+  .cart-discount__summary:hover { color: rgb(var(--color-foreground-rgb) / var(--opacity-subdued-text)); }
+  .cart-discount__label { display: flex; align-items: flex-start; gap: var(--gap-2xs); font-size: var(--font-size--2xs); font-weight: 500; }
+  @media screen and (min-width: 750px) { .cart-summary--extend { height: 100%; } }
 {% endstylesheet %}

@@ -143,15 +143,61 @@
 
 <style> 
 
-
-variant-picker { opacity: 0;
-    position: absolute;
-    visibility: hidden; }
+/* Custom variant picker (custom-varient-picker block) is used instead */
+/* variant-picker is hidden only when custom variant block is active */
+.custom-varient-picker-active variant-picker { 
+  opacity: 0;
+  position: absolute;
+  visibility: hidden; 
+}
 
 #login-wrapper .left-section .logo-container img:nth-child(2) { display: none !important; } 
 .logo-container.svelte-t8xuak { flex-direction: column !important; }
+
+.ts-switcher-btn--embedded-desktop {
+    margin: auto 16px;
+    position: absolute;
+    left: 22%;
+}
+#swym-plugin { display: none !important; }
+
+/* ── Mobile Responsive fixes ── */
+@media screen and (max-width: 749px) {
+  /* Product page buttons — stack on mobile */
+  .product-form-buttons {
+    flex-direction: column !important;
+  }
+  .product-form-buttons > .add-to-cart-button,
+  .product-form-buttons > .accelerated-checkout-block,
+  .product-form-buttons > [class*="shopify-payment"] {
+    width: 100% !important;
+    flex: 1 0 100% !important;
+  }
+  
+  /* Variant cards — smaller on mobile */
+  .variant-card {
+    min-width: 85px !important;
+    max-width: 110px !important;
+  }
+  
+  /* Ensure product images don't overflow */
+  .product-media-container img {
+    max-width: 100%;
+    height: auto;
+  }
+  
+  /* Fix horizontal scroll issues */
+  body { overflow-x: hidden; }
+  
+  /* Buy button row — full width on small screens */
+  .buy-buttons-block {
+    width: 100% !important;
+  }
+}
  
 </style>
+
+{% render 'language-selector' %}
 
   </body>
 
