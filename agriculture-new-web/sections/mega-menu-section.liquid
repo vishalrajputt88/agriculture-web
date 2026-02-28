@@ -1,0 +1,319 @@
+{% comment %}
+Mega Menu Section - Agriculture Theme
+Simple: Sirf Collections with images in dropdown
+{% endcomment %}
+
+<style>
+.mega-menu-wrapper {
+  background-color: {{ section.settings.menu_bg_color }};
+  position: relative;
+  z-index: 4;
+  width: 100%;
+}
+.mega-menu-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+.main-menu {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.menu-item { position: static; }
+.menu-item > a {
+  display: block;
+  padding: {{ section.settings.menu_padding }}px 20px;
+  color: {{ section.settings.menu_text_color }};
+  text-decoration: none;
+  font-size: {{ section.settings.menu_font_size }}px;
+  font-weight: {{ section.settings.menu_font_weight }};
+  text-transform: {{ section.settings.menu_text_transform }};
+  transition: all 0.3s ease;
+  white-space: nowrap;
+}
+.menu-item > a:hover {
+  background-color: {{ section.settings.menu_hover_bg }};
+  color: {{ section.settings.menu_hover_color }};
+}
+.menu-item.has-mega-menu > a::after {
+  content: '\25BC';
+  font-size: 10px;
+  margin-left: 8px;
+  transition: transform 0.3s ease;
+}
+.menu-item.has-mega-menu:hover > a::after { transform: rotate(180deg); }
+
+/* Dropdown */
+.mega-menu {
+  display: none;
+  position: absolute;
+  left: 0; right: 0;
+  width: 100%;
+  background: #fff;
+  border-top: 3px solid #4caf50;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+  padding: 30px 0;
+  z-index: 999;
+}
+.menu-item.has-mega-menu:hover .mega-menu { display: block; }
+.mega-menu-content {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 40px;
+}
+
+/* Collection Grid */
+.mega-collections-grid {
+  display: grid;
+  grid-template-columns: repeat({{ section.settings.columns }}, 1fr);
+  gap: 16px;
+}
+.mega-collection-card {
+  display: block;
+  text-decoration: none;
+  border-radius: 10px;
+  overflow: hidden;
+  border: 2px solid #e8f5e9;
+  background: #f9fdf9;
+  transition: all 0.3s ease;
+  opacity: 0;
+  animation: fadeUp 0.3s ease forwards;
+}
+.mega-collection-card:hover {
+  border-color: #4caf50;
+  transform: translateY(-4px);
+  box-shadow: 0 8px 20px rgba(76,175,80,0.18);
+}
+.mega-collection-card:nth-child(1) { animation-delay: 0.05s; }
+.mega-collection-card:nth-child(2) { animation-delay: 0.10s; }
+.mega-collection-card:nth-child(3) { animation-delay: 0.15s; }
+.mega-collection-card:nth-child(4) { animation-delay: 0.20s; }
+.mega-collection-card:nth-child(5) { animation-delay: 0.25s; }
+.mega-collection-card:nth-child(6) { animation-delay: 0.30s; }
+.mega-collection-card:nth-child(7) { animation-delay: 0.35s; }
+.mega-collection-card:nth-child(8) { animation-delay: 0.40s; }
+
+.mega-collection-img-wrap {
+  position: relative;
+  width: 100%;
+  padding-bottom: 70%;
+  overflow: hidden;
+  background: #e8f5e9;
+}
+.mega-collection-img-wrap img {
+  position: absolute;
+  inset: 0;
+  width: 100%; height: 100%;
+  object-fit: cover;
+  transition: transform 0.4s ease;
+}
+.mega-collection-card:hover .mega-collection-img-wrap img { transform: scale(1.07); }
+.mega-collection-img-placeholder {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 40px;
+  background: linear-gradient(135deg, #e8f5e9, #c8e6c9);
+}
+.mega-collection-info {
+  padding: 10px 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: white;
+}
+.mega-collection-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: #2e7d32;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.mega-collection-arrow {
+  font-size: 14px;
+  color: #4caf50;
+  flex-shrink: 0;
+  transition: transform 0.2s ease;
+}
+.mega-collection-card:hover .mega-collection-arrow { transform: translateX(3px); }
+
+.mobile-menu-toggle {
+  display: none;
+  background: transparent;
+  border: none;
+  color: {{ section.settings.menu_text_color }};
+  font-size: 12px;
+  padding: 5px 0;
+  cursor: pointer;
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(-8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 768px) {
+  .mega-menu-container {
+    display: none !important;
+    position: fixed;
+    bottom: 64px;
+    background: green;
+    width: 100%;
+    border: 2px solid #fff;
+    box-shadow: 9px 2px 18px 5px #00000061;
+    display: inline-flex;
+    justify-content: center;
+    max-width: 112px;
+    margin: 0 auto;
+    text-align: center;
+    align-items: center;
+    border-radius: 10px;
+    right: 37%;
+  }
+  .mobile-menu-toggle { display: block; }
+  .main-menu {
+    display: none;
+    flex-direction: column;
+    width: 112vw;
+    background: #e31e24;
+    position: relative;
+    bottom: 47px;
+    left: 0;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    z-index: 1000;
+  }
+  .main-menu.active { display: flex; }
+  .menu-item { width: 100%; border-bottom: 1px solid rgba(255,255,255,0.1); }
+  .menu-item > a { padding: 15px 20px; }
+  .mega-menu { width: 90% !important; padding: 15px 0 !important; display: none !important; }
+  .mega-menu-content { padding: 10px 15px !important; }
+  .mega-collections-grid { grid-template-columns: repeat(2, 1fr) !important; gap: 10px !important; }
+  .mega-collection-card { animation: none !important; opacity: 1 !important; }
+  .menu-item.has-mega-menu.mobile-open .mega-menu { display: block !important; }
+}
+</style>
+
+<div class="mega-menu-wrapper">
+  <div class="mega-menu-container">
+    <button class="mobile-menu-toggle" onclick="toggleMobileMenu()">&#9776; <span style="display:block;">Category</span></button>
+    <nav>
+      <ul class="main-menu" id="mainMenu">
+        {%- for link in section.settings.main_menu.links -%}
+          {%- assign mega_menu_array = section.settings.mega_menu_items | split: ',' -%}
+          {%- assign has_mega = false -%}
+          {%- for item in mega_menu_array -%}
+            {%- assign item_trimmed = item | strip -%}
+            {%- if item_trimmed == link.title -%}{%- assign has_mega = true -%}{%- break -%}{%- endif -%}
+          {%- endfor -%}
+
+          <li class="menu-item{%- if has_mega %} has-mega-menu{%- endif -%}" onclick="toggleMegaMenuMobile(event)">
+            <a href="{{ link.url }}">{{ link.title }}</a>
+            {%- if has_mega -%}
+              <div class="mega-menu">
+                <div class="mega-menu-content">
+                  <div class="mega-collections-grid">
+                    {%- for block in section.blocks -%}
+                      {%- assign block_parent = block.settings.parent_menu_item | strip -%}
+                      {%- if block.type == 'collection_cards' and block_parent == link.title -%}
+                        {%- assign col_ids = 'collection_1,collection_2,collection_3,collection_4,collection_5,collection_6,collection_7,collection_8' | split: ',' -%}
+                        {%- for col_id in col_ids -%}
+                          {%- assign col_handle = block.settings[col_id] -%}
+                          {%- if col_handle != blank -%}
+                            {%- assign col = collections[col_handle] -%}
+                            <a class="mega-collection-card" href="{{ col.url }}">
+                              <div class="mega-collection-img-wrap">
+                                {%- if col.image -%}
+                                  <img src="{{ col.image | img_url: '400x' }}" alt="{{ col.title }}" loading="lazy">
+                                {%- elsif col.products.first.featured_image -%}
+                                  <img src="{{ col.products.first.featured_image | img_url: '400x' }}" alt="{{ col.title }}" loading="lazy">
+                                {%- else -%}
+                                  <div class="mega-collection-img-placeholder">🌾</div>
+                                {%- endif -%}
+                              </div>
+                              <div class="mega-collection-info">
+                                <span class="mega-collection-title">{{ col.title }}</span>
+                                <span class="mega-collection-arrow">→</span>
+                              </div>
+                            </a>
+                          {%- endif -%}
+                        {%- endfor -%}
+                      {%- endif -%}
+                    {%- endfor -%}
+                  </div>
+                </div>
+              </div>
+            {%- endif -%}
+          </li>
+        {%- endfor -%}
+      </ul>
+    </nav>
+  </div>
+</div>
+
+<script>
+function toggleMobileMenu() {
+  document.getElementById('mainMenu').classList.toggle('active');
+}
+function toggleMegaMenuMobile(event) {
+  if (window.innerWidth <= 768) {
+    var item = event.currentTarget;
+    if (item.classList.contains('has-mega-menu')) {
+      event.preventDefault();
+      item.classList.toggle('mobile-open');
+    }
+  }
+}
+document.addEventListener('click', function(e) {
+  var menu = document.getElementById('mainMenu');
+  var toggle = document.querySelector('.mobile-menu-toggle');
+  if (menu && toggle && !menu.contains(e.target) && !toggle.contains(e.target)) {
+    menu.classList.remove('active');
+  }
+});
+</script>
+
+{% schema %}
+{
+  "name": "Mega Menu",
+  "settings": [
+    { "type": "link_list", "id": "main_menu", "label": "Main Menu", "default": "main-menu" },
+    { "type": "text", "id": "mega_menu_items", "label": "Menu Items with Mega Menu", "info": "Comma separated exact names (e.g., Catalog,Shop)", "default": "Catalog" },
+    { "type": "select", "id": "columns", "label": "Grid Columns", "options": [{ "value": "2", "label": "2" },{ "value": "3", "label": "3" },{ "value": "4", "label": "4" },{ "value": "5", "label": "5" },{ "value": "6", "label": "6" }], "default": "4" },
+    { "type": "header", "content": "Menu Bar Styling" },
+    { "type": "color", "id": "menu_bg_color", "label": "Background Color", "default": "#e31e24" },
+    { "type": "color", "id": "menu_text_color", "label": "Text Color", "default": "#ffffff" },
+    { "type": "color", "id": "menu_hover_bg", "label": "Hover Background", "default": "#c91a1f" },
+    { "type": "color", "id": "menu_hover_color", "label": "Hover Text Color", "default": "#ffffff" },
+    { "type": "range", "id": "menu_padding", "label": "Padding", "min": 10, "max": 30, "step": 2, "default": 16, "unit": "px" },
+    { "type": "range", "id": "menu_font_size", "label": "Font Size", "min": 12, "max": 20, "step": 1, "default": 14, "unit": "px" },
+    { "type": "select", "id": "menu_font_weight", "label": "Font Weight", "options": [{ "value": "400", "label": "Normal" },{ "value": "500", "label": "Medium" },{ "value": "600", "label": "Semi Bold" },{ "value": "700", "label": "Bold" }], "default": "500" },
+    { "type": "select", "id": "menu_text_transform", "label": "Text Transform", "options": [{ "value": "none", "label": "None" },{ "value": "uppercase", "label": "Uppercase" },{ "value": "capitalize", "label": "Capitalize" }], "default": "none" }
+  ],
+  "blocks": [
+    {
+      "type": "collection_cards",
+      "name": "Collection Cards",
+      "settings": [
+        { "type": "text", "id": "parent_menu_item", "label": "Parent Menu Item", "info": "Exact menu name (e.g., Catalog)" },
+        { "type": "collection", "id": "collection_1", "label": "Collection 1" },
+        { "type": "collection", "id": "collection_2", "label": "Collection 2" },
+        { "type": "collection", "id": "collection_3", "label": "Collection 3" },
+        { "type": "collection", "id": "collection_4", "label": "Collection 4" },
+        { "type": "collection", "id": "collection_5", "label": "Collection 5" },
+        { "type": "collection", "id": "collection_6", "label": "Collection 6" },
+        { "type": "collection", "id": "collection_7", "label": "Collection 7" },
+        { "type": "collection", "id": "collection_8", "label": "Collection 8" }
+      ]
+    }
+  ],
+  "presets": [{ "name": "Mega Menu" }]
+}
+{% endschema %}

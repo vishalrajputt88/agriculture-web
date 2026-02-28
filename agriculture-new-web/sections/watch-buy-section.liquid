@@ -1,0 +1,801 @@
+{% assign watch_buy_more = section.id | replace: '_', '' | downcase %}
+
+{% style %}
+  .reels-section-{{ watch_buy_more }} {
+    background-color: transparent;
+    padding: 60px 20px;
+    width: 100%;
+    display: block;
+  }
+
+  .reels-container-{{ watch_buy_more }} {
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+
+  .reels-header-{{ watch_buy_more }} {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 40px;
+    position: relative;
+  }
+
+  .reels-heading-{{ watch_buy_more }} {
+    font-size: 40px;
+    font-weight: 700;
+    color: #000000;
+    margin: 0;
+    text-align: center;
+    flex: 1;
+  }
+
+  .reels-arrows-{{ watch_buy_more }} {
+    display: flex;
+    gap: 12px;
+    position: absolute;
+    right: 0;
+  }
+
+  .reels-arrow-{{ watch_buy_more }} {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: #ffffff;
+    border: 1px solid #e6e6e6;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
+
+  .reels-arrow-{{ watch_buy_more }}:hover {
+    background: #000000;
+    border-color: #000000;
+  }
+
+  .reels-arrow-{{ watch_buy_more }}:hover svg {
+    stroke: #ffffff;
+  }
+
+  .reels-arrow-{{ watch_buy_more }}:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+  }
+
+  .reels-arrow-{{ watch_buy_more }}:disabled:hover {
+    background: #ffffff;
+    border-color: #e6e6e6;
+  }
+
+  .reels-arrow-{{ watch_buy_more }}:disabled:hover svg {
+    stroke: #000000;
+  }
+
+  .reels-arrow-{{ watch_buy_more }} svg {
+    width: 20px;
+    height: 20px;
+    stroke: #000000;
+    transition: stroke 0.3s ease;
+  }
+
+  .reels-slider-wrapper-{{ watch_buy_more }} {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .reels-slider-{{ watch_buy_more }} {
+    display: flex;
+    gap: 20px;
+    overflow-x: auto;
+    scroll-behavior: smooth;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    padding-bottom: 10px;
+  }
+
+  .reels-slider-{{ watch_buy_more }}::-webkit-scrollbar {
+    display: none;
+  }
+
+  .reel-card-{{ watch_buy_more }} {
+    position: relative;
+    border-radius: 16px;
+    overflow: hidden;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    flex: 0 0 calc(25% - 15px);
+    min-width: 280px;
+  }
+
+  .reel-card-{{ watch_buy_more }}:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+  }
+
+  .reel-card-media-{{ watch_buy_more }} {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 4 / 6;
+    overflow: hidden;
+    background: #f5f5f5;
+  }
+
+  .reel-thumbnail-{{ watch_buy_more }} {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: opacity 0.3s ease, transform 0.5s ease;
+    z-index: 2;
+  }
+
+  .reel-card-{{ watch_buy_more }}:hover .reel-thumbnail-{{ watch_buy_more }} {
+    opacity: 0;
+    transform: scale(1.1);
+  }
+
+  .reel-video-{{ watch_buy_more }} {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: 1;
+  }
+
+  .reel-card-overlay-{{ watch_buy_more }} {
+    position: absolute;
+    bottom: 16px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #ffffff;
+    border-radius: 50px;
+    padding: 8px 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    max-width: 90%;
+    z-index: 3;
+  }
+
+  .reel-product-image-{{ watch_buy_more }} {
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+    overflow: hidden;
+    flex-shrink: 0;
+    background: #f5f5f5;
+  }
+
+  .reel-product-image-{{ watch_buy_more }} img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .reel-product-info-{{ watch_buy_more }} {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .reel-product-title-{{ watch_buy_more }} {
+    font-size: 12px;
+    font-weight: 700;
+    color: #000000;
+    margin: 0 0 2px 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .reel-product-price-{{ watch_buy_more }} {
+    font-size: 13px;
+    font-weight: 600;
+    color: #008060;
+    margin: 0;
+  }
+
+  .reel-discount-badge-{{ watch_buy_more }} {
+    background: #ff0000;
+    color: #ffffff;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 4px 8px;
+    border-radius: 12px;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  .reel-placeholder-{{ watch_buy_more }} {
+    width: 100%;
+    height: 100%;
+    background: #f5f5f5;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .reel-placeholder-{{ watch_buy_more }} svg {
+    width: 60%;
+    height: 60%;
+    opacity: 0.3;
+  }
+
+  .reel-empty-state-{{ watch_buy_more }} {
+    text-align: center;
+    padding: 60px 20px;
+    color: #666;
+  }
+
+  .reel-empty-state-{{ watch_buy_more }} h3 {
+    font-size: 18px;
+    margin: 0 0 8px 0;
+  }
+
+  .reel-empty-state-{{ watch_buy_more }} p {
+    font-size: 14px;
+    margin: 0;
+  }
+
+  @media screen and (max-width: 989px) {
+    .reels-heading-{{ watch_buy_more }} {
+      font-size: 32px;
+    }
+
+    .reel-card-{{ watch_buy_more }} {
+      flex: 0 0 calc(50% - 10px);
+      min-width: 240px;
+    }
+
+    .reels-arrows-{{ watch_buy_more }} {
+      position: static;
+      margin-top: 20px;
+      justify-content: center;
+    }
+
+    .reels-header-{{ watch_buy_more }} {
+      flex-direction: column;
+      gap: 20px;
+    }
+  }
+
+  @media screen and (max-width: 749px) {
+    .reels-section-{{ watch_buy_more }} {
+      padding: 40px 20px;
+    }
+
+    .reels-heading-{{ watch_buy_more }} {
+      font-size: 24px;
+    }
+
+    .reel-card-{{ watch_buy_more }} {
+      flex: 0 0 calc(83.33% - 10px);
+      min-width: 260px;
+    }
+
+    .reels-slider-{{ watch_buy_more }} {
+      gap: 12px;
+    }
+  }
+
+  /* ===================== VIDEO POPUP STYLES ===================== */
+  .reel-popup-overlay-{{ watch_buy_more }} {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.85);
+    z-index: 99999;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+
+  .reel-popup-overlay-{{ watch_buy_more }}.is-open {
+    display: flex;
+  }
+
+  .reel-popup-inner-{{ watch_buy_more }} {
+    position: relative;
+    width: 100%;
+    max-width: 420px;
+    border-radius: 20px;
+    overflow: hidden;
+    background: #000;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+  }
+
+  .reel-popup-video-{{ watch_buy_more }} {
+    width: 100%;
+    aspect-ratio: 4 / 5;
+    object-fit: cover;
+    display: block;
+  }
+
+  .reel-popup-close-{{ watch_buy_more }} {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: rgba(0, 0, 0, 0.55);
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+    transition: background 0.2s ease;
+  }
+
+  .reel-popup-close-{{ watch_buy_more }}:hover {
+    background: rgba(0, 0, 0, 0.85);
+  }
+
+  .reel-popup-close-{{ watch_buy_more }} svg {
+    width: 18px;
+    height: 18px;
+    stroke: #ffffff;
+  }
+
+  .reel-popup-product-{{ watch_buy_more }} {
+    position: absolute;
+    bottom: 16px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #ffffff;
+    border-radius: 50px;
+    padding: 8px 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    max-width: 90%;
+    text-decoration: none;
+    z-index: 5;
+    transition: box-shadow 0.2s ease;
+  }
+
+  .reel-popup-product-{{ watch_buy_more }}:hover {
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+  }
+
+  .reel-popup-prod-img-{{ watch_buy_more }} {
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+    overflow: hidden;
+    flex-shrink: 0;
+    background: #f5f5f5;
+  }
+
+  .reel-popup-prod-img-{{ watch_buy_more }} img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .reel-popup-prod-info-{{ watch_buy_more }} {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .reel-popup-prod-title-{{ watch_buy_more }} {
+    font-size: 12px;
+    font-weight: 700;
+    color: #000000;
+    margin: 0 0 2px 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .reel-popup-prod-price-{{ watch_buy_more }} {
+    font-size: 13px;
+    font-weight: 600;
+    color: #008060;
+    margin: 0;
+  }
+
+  .reel-popup-badge-{{ watch_buy_more }} {
+    background: #ff0000;
+    color: #ffffff;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 4px 8px;
+    border-radius: 12px;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  @media screen and (max-width: 749px) {
+    .reel-popup-inner-{{ watch_buy_more }} {
+      max-width: 100%;
+    }
+  }
+  /* ============================================================= */
+{% endstyle %}
+
+<reels-slider-{{ watch_buy_more }} class="reels-section-{{ watch_buy_more }}" {{ section.shopify_attributes }}>
+  <div class="reels-container-{{ watch_buy_more }}">
+    <div class="reels-header-{{ watch_buy_more }}">
+      <h2 class="reels-heading-{{ watch_buy_more }}">{{ section.settings.heading }}</h2>
+      <div class="reels-arrows-{{ watch_buy_more }}">
+        <button class="reels-arrow-{{ watch_buy_more }} reels-prev-{{ watch_buy_more }}" aria-label="Previous">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
+          </svg>
+        </button>
+        <button class="reels-arrow-{{ watch_buy_more }} reels-next-{{ watch_buy_more }}" aria-label="Next">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <div class="reels-slider-wrapper-{{ watch_buy_more }}">
+      {% assign has_items = false %}
+      {% for i in (1..6) %}
+        {% assign image_key = 'reel_' | append: i | append: '_image' %}
+        {% if section.settings[image_key] %}
+          {% assign has_items = true %}
+          {% break %}
+        {% endif %}
+      {% endfor %}
+
+      {% if section.blocks.size > 0 %}
+  <div class="reels-slider-{{ watch_buy_more }}">
+    {% for block in section.blocks %}
+      {% assign reel_image = block.settings.reel_image %}
+      {% assign reel_video = block.settings.reel_video %}
+      {% assign reel_product = block.settings.reel_product %}
+      {% assign reel_discount = block.settings.reel_discount %}
+
+      {% if reel_image %}
+        <div
+          class="reel-card-{{ watch_buy_more }}"
+          {{ block.shopify_attributes }}
+          {% if reel_video %}
+            data-has-video="true"
+            data-video-sources="{% for source in reel_video.sources %}{{ source.url }}|{{ source.mime_type }}{% unless forloop.last %}||{% endunless %}{% endfor %}"
+          {% endif %}
+          {% if reel_product %}
+            data-product-url="{{ reel_product.url }}"
+            data-product-title="{{ reel_product.title | escape }}"
+            data-product-price="₹ {{ reel_product.price | money_without_currency }}"
+            {% if reel_product.featured_image %}
+              data-product-img="{{ reel_product.featured_image | image_url: width: 80 }}"
+              data-product-img-alt="{{ reel_product.featured_image.alt | escape }}"
+            {% endif %}
+            {% if reel_discount != blank %}
+              data-discount="{{ reel_discount | escape }}"
+            {% endif %}
+          {% endif %}
+        >
+          <div class="reel-card-media-{{ watch_buy_more }}">
+            <img
+              src="{{ reel_image | image_url: width: 800 }}"
+              alt="{{ reel_image.alt | escape }}"
+              loading="lazy"
+              width="800"
+              height="1000"
+              class="reel-thumbnail-{{ watch_buy_more }}"
+            >
+
+            {% if reel_video %}
+              <video
+                class="reel-video-{{ watch_buy_more }}"
+                loop
+                playsinline
+                preload="metadata"
+                muted
+              >
+                {% for source in reel_video.sources %}
+                  <source src="{{ source.url }}" type="{{ source.mime_type }}">
+                {% endfor %}
+              </video>
+            {% endif %}
+          </div>
+
+          {% if reel_product %}
+            <div class="reel-card-overlay-{{ watch_buy_more }}">
+              {% if reel_product.featured_image %}
+                <div class="reel-product-image-{{ watch_buy_more }}">
+                  <img
+                    src="{{ reel_product.featured_image | image_url: width: 80 }}"
+                    alt="{{ reel_product.featured_image.alt | escape }}"
+                    width="80"
+                    height="80"
+                  >
+                </div>
+              {% endif %}
+
+              <div class="reel-product-info-{{ watch_buy_more }}">
+                <h3 class="reel-product-title-{{ watch_buy_more }}">
+                  {{ reel_product.title }}
+                </h3>
+                <p class="reel-product-price-{{ watch_buy_more }}">
+                 ₹ {{ reel_product.price | money_without_currency }}
+                </p>
+              </div>
+
+              {% if reel_discount != blank %}
+                <div class="reel-discount-badge-{{ watch_buy_more }}">
+                  {{ reel_discount }}
+                </div>
+              {% endif %}
+            </div>
+          {% endif %}
+        </div>
+      {% endif %}
+    {% endfor %}
+  </div>
+{% else %}
+  <div class="reel-empty-state-{{ watch_buy_more }}">
+    <h3>No reels added yet</h3>
+  </div>
+{% endif %}
+    </div>
+  </div>
+</reels-slider-{{ watch_buy_more }}>
+
+<!-- ===================== VIDEO POPUP MODAL ===================== -->
+<div class="reel-popup-overlay-{{ watch_buy_more }}" id="reelPopup-{{ watch_buy_more }}">
+  <div class="reel-popup-inner-{{ watch_buy_more }}">
+    <button class="reel-popup-close-{{ watch_buy_more }}" id="reelPopupClose-{{ watch_buy_more }}" aria-label="Close">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+      </svg>
+    </button>
+
+    <video
+      class="reel-popup-video-{{ watch_buy_more }}"
+      id="reelPopupVideo-{{ watch_buy_more }}"
+      loop
+      playsinline
+      autoplay
+      controls
+    ></video>
+
+    <a
+      class="reel-popup-product-{{ watch_buy_more }}"
+      id="reelPopupProduct-{{ watch_buy_more }}"
+      href="#"
+      style="display:none;"
+    >
+      <div class="reel-popup-prod-img-{{ watch_buy_more }}" id="reelPopupProdImg-{{ watch_buy_more }}" style="display:none;"></div>
+      <div class="reel-popup-prod-info-{{ watch_buy_more }}">
+        <p class="reel-popup-prod-title-{{ watch_buy_more }}" id="reelPopupProdTitle-{{ watch_buy_more }}"></p>
+        <p class="reel-popup-prod-price-{{ watch_buy_more }}" id="reelPopupProdPrice-{{ watch_buy_more }}"></p>
+      </div>
+      <span class="reel-popup-badge-{{ watch_buy_more }}" id="reelPopupBadge-{{ watch_buy_more }}" style="display:none;"></span>
+    </a>
+  </div>
+</div>
+<!-- ============================================================= -->
+
+<script>
+  (function() {
+    class ReelsSlider extends HTMLElement {
+      constructor() {
+        super();
+        this.slider = this.querySelector('.reels-slider-{{ watch_buy_more }}');
+        this.prevButton = this.querySelector('.reels-prev-{{ watch_buy_more }}');
+        this.nextButton = this.querySelector('.reels-next-{{ watch_buy_more }}');
+        this.cards = this.querySelectorAll('.reel-card-{{ watch_buy_more }}');
+      }
+
+      connectedCallback() {
+        if (!this.slider) return;
+
+        this.setupEventListeners();
+        this.updateArrowStates();
+        this.setupVideoAutoplay();
+        this.setupPopup();
+      }
+
+      setupEventListeners() {
+        if (this.prevButton) {
+          this.prevButton.addEventListener('click', () => this.scrollPrev());
+        }
+
+        if (this.nextButton) {
+          this.nextButton.addEventListener('click', () => this.scrollNext());
+        }
+
+        this.slider.addEventListener('scroll', () => {
+          this.updateArrowStates();
+        });
+      }
+
+      setupVideoAutoplay() {
+        this.cards.forEach((card) => {
+          const video = card.querySelector('.reel-video-{{ watch_buy_more }}');
+          if (!video) return;
+
+          card.addEventListener('mouseenter', () => {
+            video.play().catch(() => {});
+          });
+
+          card.addEventListener('mouseleave', () => {
+            video.pause();
+            video.currentTime = 0;
+          });
+        });
+      }
+
+      setupPopup() {
+        const overlay   = document.getElementById('reelPopup-{{ watch_buy_more }}');
+        const popupVideo = document.getElementById('reelPopupVideo-{{ watch_buy_more }}');
+        const closeBtn  = document.getElementById('reelPopupClose-{{ watch_buy_more }}');
+        const prodLink  = document.getElementById('reelPopupProduct-{{ watch_buy_more }}');
+        const prodImg   = document.getElementById('reelPopupProdImg-{{ watch_buy_more }}');
+        const prodTitle = document.getElementById('reelPopupProdTitle-{{ watch_buy_more }}');
+        const prodPrice = document.getElementById('reelPopupProdPrice-{{ watch_buy_more }}');
+        const badge     = document.getElementById('reelPopupBadge-{{ watch_buy_more }}');
+
+        if (!overlay || !popupVideo) return;
+
+        const closePopup = () => {
+          overlay.classList.remove('is-open');
+          popupVideo.pause();
+          popupVideo.innerHTML = '';
+          document.body.style.overflow = '';
+        };
+
+        this.cards.forEach((card) => {
+          if (!card.dataset.hasVideo) return;
+
+          card.addEventListener('click', (e) => {
+            // Build video sources
+            const sources = card.dataset.videoSources.split('||');
+            popupVideo.innerHTML = '';
+            sources.forEach((s) => {
+              const parts = s.split('|');
+              const src   = document.createElement('source');
+              src.src  = parts[0];
+              src.type = parts[1] || 'video/mp4';
+              popupVideo.appendChild(src);
+            });
+            popupVideo.load();
+            popupVideo.play().catch(() => {});
+
+            // Product info
+            const url   = card.dataset.productUrl;
+            const title = card.dataset.productTitle;
+            const price = card.dataset.productPrice;
+            const imgSrc = card.dataset.productImg;
+            const imgAlt = card.dataset.productImgAlt;
+            const disc  = card.dataset.discount;
+
+            if (title) {
+              prodLink.href = url || '#';
+              prodTitle.textContent = title;
+              prodPrice.textContent = price || '';
+
+              if (imgSrc) {
+                prodImg.innerHTML = `<img src="${imgSrc}" alt="${imgAlt || ''}" width="80" height="80">`;
+                prodImg.style.display = 'block';
+              } else {
+                prodImg.style.display = 'none';
+              }
+
+              if (disc) {
+                badge.textContent = disc;
+                badge.style.display = 'inline-block';
+              } else {
+                badge.style.display = 'none';
+              }
+
+              prodLink.style.display = 'flex';
+            } else {
+              prodLink.style.display = 'none';
+            }
+
+            overlay.classList.add('is-open');
+            document.body.style.overflow = 'hidden';
+          });
+        });
+
+        // Close on button
+        closeBtn.addEventListener('click', closePopup);
+
+        // Close on backdrop click
+        overlay.addEventListener('click', (e) => {
+          if (e.target === overlay) closePopup();
+        });
+
+        // Close on ESC
+        document.addEventListener('keydown', (e) => {
+          if (e.key === 'Escape') closePopup();
+        });
+      }
+
+      scrollPrev() {
+        const scrollAmount = this.slider.offsetWidth * 0.8;
+        this.slider.scrollBy({
+          left: -scrollAmount,
+          behavior: 'smooth'
+        });
+      }
+
+      scrollNext() {
+        const scrollAmount = this.slider.offsetWidth * 0.8;
+        this.slider.scrollBy({
+          left: scrollAmount,
+          behavior: 'smooth'
+        });
+      }
+
+      updateArrowStates() {
+        if (!this.prevButton || !this.nextButton) return;
+
+        const isAtStart = this.slider.scrollLeft <= 10;
+        const isAtEnd = this.slider.scrollLeft + this.slider.offsetWidth >= this.slider.scrollWidth - 10;
+
+        this.prevButton.disabled = isAtStart;
+        this.nextButton.disabled = isAtEnd;
+      }
+    }
+
+    customElements.define('reels-slider-{{ watch_buy_more }}', ReelsSlider);
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Watch & Buy Reels",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Watch Reels & Buy Our New Arrivals"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "reel",
+      "name": "Reel Item",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "reel_image",
+          "label": "Reel Thumbnail Image"
+        },
+        {
+          "type": "video",
+          "id": "reel_video",
+          "label": "Reel Video"
+        },
+        {
+          "type": "product",
+          "id": "reel_product",
+          "label": "Product"
+        },
+        {
+          "type": "text",
+          "id": "reel_discount",
+          "label": "Discount Badge",
+          "default": "30% Off"
+        }
+      ]
+    }
+  ],
+  "max_blocks": 12,
+  "presets": [
+    {
+      "name": "Watch & Buy Reels"
+    }
+  ]
+}
+{% endschema %}

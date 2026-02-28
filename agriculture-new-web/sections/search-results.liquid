@@ -1,0 +1,1213 @@
+{% comment %}
+  FILE: sections/search-results.liquid
+  TEMPLATE: templates/search.json
+  {
+    "sections": { "main": { "type": "search-results", "settings": {} } },
+    "order": ["main"]
+  }
+{% endcomment %}
+
+{% assign sid = section.id | replace: '_', '' | downcase %}
+{% assign ppp = section.settings.products_per_page | default: 16 %}
+{% assign cols = section.settings.grid_columns | default: '4' %}
+{% assign sort_by = search.sort_by | default: 'relevance' %}
+
+{% comment %} Active filter count {% endcomment %}
+{% assign afc = 0 %}
+{% for f in search.filters %}
+  {% assign afc = afc | plus: f.active_values.size %}
+  {% if f.type == 'price_range' %}
+    {% if f.min_value.value or f.max_value.value %}
+      {% assign afc = afc | plus: 1 %}
+    {% endif %}
+  {% endif %}
+{% endfor %}
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;600;700;800&family=Noto+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+
+<style>
+/* ===== VARIABLES ===== */
+#plp-{{ sid }} {
+  --gr:      {{ section.settings.color_green }};
+  --gr-lt:   {{ section.settings.color_green_light }};
+  --gr-pale: {{ section.settings.color_green_pale }};
+  --rd:      {{ section.settings.color_red }};
+  --gld:     {{ section.settings.color_gold }};
+  --dk:      #1b2e1b;
+  --tx:      #212121;
+  --tx-lt:   #555f55;
+  --g1:      #f2f4f2;
+  --g2:      #e0e4e0;
+  --g3:      #9e9e9e;
+  --soil:    #5d4037;
+  --bg:      #f7faf7;
+  --rr:      10px;
+  --sh:      0 8px 32px rgba(0,0,0,0.12);
+  --fh:      'Baloo 2', cursive;
+  --fb:      'Noto Sans', sans-serif;
+  background: var(--bg);
+  color: var(--tx);
+  font-family: var(--fb);
+  font-size: 14px;
+  line-height: 1.6;
+}
+#plp-{{ sid }} * { box-sizing: border-box; }
+
+/* ===== TRUST STRIP ===== */
+#plp-{{ sid }} .trust-strip {
+  background: #fff8e1;
+  border-bottom: 2px solid #ffe082;
+  padding: 8px 24px;
+  display: flex;
+  gap: 28px;
+  align-items: center;
+  overflow-x: auto;
+  scrollbar-width: none;
+  justify-content: center;
+}
+#plp-{{ sid }} .trust-strip::-webkit-scrollbar { display: none; }
+#plp-{{ sid }} .trust-item {
+  display: flex; align-items: center; gap: 6px;
+  font-size: 12.5px; font-weight: 600;
+  color: var(--soil); white-space: nowrap;
+}
+
+/* ===== INNER WRAP ===== */
+#plp-{{ sid }} .plp-inner {
+  max-width: 1380px;
+  margin: 0 auto;
+  padding: 24px 20px 60px;
+}
+
+/* ===== BREADCRUMB ===== */
+#plp-{{ sid }} .plp-bc {
+  display: flex; align-items: center; gap: 6px;
+  font-size: 12.5px; color: var(--g3);
+  margin-bottom: 14px; flex-wrap: wrap;
+}
+#plp-{{ sid }} .plp-bc a { color: var(--gr); text-decoration: none; }
+#plp-{{ sid }} .plp-bc a:hover { text-decoration: underline; }
+
+/* ===== HEADING ===== */
+#plp-{{ sid }} .plp-heading { margin-bottom: 20px; }
+#plp-{{ sid }} .plp-h1 {
+  font-family: var(--fh);
+  font-size: 36px; font-weight: 800;
+  color: var(--dk); letter-spacing: -0.5px; line-height: 1;
+}
+#plp-{{ sid }} .plp-h1 span { color: var(--gr); }
+#plp-{{ sid }} .plp-desc {
+  font-size: 13.5px; color: var(--tx-lt);
+  margin-top: 6px;
+}
+
+/* ===== SEARCH BAR ===== */
+#plp-{{ sid }} .search-bar-wrap {
+  margin-bottom: 20px;
+}
+#plp-{{ sid }} .search-bar {
+  display: flex;
+  border: 2px solid var(--g2);
+  border-radius: var(--rr);
+  overflow: hidden;
+  background: #fff;
+  max-width: 560px;
+  transition: border-color .2s;
+}
+#plp-{{ sid }} .search-bar:focus-within { border-color: var(--gr); }
+#plp-{{ sid }} .search-bar input {
+  flex: 1; border: none; padding: 10px 14px;
+  font-family: var(--fb); font-size: 14px; color: var(--tx);
+  outline: none; background: transparent;
+}
+#plp-{{ sid }} .search-bar button {
+  padding: 0 16px; background: var(--gr); border: none;
+  cursor: pointer; display: flex; align-items: center; transition: background .2s;
+}
+#plp-{{ sid }} .search-bar button:hover { background: var(--dk); }
+#plp-{{ sid }} .search-bar button svg { width: 17px; height: 17px; stroke: #fff; fill: none; stroke-width: 2; }
+
+/* ===== TWO-COL LAYOUT ===== */
+#plp-{{ sid }} .plp-layout {
+  display: grid;
+  grid-template-columns: 255px 1fr;
+  gap: 24px;
+  align-items: start;
+}
+
+/* ===== SIDEBAR ===== */
+#plp-{{ sid }} .plp-sb {
+  background: #fff;
+  border-radius: var(--rr);
+  border: 1.5px solid var(--g2);
+  overflow: hidden;
+  position: sticky;
+  top: 16px;
+}
+#plp-{{ sid }} .sb-hd {
+  background: var(--gr);
+  padding: 13px 16px;
+  display: flex; align-items: center; gap: 8px;
+}
+#plp-{{ sid }} .sb-hd h2 {
+  font-family: var(--fh); font-size: 15px; font-weight: 700;
+  color: #fff; margin: 0;
+}
+#plp-{{ sid }} .sb-hd svg { width: 17px; height: 17px; stroke: #fff; fill: none; stroke-width: 2; }
+
+/* Active chips */
+#plp-{{ sid }} .sb-chips {
+  padding: 8px 14px; display: flex; flex-wrap: wrap; gap: 5px;
+  border-bottom: 1.5px solid var(--g2);
+}
+#plp-{{ sid }} .chip {
+  display: inline-flex; align-items: center; gap: 4px;
+  padding: 3px 9px; background: var(--gr-pale); color: var(--gr);
+  border-radius: 20px; font-size: 11.5px; font-weight: 600;
+  text-decoration: none; transition: background .2s;
+}
+#plp-{{ sid }} .chip:hover { background: #c8e6c9; }
+#plp-{{ sid }} .chip-red { background: #fdecea; color: var(--rd); }
+#plp-{{ sid }} .chip-red:hover { background: #ffcdd2; }
+
+/* Filter group */
+#plp-{{ sid }} .fg { border-bottom: 1.5px solid var(--g2); }
+#plp-{{ sid }} .fg:last-child { border-bottom: none; }
+#plp-{{ sid }} .fg-btn {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 12px 16px; background: #fff; border: none;
+  width: 100%; text-align: left; cursor: pointer;
+  transition: background .15s;
+}
+#plp-{{ sid }} .fg-btn:hover { background: var(--g1); }
+#plp-{{ sid }} .fg-btn h3 {
+  font-family: var(--fh); font-size: 13.5px; font-weight: 700; color: var(--dk);
+  margin: 0;
+}
+#plp-{{ sid }} .fg-arr {
+  color: var(--g3); font-size: 11px;
+  transition: transform .25s; flex-shrink: 0; display: inline-block;
+}
+#plp-{{ sid }} .fg.open .fg-arr { transform: rotate(180deg); }
+#plp-{{ sid }} .fg-body { padding: 4px 16px 14px; display: none; }
+#plp-{{ sid }} .fg.open .fg-body { display: block; }
+
+/* Checkboxes */
+#plp-{{ sid }} .fl-label {
+  display: flex; align-items: center; gap: 8px;
+  cursor: pointer; font-size: 13px; color: var(--tx-lt);
+  padding: 5px 0; transition: color .15s; user-select: none;
+}
+#plp-{{ sid }} .fl-label:hover { color: var(--gr); }
+#plp-{{ sid }} .fl-label input[type=checkbox] {
+  width: 15px; height: 15px; accent-color: var(--gr);
+  cursor: pointer; flex-shrink: 0;
+}
+#plp-{{ sid }} .fl-cnt { margin-left: auto; font-size: 11px; color: var(--g3); }
+
+/* Price range */
+#plp-{{ sid }} .pr-row { display: flex; align-items: center; gap: 7px; margin-top: 8px; }
+#plp-{{ sid }} .pr-field {
+  flex: 1; display: flex; align-items: center;
+  border: 1.5px solid var(--g2); border-radius: 6px;
+  background: var(--g1); overflow: hidden;
+}
+#plp-{{ sid }} .pr-sym { padding: 7px 4px 7px 9px; font-size: 12px; color: var(--g3); }
+#plp-{{ sid }} .pr-field input {
+  flex: 1; border: none; background: transparent; font-size: 13px;
+  padding: 7px 8px 7px 2px; width: 0; outline: none; color: var(--tx);
+  font-family: var(--fb);
+}
+#plp-{{ sid }} .pr-hint { font-size: 11px; color: var(--g3); margin-top: 6px; }
+#plp-{{ sid }} .pr-apply {
+  display: block; margin-top: 10px; width: 100%;
+  padding: 8px; background: var(--gr); color: #fff;
+  font-family: var(--fh); font-size: 13px; font-weight: 700;
+  border: none; border-radius: 6px; cursor: pointer; transition: background .2s;
+}
+#plp-{{ sid }} .pr-apply:hover { background: var(--dk); }
+
+/* ===== TOOLBAR ===== */
+#plp-{{ sid }} .toolbar {
+  display: flex; justify-content: space-between; align-items: center;
+  margin-bottom: 16px; gap: 10px; flex-wrap: wrap;
+}
+#plp-{{ sid }} .tb-left { font-size: 13.5px; color: var(--tx-lt); }
+#plp-{{ sid }} .tb-left strong { color: var(--tx); font-weight: 600; }
+#plp-{{ sid }} .tb-right { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+
+/* Mobile filter btn */
+#plp-{{ sid }} .mob-fbtn {
+  display: none; align-items: center; gap: 6px;
+  padding: 8px 14px; background: var(--gr); color: #fff;
+  border: none; border-radius: 7px; font-family: var(--fh);
+  font-size: 13px; font-weight: 700; cursor: pointer;
+}
+#plp-{{ sid }} .mob-fbtn svg { width: 15px; height: 15px; stroke: #fff; fill: none; stroke-width: 2; }
+
+/* Sort select */
+#plp-{{ sid }} .sort-sel {
+  padding: 8px 28px 8px 12px; border: 1.5px solid var(--g2);
+  border-radius: 7px; font-size: 13px; color: var(--tx);
+  font-family: var(--fb); outline: none; cursor: pointer;
+  background: #fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='11' height='11' viewBox='0 0 24 24' fill='none' stroke='%23999' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E") no-repeat right 9px center;
+  -webkit-appearance: none; appearance: none;
+}
+#plp-{{ sid }} .sort-sel:focus { border-color: var(--gr); }
+
+/* View toggle */
+#plp-{{ sid }} .view-tog { display: flex; gap: 4px; }
+#plp-{{ sid }} .vbtn {
+  width: 34px; height: 34px; border: 1.5px solid var(--g2);
+  border-radius: 6px; display: flex; align-items: center; justify-content: center;
+  cursor: pointer; background: #fff; color: var(--g3); transition: all .2s;
+}
+#plp-{{ sid }} .vbtn.active { background: var(--gr); border-color: var(--gr); color: #fff; }
+#plp-{{ sid }} .vbtn svg { width: 16px; height: 16px; fill: currentColor; }
+
+/* ===== PRODUCT GRID ===== */
+#plp-{{ sid }} .pgrid {
+  display: grid;
+  grid-template-columns: repeat({{ cols }}, 1fr);
+  gap: 18px;
+  transition: all .3s;
+}
+
+/* List view */
+#plp-{{ sid }} .pgrid.list-view { grid-template-columns: 1fr !important; }
+#plp-{{ sid }} .pgrid.list-view .pcard { flex-direction: row; }
+#plp-{{ sid }} .pgrid.list-view .pc-img { width: 200px; flex-shrink: 0; aspect-ratio: 1/1; }
+#plp-{{ sid }} .pgrid.list-view .pc-body { flex: 1; padding: 18px 18px 10px; }
+#plp-{{ sid }} .pgrid.list-view .pc-foot { padding: 0 18px 18px; position: absolute; right: 0px; bottom: 0px; }
+#plp-{{ sid }} .pgrid.list-view .pc-title { -webkit-line-clamp: 3; }
+
+/* ===== PRODUCT CARD ===== */
+#plp-{{ sid }} .pcard {
+  background: #fff; border-radius: 0px;
+  border: 1.5px solid var(--g2); overflow: hidden;
+  transition: box-shadow .25s, transform .25s, border-color .25s;
+  position: relative; display: flex; flex-direction: column;
+}
+#plp-{{ sid }} .pcard:hover {
+  box-shadow: var(--sh); transform: translateY(-4px); border-color: var(--gr-lt);
+}
+
+/* Badges */
+#plp-{{ sid }} .badge-sale,
+#plp-{{ sid }} .badge-new {
+  position: absolute; top: 11px; left: 11px;
+  font-size: 10.5px; font-weight: 700; font-family: var(--fh);
+  padding: 3px 10px; border-radius: 20px; z-index: 3;
+  pointer-events: none; letter-spacing: .3px;
+}
+#plp-{{ sid }} .badge-sale { background: var(--rd); color: #fff; }
+#plp-{{ sid }} .badge-new  { background: var(--gld); color: var(--dk); }
+
+/* Wishlist */
+#plp-{{ sid }} .btn-wish {
+  position: absolute; top: 9px; right: 9px;
+  width: 32px; height: 32px; background: rgba(255,255,255,0.93);
+  border-radius: 50%; display: flex; align-items: center; justify-content: center;
+  z-index: 3; cursor: pointer; border: none;
+  opacity: 0; transition: opacity .2s, transform .2s;
+  box-shadow: 0 2px 8px rgba(0,0,0,.12);
+}
+#plp-{{ sid }} .pcard:hover .btn-wish,
+#plp-{{ sid }} .btn-wish.active { opacity: 1; }
+#plp-{{ sid }} .btn-wish:hover { transform: scale(1.15); }
+#plp-{{ sid }} .btn-wish svg { width: 16px; height: 16px; stroke: var(--rd); fill: none; stroke-width: 2; }
+#plp-{{ sid }} .btn-wish.active svg { fill: var(--rd); }
+
+/* Image */
+#plp-{{ sid }} .pc-img {
+  position: relative; background: var(--g1);
+  aspect-ratio: 1/1; overflow: hidden;
+  display: flex; align-items: center; justify-content: center;
+  text-decoration: none; display: block;
+}
+#plp-{{ sid }} .pc-img img {
+  width: 100%; height: 100%; object-fit: cover;
+  transition: transform .4s; display: block;
+}
+#plp-{{ sid }} .pcard:hover .pc-img img { transform: scale(1.06); }
+#plp-{{ sid }} .pc-img::after {
+  content: ''; position: absolute; inset: 0;
+  background: linear-gradient(to top,rgba(0,0,0,.04),transparent 50%);
+  pointer-events: none;
+}
+#plp-{{ sid }} .pc-noimg {
+  width: 100%; height: 100%; display: flex; align-items: center;
+  justify-content: center; background: linear-gradient(135deg,#e8f5e9,#c8e6c9);
+  font-size: 48px;
+}
+
+/* Body */
+#plp-{{ sid }} .pc-body {
+  padding: 13px 13px 8px; flex: 1; display: flex; flex-direction: column;
+}
+#plp-{{ sid }} .pc-type {
+  font-size: 10px; color: var(--gr-lt); font-weight: 700;
+  letter-spacing: .8px; text-transform: uppercase;
+  margin-bottom: 4px;
+}
+#plp-{{ sid }} .pc-title {
+  font-family: var(--fh); font-size: 14.5px; font-weight: 700;
+  color: var(--dk); line-height: 1.3; margin-bottom: 6px;
+  display: -webkit-box; -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical; overflow: hidden;
+  text-decoration: none;
+}
+#plp-{{ sid }} .pc-title:hover { color: var(--gr); }
+
+/* Price */
+#plp-{{ sid }} .pc-price {
+  display: flex; align-items: baseline; gap: 7px;
+  margin-top: auto; flex-wrap: wrap; padding-top: 6px;
+}
+#plp-{{ sid }} .p-now {
+  font-family: var(--fh); font-size: 16.5px; font-weight: 800; color: var(--gr);
+}
+#plp-{{ sid }} .p-was { font-size: 12.5px; color: var(--g3); text-decoration: line-through; }
+#plp-{{ sid }} .p-off {
+  font-size: 10.5px; font-weight: 700; color: var(--rd);
+  background: #fdecea; padding: 2px 6px; border-radius: 4px;
+}
+
+/* Footer */
+#plp-{{ sid }} .pc-foot { padding: 0 13px 13px; }
+#plp-{{ sid }} .btn-atc {
+  width: 100%;
+  padding: 9px 14px;
+  background: #F4FCF8;
+  color: #000;
+  border: 1px solid #00963F;
+  font-size: 13px;
+  font-weight: 400;
+  border-radius: 0px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  transition: background .2s, transform .15s;
+}
+#plp-{{ sid }} .btn-atc:hover { background: #00963F; transform: scale(1.01); color: #fff; }
+#plp-{{ sid }} .btn-atc:hover svg { stroke: #FFF; }
+#plp-{{ sid }} .btn-atc:disabled { opacity: .7; cursor: not-allowed; transform: none; }
+#plp-{{ sid }} .btn-atc.added { background: #388e3c; }
+#plp-{{ sid }} .btn-atc svg { width: 15px; height: 15px; stroke: #000; fill: none; stroke-width: 2; }
+
+#plp-{{ sid }} .btn-sold {
+  width: 100%; padding: 9px 14px;
+  background: var(--g2); color: var(--g3);
+  font-family: var(--fh); font-size: 13px; font-weight: 700;
+  border: none; border-radius: 7px; cursor: not-allowed; text-align: center;
+}
+
+/* ===== EMPTY / NO RESULTS ===== */
+#plp-{{ sid }} .plp-empty {
+  text-align: center; padding: 60px 20px; color: var(--tx-lt);
+  grid-column: 1/-1;
+}
+#plp-{{ sid }} .plp-empty .ei { font-size: 56px; margin-bottom: 14px; }
+#plp-{{ sid }} .plp-empty h3 {
+  font-family: var(--fh); font-size: 20px; color: var(--dk); margin-bottom: 8px;
+}
+#plp-{{ sid }} .plp-empty a {
+  display: inline-block; margin-top: 14px; padding: 10px 24px;
+  background: var(--gr); color: #fff; border-radius: 7px;
+  font-family: var(--fh); font-weight: 700; text-decoration: none;
+}
+
+/* ===== PAGINATION ===== */
+#plp-{{ sid }} .plp-pager {
+  display: flex; justify-content: center; align-items: center;
+  gap: 5px; margin-top: 36px; flex-wrap: wrap;
+}
+#plp-{{ sid }} .plp-pager a,
+#plp-{{ sid }} .plp-pager span {
+  display: flex; align-items: center; justify-content: center;
+  width: 38px; height: 38px; border-radius: 8px;
+  font-size: 13.5px; font-weight: 600; font-family: var(--fh);
+  text-decoration: none; transition: all .2s;
+  border: 1.5px solid var(--g2); background: #fff; color: var(--tx);
+}
+#plp-{{ sid }} .plp-pager a:hover { background: var(--gr-pale); border-color: var(--gr); color: var(--gr); }
+#plp-{{ sid }} .plp-pager .pg-cur { background: var(--gr); border-color: var(--gr); color: #fff; }
+#plp-{{ sid }} .plp-pager .pg-off { opacity: .35; pointer-events: none; }
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 1024px) {
+  #plp-{{ sid }} .pgrid { grid-template-columns: repeat(3,1fr) !important; }
+}
+@media (max-width: 768px) {
+  #plp-{{ sid }} .plp-layout { grid-template-columns: 1fr; }
+  #plp-{{ sid }} .plp-sb { position: static; display: none; }
+  #plp-{{ sid }} .plp-sb.mob-open { display: block; }
+  #plp-{{ sid }} .mob-fbtn { display: flex; }
+  #plp-{{ sid }} .pgrid { grid-template-columns: repeat(2,1fr) !important; gap: 12px; }
+  #plp-{{ sid }} .plp-h1 { font-size: 26px; }
+  #plp-{{ sid }} .plp-inner { padding: 14px 14px 40px; }
+  #plp-{{ sid }} .pgrid.list-view .pcard { flex-direction: column; }
+  #plp-{{ sid }} .pgrid.list-view .pc-img { width: 100%; }
+}
+@media (max-width: 420px) {
+  #plp-{{ sid }} .pgrid { grid-template-columns: 1fr !important; }
+}
+</style>
+
+<div id="plp-{{ sid }}">
+
+  {% comment %} TRUST STRIP {% endcomment %}
+  {% if section.settings.show_trust_strip %}
+    <div class="trust-strip">
+      {% for block in section.blocks %}
+        {% if block.type == 'trust_item' %}
+          <div class="trust-item" {{ block.shopify_attributes }}>
+            <span>{{ block.settings.icon }}</span>
+            <span>{{ block.settings.text }}</span>
+          </div>
+        {% endif %}
+      {% endfor %}
+    </div>
+  {% endif %}
+
+  <div class="plp-inner">
+
+    {% comment %} BREADCRUMB {% endcomment %}
+    {% if section.settings.show_breadcrumb %}
+      <nav class="plp-bc" aria-label="Breadcrumb">
+        <a href="{{ routes.root_url }}">Home</a>
+        <span>›</span>
+        <span>Search Results</span>
+      </nav>
+    {% endif %}
+
+    {% comment %} HEADING {% endcomment %}
+    <div class="plp-heading">
+      <h1 class="plp-h1">
+        Search <span>Results</span>
+      </h1>
+      {% if search.performed %}
+        <div class="plp-desc">
+          {% if search.results_count == 0 %}
+            No results for <strong>"{{ search.terms | escape }}"</strong>
+          {% else %}
+            {{ search.results_count }} result{{ search.results_count | pluralize: '', 's' }} for <strong>"{{ search.terms | escape }}"</strong>
+          {% endif %}
+        </div>
+      {% endif %}
+    </div>
+
+    {% comment %} SEARCH BAR {% endcomment %}
+    <div class="search-bar-wrap">
+      <form class="search-bar" action="{{ routes.search_url }}" method="get" role="search">
+        <input
+          type="search"
+          name="q"
+          value="{{ search.terms | escape }}"
+          placeholder="{{ section.settings.search_placeholder | default: 'Search products…' }}"
+          aria-label="Search"
+          autocomplete="off"
+        >
+        <input type="hidden" name="type" value="product">
+        <button type="submit" aria-label="Submit search">
+          <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        </button>
+      </form>
+    </div>
+
+    <div class="plp-layout">
+
+      {% comment %} ===== SIDEBAR FILTERS ===== {% endcomment %}
+      {% if section.settings.enable_filtering and search.filters.size > 0 %}
+        <aside class="plp-sb" id="sb-{{ sid }}">
+          <div class="sb-hd">
+            <svg viewBox="0 0 24 24"><line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="12" x2="14" y2="12"/><line x1="4" y1="18" x2="10" y2="18"/></svg>
+            <h2>{{ section.settings.filter_label | default: 'Filters' }}</h2>
+          </div>
+
+          {% comment %} Active filter chips {% endcomment %}
+          {% if afc > 0 %}
+            <div class="sb-chips">
+              {% for filter in search.filters %}
+                {% for val in filter.active_values %}
+                  <a href="{{ val.url_to_remove }}" class="chip">× {{ val.label }}</a>
+                {% endfor %}
+              {% endfor %}
+              <a href="{{ routes.search_url }}?q={{ search.terms | url_encode }}&type=product" class="chip chip-red">× Clear All</a>
+            </div>
+          {% endif %}
+
+          <form id="filter-form-{{ sid }}" action="{{ routes.search_url }}" method="get" data-filter-form>
+            <input type="hidden" name="q" value="{{ search.terms | escape }}">
+            <input type="hidden" name="type" value="product">
+            <input type="hidden" name="sort_by" value="{{ sort_by }}">
+
+            {% for filter in search.filters %}
+              <div class="fg open" data-filter-group="{{ filter.label | handleize }}">
+                <button type="button" class="fg-btn" aria-expanded="true">
+                  <h3>{{ filter.label }}</h3>
+                  <span class="fg-arr">▲</span>
+                </button>
+                <div class="fg-body">
+                  {% case filter.type %}
+
+                    {% when 'boolean', 'list' %}
+                      {% for val in filter.values %}
+                        <label class="fl-label">
+                          <input
+                            type="checkbox"
+                            name="{{ val.param_name }}"
+                            value="{{ val.value }}"
+                            {% if val.active %}checked{% endif %}
+                            {% if val.count == 0 and val.active == false %}disabled{% endif %}
+                          >
+                          {{ val.label }}
+                          <span class="fl-cnt">({{ val.count }})</span>
+                        </label>
+                      {% endfor %}
+
+                    {% when 'price_range' %}
+                      <div class="pr-row">
+                        <div class="pr-field">
+                          <span class="pr-sym">₹</span>
+                          <input
+                            type="number" min="0"
+                            max="{{ filter.range_max | divided_by: 100.0 }}"
+                            name="{{ filter.min_value.param_name }}"
+                            id="pr-min-{{ sid }}"
+                            value="{{ filter.min_value.value | divided_by: 100.0 | default: '' }}"
+                            placeholder="0"
+                          >
+                        </div>
+                        <span style="font-size:12px;color:#9e9e9e">to</span>
+                        <div class="pr-field">
+                          <span class="pr-sym">₹</span>
+                          <input
+                            type="number" min="0"
+                            max="{{ filter.range_max | divided_by: 100.0 }}"
+                            name="{{ filter.max_value.param_name }}"
+                            id="pr-max-{{ sid }}"
+                            value="{{ filter.max_value.value | divided_by: 100.0 | default: '' }}"
+                            placeholder="{{ filter.range_max | divided_by: 100 }}"
+                          >
+                        </div>
+                      </div>
+                      <p class="pr-hint">Highest: {{ filter.range_max | money_without_trailing_zeros }}</p>
+                      <button type="submit" class="pr-apply">Apply</button>
+
+                  {% endcase %}
+                </div>
+              </div>
+            {% endfor %}
+          </form>
+        </aside>
+      {% endif %}
+
+      {% comment %} ===== PRODUCTS AREA ===== {% endcomment %}
+      <div>
+
+        {% comment %} TOOLBAR {% endcomment %}
+        <div class="toolbar">
+          <div class="tb-left">
+            {% if search.performed %}
+              <strong>{{ search.results_count }}</strong>
+              {{ search.results_count | pluralize: 'result', 'results' }}
+              {% if afc > 0 %}<span> &middot; filtered</span>{% endif %}
+            {% endif %}
+          </div>
+          <div class="tb-right">
+            {% if section.settings.enable_filtering and search.filters.size > 0 %}
+              <button class="mob-fbtn" id="mob-filter-btn-{{ sid }}" aria-label="Toggle filters">
+                <svg viewBox="0 0 24 24"><line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="12" x2="14" y2="12"/><line x1="4" y1="18" x2="10" y2="18"/></svg>
+                Filters{% if afc > 0 %} ({{ afc }}){% endif %}
+              </button>
+            {% endif %}
+
+            {% if section.settings.enable_sorting and search.performed %}
+              <select class="sort-sel" id="sort-sel-{{ sid }}" aria-label="Sort products">
+                <option value="relevance" {% if sort_by == 'relevance' %}selected{% endif %}>Relevance</option>
+                <option value="price-ascending" {% if sort_by == 'price-ascending' %}selected{% endif %}>Price: Low to High</option>
+                <option value="price-descending" {% if sort_by == 'price-descending' %}selected{% endif %}>Price: High to Low</option>
+                <option value="created-descending" {% if sort_by == 'created-descending' %}selected{% endif %}>Newest</option>
+                <option value="best-selling" {% if sort_by == 'best-selling' %}selected{% endif %}>Best Selling</option>
+              </select>
+            {% endif %}
+
+            <div class="view-tog">
+              <button class="vbtn active" id="vbtn-g-{{ sid }}" data-view="grid" title="Grid view" aria-pressed="true">
+                <svg viewBox="0 0 16 16">
+                  <rect x="1" y="1" width="6" height="6" rx="1"/>
+                  <rect x="9" y="1" width="6" height="6" rx="1"/>
+                  <rect x="1" y="9" width="6" height="6" rx="1"/>
+                  <rect x="9" y="9" width="6" height="6" rx="1"/>
+                </svg>
+              </button>
+              <button class="vbtn" id="vbtn-l-{{ sid }}" data-view="list" title="List view" aria-pressed="false">
+                <svg viewBox="0 0 16 16">
+                  <rect x="1" y="2" width="14" height="3" rx="1"/>
+                  <rect x="1" y="7" width="14" height="3" rx="1"/>
+                  <rect x="1" y="12" width="14" height="3" rx="1"/>
+                </svg>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {% comment %} PRODUCT GRID {% endcomment %}
+        {% paginate search.results by ppp %}
+
+          {% assign products = search.results | where: 'object_type', 'product' %}
+
+          {% if search.performed and products.size > 0 %}
+            <div class="pgrid" id="pgrid-{{ sid }}">
+              {% for product in products %}
+
+                {% assign has_disc = false %}
+                {% assign disc_pct = 0 %}
+                {% if product.compare_at_price > product.price %}
+                  {% assign has_disc = true %}
+                  {% assign saved = product.compare_at_price | minus: product.price %}
+                  {% assign disc_pct = saved | times: 100 | divided_by: product.compare_at_price %}
+                {% endif %}
+
+                {% assign is_new = false %}
+                {% assign now_s = 'now' | date: '%s' | plus: 0 %}
+                {% assign cre_s = product.created_at | date: '%s' | plus: 0 %}
+                {% assign age_d = now_s | minus: cre_s | divided_by: 86400 %}
+                {% if age_d <= 30 %}{% assign is_new = true %}{% endif %}
+
+                {% assign fv = product.selected_or_first_available_variant %}
+
+                <article class="pcard" itemscope itemtype="https://schema.org/Product">
+
+                  {% if has_disc %}
+                    <span class="badge-sale">SALE</span>
+                  {% elsif is_new %}
+                    <span class="badge-new">NEW</span>
+                  {% endif %}
+
+                  <button
+                    class="btn-wish"
+                    data-pid="{{ product.id }}"
+                    aria-label="Add to wishlist"
+                    title="Wishlist"
+                  >
+                    <svg viewBox="0 0 24 24">
+                      <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+                    </svg>
+                  </button>
+
+                  <a href="{{ product.url }}" class="pc-img" aria-label="{{ product.title }}">
+                    {% if product.featured_image %}
+                      {{
+                        product.featured_image
+                        | image_url: width: 600
+                        | image_tag:
+                          loading: 'lazy',
+                          alt: product.featured_image.alt | default: product.title,
+                          itemprop: 'image',
+                          width: product.featured_image.width,
+                          height: product.featured_image.height
+                      }}
+                    {% else %}
+                      <div class="pc-noimg">🌿</div>
+                    {% endif %}
+                  </a>
+
+                  <div class="pc-body">
+                    <div class="pc-type">{{ product.product_type | default: product.tags.first }}</div>
+                    <a href="{{ product.url }}" class="pc-title" itemprop="name">
+                      {{ product.title }}
+                    </a>
+                    <div class="pc-price" itemprop="offers" itemscope itemtype="https://schema.org/Offer">
+                      <meta itemprop="priceCurrency" content="{{ cart.currency.iso_code }}">
+                      <span class="p-now" itemprop="price" content="{{ product.price | divided_by: 100.0 }}">
+                        {{ product.price | money }}
+                      </span>
+                      {% if has_disc %}
+                        <span class="p-was">{{ product.compare_at_price | money }}</span>
+                        <span class="p-off">{{ disc_pct }}% OFF</span>
+                      {% endif %}
+                    </div>
+                  </div>
+
+                  <div class="pc-foot">
+                    {% if fv.available %}
+                      <button
+                        class="btn-atc"
+                        data-variant-id="{{ fv.id }}"
+                        data-product-title="{{ product.title | escape }}"
+                        aria-label="Add {{ product.title | escape }} to cart"
+                      >
+                        <svg viewBox="0 0 24 24">
+                          <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/>
+                          <line x1="3" y1="6" x2="21" y2="6"/>
+                          <path d="M16 10a4 4 0 0 1-8 0"/>
+                        </svg>
+                        {{ section.settings.cart_btn_label | default: 'Add to Cart' }}
+                      </button>
+                    {% else %}
+                      <div class="btn-sold">Sold Out</div>
+                    {% endif %}
+                  </div>
+
+                </article>
+              {% endfor %}
+            </div>
+
+            {% comment %} PAGINATION {% endcomment %}
+            {% if paginate.pages > 1 %}
+              <nav class="plp-pager" aria-label="Pagination">
+                {% if paginate.previous %}
+                  <a href="{{ paginate.previous.url }}" aria-label="Previous">‹</a>
+                {% else %}
+                  <span class="pg-off">‹</span>
+                {% endif %}
+
+                {% for part in paginate.parts %}
+                  {% if part.is_link %}
+                    <a href="{{ part.url }}">{{ part.title }}</a>
+                  {% elsif part.title == paginate.current_page %}
+                    <span class="pg-cur" aria-current="page">{{ part.title }}</span>
+                  {% else %}
+                    <span>{{ part.title }}</span>
+                  {% endif %}
+                {% endfor %}
+
+                {% if paginate.next %}
+                  <a href="{{ paginate.next.url }}" aria-label="Next">›</a>
+                {% else %}
+                  <span class="pg-off">›</span>
+                {% endif %}
+              </nav>
+            {% endif %}
+
+          {% elsif search.performed and search.results_count == 0 %}
+            <div class="plp-empty">
+              <div class="ei">🔍</div>
+              <h3>No results found</h3>
+              <p>Try a different keyword or remove filters.</p>
+              <a href="{{ routes.search_url }}">Clear Search</a>
+            </div>
+
+          {% else %}
+            <div class="plp-empty">
+              <div class="ei">🌾</div>
+              <h3>Search for products</h3>
+              <p>Enter a keyword above to find what you're looking for.</p>
+            </div>
+          {% endif %}
+
+        {% endpaginate %}
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+(function () {
+  var ROOT = document.getElementById('plp-{{ sid }}');
+  if (!ROOT) return;
+
+  /* ─────────────────────────────────────
+     1. COLLAPSIBLE FILTER GROUPS
+  ───────────────────────────────────── */
+  ROOT.querySelectorAll('.fg-btn').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      var fg = this.closest('.fg');
+      var isOpen = fg.classList.toggle('open');
+      this.setAttribute('aria-expanded', isOpen.toString());
+    });
+  });
+
+  /* ─────────────────────────────────────
+     2. FILTER FORM
+  ───────────────────────────────────── */
+  var filterForm = document.getElementById('filter-form-{{ sid }}');
+
+  function buildFilterURL() {
+    var params = new URLSearchParams();
+    params.set('q', '{{ search.terms | escape }}');
+    params.set('type', 'product');
+    var sortEl = document.getElementById('sort-sel-{{ sid }}');
+    params.set('sort_by', sortEl ? sortEl.value : '{{ sort_by }}');
+
+    filterForm.querySelectorAll('input[type=checkbox]:checked').forEach(function (cb) {
+      params.append(cb.name, cb.value);
+    });
+
+    filterForm.querySelectorAll('input[type=number]').forEach(function (inp) {
+      if (inp.value !== '') {
+        params.set(inp.name, Math.round(parseFloat(inp.value) * 100));
+      }
+    });
+
+    return '{{ routes.search_url }}?' + params.toString();
+  }
+
+  if (filterForm) {
+    filterForm.querySelectorAll('input[type=checkbox]').forEach(function (cb) {
+      cb.addEventListener('change', function () {
+        window.location.href = buildFilterURL();
+      });
+    });
+
+    filterForm.querySelectorAll('.pr-apply').forEach(function (btn) {
+      btn.addEventListener('click', function (e) {
+        e.preventDefault();
+        window.location.href = buildFilterURL();
+      });
+    });
+
+    filterForm.addEventListener('submit', function (e) {
+      e.preventDefault();
+      window.location.href = buildFilterURL();
+    });
+  }
+
+  /* ─────────────────────────────────────
+     3. SORT
+  ───────────────────────────────────── */
+  var sortSel = document.getElementById('sort-sel-{{ sid }}');
+  if (sortSel) {
+    sortSel.addEventListener('change', function () {
+      var url = new URL(window.location.href);
+      url.searchParams.set('sort_by', this.value);
+      window.location.href = url.toString();
+    });
+  }
+
+  /* ─────────────────────────────────────
+     4. GRID / LIST VIEW TOGGLE
+  ───────────────────────────────────── */
+  var grid = document.getElementById('pgrid-{{ sid }}');
+  var btnG = document.getElementById('vbtn-g-{{ sid }}');
+  var btnL = document.getElementById('vbtn-l-{{ sid }}');
+
+  function setView(v) {
+    if (!grid) return;
+    if (v === 'list') {
+      grid.classList.add('list-view');
+      btnL.classList.add('active');    btnL.setAttribute('aria-pressed', 'true');
+      btnG.classList.remove('active'); btnG.setAttribute('aria-pressed', 'false');
+    } else {
+      grid.classList.remove('list-view');
+      btnG.classList.add('active');    btnG.setAttribute('aria-pressed', 'true');
+      btnL.classList.remove('active'); btnL.setAttribute('aria-pressed', 'false');
+    }
+    try { localStorage.setItem('ba_view_{{ sid }}', v); } catch (e) {}
+  }
+
+  if (btnG) btnG.addEventListener('click', function () { setView('grid'); });
+  if (btnL) btnL.addEventListener('click', function () { setView('list'); });
+
+  try {
+    var saved = localStorage.getItem('ba_view_{{ sid }}');
+    if (saved === 'list') setView('list');
+  } catch (e) {}
+
+  /* ─────────────────────────────────────
+     5. MOBILE FILTER SIDEBAR TOGGLE
+  ───────────────────────────────────── */
+  var mobBtn  = document.getElementById('mob-filter-btn-{{ sid }}');
+  var sidebar = document.getElementById('sb-{{ sid }}');
+  if (mobBtn && sidebar) {
+    mobBtn.addEventListener('click', function () {
+      sidebar.classList.toggle('mob-open');
+    });
+  }
+
+  /* ─────────────────────────────────────
+     6. AJAX ADD TO CART + CART BUBBLE UPDATE
+  ───────────────────────────────────── */
+  function updateCartBubble(count) {
+    var bubble = document.querySelector('.cart-bubble');
+    if (bubble) {
+      bubble.classList.remove('visually-hidden');
+      if (count <= 99) bubble.setAttribute('data-maintain-ratio', '');
+      else bubble.removeAttribute('data-maintain-ratio');
+    }
+    var bubbleCount = document.querySelector('.cart-bubble__text-count');
+    if (bubbleCount) {
+      bubbleCount.textContent = count > 99 ? '99+' : count;
+      bubbleCount.classList.remove('hidden');
+    }
+    var bubbleText = document.querySelector('#cart-bubble-text .visually-hidden');
+    if (bubbleText) bubbleText.textContent = 'Cart count: ' + count;
+
+    var cartSelectors = [
+      '[data-cart-count]','[data-cart-item-count]','[data-header-cart-quantity]',
+      '.cart-count','.cart-badge','.cart-item-count','.header-cart-count',
+      '.cart__count','#cart-count','#CartCount','.js-cart-count',
+      '[data-cart-bubble]','.site-header__cart-count'
+    ];
+    document.querySelectorAll(cartSelectors.join(',')).forEach(function (el) {
+      el.textContent = count;
+      el.setAttribute('data-count', count);
+      el.removeAttribute('hidden');
+      if (count > 0) el.classList.remove('hidden', 'is-hidden', 'hide');
+    });
+
+    document.dispatchEvent(new CustomEvent('cart:refresh', { bubbles: true }));
+    document.dispatchEvent(new CustomEvent('cart:updated', { bubbles: true }));
+    // Fire theme's native cart:update event so cart-icon.js updates without page refresh
+    document.dispatchEvent(new CustomEvent('cart:update', {
+      bubbles: true,
+      detail: { data: { itemCount: count, source: 'product-form-component' } }
+    }));
+    if (window.jQuery) jQuery(document).trigger('cart.requestComplete');
+
+    fetch('/?section_id=cart-icon-bubble').then(function (r) {
+      if (!r.ok) return; return r.text();
+    }).then(function (html) {
+      if (!html) return;
+      var tmp = document.createElement('div');
+      tmp.innerHTML = html;
+      var newBubble = tmp.querySelector('.shopify-section');
+      var oldBubble = document.querySelector('#shopify-section-cart-icon-bubble');
+      if (newBubble && oldBubble) oldBubble.innerHTML = newBubble.innerHTML;
+    }).catch(function () {});
+  }
+
+  ROOT.querySelectorAll('.btn-atc').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      if (this.disabled) return;
+      var variantId = this.getAttribute('data-variant-id');
+      var origHTML  = this.innerHTML;
+      var self      = this;
+
+      self.disabled = true;
+      self.innerHTML = '<span>Adding…</span>';
+
+      // Gather section IDs so drawer HTML is returned in response
+      var sectionIds = Array.from(
+        document.querySelectorAll('cart-items-component[data-section-id]')
+      ).map(function(el) { return el.dataset.sectionId; }).filter(Boolean);
+
+      var payload = { id: parseInt(variantId, 10), quantity: 1 };
+      if (sectionIds.length > 0) { payload.sections = sectionIds.join(','); }
+
+      fetch('/cart/add.js', {
+        method:  'POST',
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+        body: JSON.stringify(payload)
+      })
+      .then(function (res) {
+        if (!res.ok) return res.json().then(function (err) { throw new Error(err.description || 'Error'); });
+        return res.json();
+      })
+      .then(function (addData) {
+        self.classList.add('added');
+        self.innerHTML = '✓ Added to Cart';
+
+        // Fire CartAddEvent with sections so cart-items-component morphs drawer instantly
+        document.dispatchEvent(new CustomEvent('cart:update', {
+          bubbles: true,
+          detail: {
+            data: {
+              source: 'product-form-component',
+              itemCount: 1,
+              sections: addData.sections || {}
+            }
+          }
+        }));
+
+        return fetch('/cart.js', { headers: { 'Accept': 'application/json' } });
+      })
+      .then(function (res) { return res.json(); })
+      .then(function (cart) {
+        updateCartBubble(cart.item_count);
+        setTimeout(function () {
+          self.classList.remove('added');
+          self.innerHTML = origHTML;
+          self.disabled  = false;
+        }, 2200);
+      })
+      .catch(function (err) {
+        self.innerHTML = origHTML;
+        self.disabled  = false;
+        alert(err.message || 'Could not add to cart. Please try again.');
+      });
+    });
+  });
+
+  /* ─────────────────────────────────────
+     7. WISHLIST — localStorage based
+  ───────────────────────────────────── */
+  function getWL() {
+    try { return JSON.parse(localStorage.getItem('ba_wishlist') || '[]'); } catch (e) { return []; }
+  }
+  function saveWL(list) {
+    try { localStorage.setItem('ba_wishlist', JSON.stringify(list)); } catch (e) {}
+  }
+
+  var wl = getWL();
+  ROOT.querySelectorAll('.btn-wish').forEach(function (btn) {
+    if (wl.indexOf(btn.getAttribute('data-pid')) > -1) btn.classList.add('active');
+    btn.addEventListener('click', function () {
+      var pid  = this.getAttribute('data-pid');
+      var list = getWL();
+      var idx  = list.indexOf(pid);
+      if (idx > -1) { list.splice(idx, 1); this.classList.remove('active'); }
+      else { list.push(pid); this.classList.add('active'); }
+      saveWL(list);
+    });
+  });
+
+})();
+</script>
+
+{% schema %}
+{
+  "name": "Search Results",
+  "tag": "section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "range",
+      "id": "products_per_page",
+      "label": "Products per page",
+      "min": 8, "max": 48, "step": 4, "default": 16
+    },
+    {
+      "type": "select",
+      "id": "grid_columns",
+      "label": "Desktop columns",
+      "options": [
+        { "value": "3", "label": "3 columns" },
+        { "value": "4", "label": "4 columns" },
+        { "value": "5", "label": "5 columns" }
+      ],
+      "default": "4"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_breadcrumb",
+      "label": "Show breadcrumb",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_trust_strip",
+      "label": "Show trust badge strip",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Filters & Sorting"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_filtering",
+      "label": "Enable sidebar filters",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_sorting",
+      "label": "Enable sort dropdown",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "filter_label",
+      "label": "Filter heading",
+      "default": "Filters"
+    },
+    {
+      "type": "header",
+      "content": "Search"
+    },
+    {
+      "type": "text",
+      "id": "search_placeholder",
+      "label": "Search bar placeholder",
+      "default": "Search products…"
+    },
+    {
+      "type": "header",
+      "content": "Labels"
+    },
+    {
+      "type": "text",
+      "id": "cart_btn_label",
+      "label": "Add to cart button text",
+      "default": "Add to Cart"
+    },
+    {
+      "type": "header",
+      "content": "Brand Colors"
+    },
+    {
+      "type": "color",
+      "id": "color_green",
+      "label": "Primary green",
+      "default": "#2d6a2d"
+    },
+    {
+      "type": "color",
+      "id": "color_green_light",
+      "label": "Green light",
+      "default": "#4caf50"
+    },
+    {
+      "type": "color",
+      "id": "color_green_pale",
+      "label": "Green pale",
+      "default": "#e8f5e9"
+    },
+    {
+      "type": "color",
+      "id": "color_red",
+      "label": "Red (sale badge)",
+      "default": "#c62828"
+    },
+    {
+      "type": "color",
+      "id": "color_gold",
+      "label": "Gold (new badge)",
+      "default": "#f9a825"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "trust_item",
+      "name": "Trust Badge",
+      "settings": [
+        {
+          "type": "text",
+          "id": "icon",
+          "label": "Emoji icon",
+          "default": "🌱"
+        },
+        {
+          "type": "text",
+          "id": "text",
+          "label": "Badge text",
+          "default": "100% Organic Options"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Search Results",
+      "blocks": [
+        { "type": "trust_item", "settings": { "icon": "🌱", "text": "100% Organic Options" } },
+        { "type": "trust_item", "settings": { "icon": "🚜", "text": "Trusted by 50,000+ Farmers" } },
+        { "type": "trust_item", "settings": { "icon": "🏆", "text": "ISO Certified Products" } },
+        { "type": "trust_item", "settings": { "icon": "🚚", "text": "Free Shipping on ₹999+" } },
+        { "type": "trust_item", "settings": { "icon": "🔬", "text": "Lab Tested Quality" } },
+        { "type": "trust_item", "settings": { "icon": "📞", "text": "Expert Agri Advisor Support" } }
+      ]
+    }
+  ]
+}
+{% endschema %}
