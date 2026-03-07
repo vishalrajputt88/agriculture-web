@@ -194,7 +194,7 @@ Mobile: Hidden (content injected into mobile header drawer via JS)
                     {%- for block in section.blocks -%}
                       {%- assign block_parent = block.settings.parent_menu_item | strip -%}
                       {%- if block.type == 'collection_cards' and block_parent == link.title -%}
-                        {%- assign col_ids = 'collection_1,collection_2,collection_3,collection_4,collection_5,collection_6,collection_7,collection_8' | split: ',' -%}
+                        {%- assign col_ids = 'collection_1,collection_2,collection_3,collection_4,collection_5,collection_6,collection_7,collection_8,collection_9' | split: ',' -%}
                         {%- for col_id in col_ids -%}
                           {%- assign col_handle = block.settings[col_id] -%}
                           {%- if col_handle != blank -%}
