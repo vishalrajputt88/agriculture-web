@@ -220,18 +220,16 @@ product-form-component [class*="swym"] {
   </body>
 
 
-  <script>
+ <script>
   document.addEventListener('DOMContentLoaded', function() {
-    // Breadcrumb mein "Collections" ko "Categories" se replace karo
-    document.querySelectorAll('a, span, li').forEach(function(el) {
-      if (el.childNodes.length === 1 && el.childNodes[0].nodeType === 3) {
-        if (el.textContent.trim() === 'Collections') {
-          el.textContent = 'Categories';
+    document.querySelectorAll('a, span, li, nav').forEach(function(el) {
+      el.childNodes.forEach(function(node) {
+        if (node.nodeType === 3 && node.textContent.trim() === 'Collections') {
+          node.textContent = node.textContent.replace('Collections', 'Categories');
         }
-      }
+      });
     });
   });
 </script>
-
  
 </html>
