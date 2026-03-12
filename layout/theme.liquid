@@ -232,5 +232,12 @@ product-form-component [class*="swym"] {
   });
 </script>
 
- 
+ <script>
+  document.addEventListener('DOMContentLoaded', function() {
+    if (window.location.pathname.startsWith('/collections/')) {
+      var newUrl = window.location.pathname.replace('/collections/', '/categories/');
+      history.pushState({}, '', newUrl);
+    }
+  });
+</script>
 </html>
