@@ -234,8 +234,8 @@ product-form-component [class*="swym"] {
 
  <script>
   document.addEventListener('DOMContentLoaded', function() {
-    if (window.location.pathname.startsWith('/collections/')) {
-      var newUrl = window.location.pathname.replace('/collections/', '/categories/');
+    if (window.location.pathname.startsWith('/categories/')) {
+      var newUrl = window.location.pathname.replace('/categories/', '/collections/');
       history.pushState({}, '', newUrl);
     }
   });
