@@ -76,7 +76,7 @@
       "type": "custom-annousbar",
       "name": "Announcement bar",
       "settings": {
-        "announcement_text": "Get Up to 40% OFF On Bulk Purchasing | Use Code “SAVE10” For Instant 10% Discount",
+        "announcement_text": "Get Up to 15% OFF On Bulk Purchasing",
         "menu": "announce-menus",
         "background_color": "#16a34a",
         "text_color": "#ffffff",
