@@ -76,7 +76,7 @@
       "type": "custom-annousbar",
       "name": "Announcement bar",
       "settings": {
-        "announcement_text": "Get Up to 15% OFF On Bulk Purchasing",
+        "announcement_text": "Get 20% Off on Bulk Purchasing | On first order get 50 rupees off use \"FIRST50\"",
         "menu": "announce-menus",
         "background_color": "#16a34a",
         "text_color": "#ffffff",
