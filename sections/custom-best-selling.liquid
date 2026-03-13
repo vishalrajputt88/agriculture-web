@@ -516,7 +516,7 @@
                   {% endif %}
 
                   <!-- Add to Cart -->
-                  <div class="product-card-form-{{ custom_best_selling }}">
+                  {% comment %} <div class="product-card-form-{{ custom_best_selling }}">
                     {% if product.available %}
                       <button
                         type="button"
@@ -527,8 +527,19 @@
                       <button type="button" class="product-card-button-{{ custom_best_selling }}" disabled>Sold Out</button>
                     {% endif %}
                   </div>
+                  <div class="product-card-bulk-text-{{ custom_best_selling }}">Discount on Bulk Purchase</div> {% endcomment %}
 
-                  <div class="product-card-bulk-text-{{ custom_best_selling }}">Discount on Bulk Purchase</div>
+                  <div class="product-card-form-{{ custom_best_selling }}">
+                  {% if first_available.available %}
+                  <button
+                  type="button"
+                  class="product-card-button-{{ custom_best_selling }} js-atc-btn"
+                  data-variant-id="{{ first_available.id }}"
+                  >{{ section.settings.button_text }}</button>
+                  {% else %}
+                  <button type="button" class="product-card-button-{{ custom_best_selling }}" disabled>Sold Out</button>
+                  {% endif %}
+                  </div>
 
                 </div>
               </div>
