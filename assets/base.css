@@ -5022,3 +5022,6 @@ position: fixed !important;
 .shopify-policy__title  h1{
     font-size: 36px;
 }
+.shopify-policy__body h3 strong{
+  font-size:20px;
+}
