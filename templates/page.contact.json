@@ -146,9 +146,9 @@
         "padding-block-end": 84
       }
     },
-    "contact_us_Ei3Rij": {
+    "contact_us_C9HJkm": {
       "type": "contact-us",
-      "name": "Bhumi Agro Contact",
+      "name": "Bhumi Agro Contact Pro",
       "settings": {
         "heading": "Get in Touch",
         "address": "Bhumi Agro, India",
@@ -160,6 +160,6 @@
   "order": [
     "main",
     "form",
-    "contact_us_Ei3Rij"
+    "contact_us_C9HJkm"
   ]
 }
