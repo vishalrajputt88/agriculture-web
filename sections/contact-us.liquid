@@ -1,6 +1,6 @@
 {% schema %}
 {
-  "name": "Bhumi Agro Contact",
+  "name": "Bhumi Agro Contact Pro",
   "settings": [
     {
       "type": "text",
@@ -29,125 +29,167 @@
   ],
   "presets": [
     {
-      "name": "Bhumi Agro Contact"
+      "name": "Bhumi Agro Contact Pro"
     }
   ]
 }
 {% endschema %}
 
 <style>
-.contact-wrapper {
+/* OUTER SECTION */
+.bhumi-contact-section {
+  padding: 80px 20px;
+  background: linear-gradient(135deg, #6fb1d6, #4a90c2);
+}
+
+/* CENTER CONTAINER */
+.bhumi-container {
+  max-width: 1200px;
+  margin: auto;
+}
+
+/* MAIN BOX */
+.bhumi-contact-wrapper {
   display: flex;
-  flex-wrap: wrap;
-  background: linear-gradient(135deg, #6db3d9, #4a90c2);
-  padding: 50px;
-  border-radius: 12px;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 20px 50px rgba(0,0,0,0.15);
 }
 
-/* LEFT SIDE */
-.contact-left {
-  flex: 1;
-  background: #1f4e79;
-  padding: 30px;
-  border-radius: 10px;
+/* LEFT PANEL */
+.bhumi-left {
+  width: 40%;
+  background: #254e73;
   color: #fff;
+  padding: 50px;
 }
 
-.contact-left h3 {
-  margin-bottom: 20px;
+.bhumi-left h3 {
+  font-size: 32px;
+  margin-bottom: 25px;
 }
 
-.contact-left a {
+.bhumi-left p {
+  margin-bottom: 15px;
+  opacity: 0.9;
+}
+
+.bhumi-left a {
+  display: block;
   color: #fff;
   text-decoration: none;
-  display: block;
-  margin-bottom: 10px;
+  margin-bottom: 12px;
+  font-size: 16px;
+  transition: 0.3s;
 }
 
-/* RIGHT SIDE */
-.contact-right {
-  flex: 1;
-  background: #fff;
-  padding: 30px;
-  border-radius: 10px;
-  margin-left: 20px;
+.bhumi-left a:hover {
+  opacity: 0.8;
 }
 
-.contact-right h2 {
-  margin-bottom: 15px;
+/* RIGHT PANEL */
+.bhumi-right {
+  width: 60%;
+  background: #f4f4f4;
+  padding: 50px;
 }
 
-.contact-right input,
-.contact-right textarea {
+.bhumi-right h2 {
+  font-size: 40px;
+  margin-bottom: 25px;
+  color: #333;
+}
+
+/* INPUTS */
+.bhumi-right input,
+.bhumi-right textarea {
   width: 100%;
-  padding: 12px;
-  margin-bottom: 15px;
+  padding: 16px;
+  margin-bottom: 18px;
   border: none;
-  border-radius: 6px;
-  background: #f3f3f3;
+  border-radius: 8px;
+  background: #eaeaea;
+  font-size: 15px;
 }
 
-.contact-right button {
-  background: #6db3d9;
+.bhumi-right textarea {
+  min-height: 140px;
+}
+
+/* BUTTON */
+.bhumi-btn {
+  background: linear-gradient(135deg, #6fb1d6, #4a90c2);
   color: #fff;
-  padding: 12px 30px;
   border: none;
-  border-radius: 25px;
+  padding: 14px 40px;
+  border-radius: 30px;
+  font-size: 14px;
   cursor: pointer;
-  width: 150px;
+  transition: 0.3s;
 }
 
-.contact-right button:hover {
-  background: #4a90c2;
+.bhumi-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 20px rgba(0,0,0,0.15);
 }
 
-/* MOBILE */
+/* RESPONSIVE */
 @media(max-width: 768px){
-  .contact-wrapper {
+  .bhumi-contact-wrapper {
     flex-direction: column;
   }
-  .contact-right {
-    margin-left: 0;
-    margin-top: 20px;
+
+  .bhumi-left,
+  .bhumi-right {
+    width: 100%;
+  }
+
+  .bhumi-right h2 {
+    font-size: 28px;
   }
 }
 </style>
 
-<div class="contact-wrapper">
+<section class="bhumi-contact-section">
+  <div class="bhumi-container">
 
-  <!-- LEFT -->
-  <div class="contact-left">
-    <h3>Contact Us</h3>
+    <div class="bhumi-contact-wrapper">
 
-    <p>{{ section.settings.address }}</p>
+      <!-- LEFT -->
+      <div class="bhumi-left">
+        <h3>Contact Us</h3>
 
-    <a href="mailto:{{ section.settings.email }}">
-      📧 {{ section.settings.email }}
-    </a>
+        <p>{{ section.settings.address }}</p>
 
-    <a href="tel:{{ section.settings.phone }}">
-      📞 {{ section.settings.phone }}
-    </a>
+        <a href="mailto:{{ section.settings.email }}">
+          📧 {{ section.settings.email }}
+        </a>
+
+        <a href="tel:{{ section.settings.phone }}">
+          📞 {{ section.settings.phone }}
+        </a>
+      </div>
+
+      <!-- RIGHT -->
+      <div class="bhumi-right">
+        <h2>{{ section.settings.heading }}</h2>
+
+        {% form 'contact' %}
+
+          <input type="text" name="contact[name]" placeholder="Your Name" required>
+
+          <input type="email" name="contact[email]" placeholder="Your Email" required>
+
+          <input type="tel" name="contact[phone]" placeholder="Your Phone Number">
+
+          <textarea name="contact[body]" placeholder="Your Message" required></textarea>
+
+          <button type="submit" class="bhumi-btn">SEND</button>
+
+        {% endform %}
+      </div>
+
+    </div>
 
   </div>
-
-  <!-- RIGHT -->
-  <div class="contact-right">
-    <h2>{{ section.settings.heading }}</h2>
-
-    {% form 'contact' %}
-
-      <input type="text" name="contact[name]" placeholder="Your Name" required>
-
-      <input type="email" name="contact[email]" placeholder="Your Email" required>
-
-      <input type="tel" name="contact[phone]" placeholder="Your Phone Number">
-
-      <textarea name="contact[body]" placeholder="Your Message" rows="5" required></textarea>
-
-      <button type="submit">SEND</button>
-
-    {% endform %}
-  </div>
-
-</div>
+</section>
