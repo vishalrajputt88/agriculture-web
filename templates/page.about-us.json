@@ -124,10 +124,39 @@
         "box_border": "#16a34a",
         "bottom_text": "At Bhumi Agro, we strongly believe that sustainable agriculture is the foundation of a healthier environment and a prosperous future. Our commitment to quality, customer satisfaction, and ethical business practices continues to drive everything we do."
       }
+    },
+    "about_faq_JTmwpG": {
+      "type": "about-faq",
+      "blocks": {
+        "faq_K8MmiR": {
+          "type": "faq",
+          "settings": {
+            "question": "Do you provide expert farming advice?",
+            "answer": "Yes, our team of experienced agricultural experts provides guidance to help farmers choose the right products and improve their crop yield."
+          }
+        },
+        "faq_TWhqNd": {
+          "type": "faq",
+          "settings": {
+            "question": "Do you deliver products all over India?",
+            "answer": "Yes, we have a strong logistics network that enables us to deliver our products across all regions of India."
+          }
+        }
+      },
+      "block_order": [
+        "faq_K8MmiR",
+        "faq_TWhqNd"
+      ],
+      "name": "FAQ Bhumi Agro",
+      "settings": {
+        "heading": "Frequently Asked Questions",
+        "show_count": true
+      }
     }
   },
   "order": [
     "main",
-    "about_us_VrXKai"
+    "about_us_VrXKai",
+    "about_faq_JTmwpG"
   ]
 }
