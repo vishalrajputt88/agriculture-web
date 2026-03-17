@@ -128,7 +128,23 @@
     "about_faq_JTmwpG": {
       "type": "about-faq",
       "blocks": {
-        "faq_gdFKfx": {
+        "faq_NEaE34": {
+          "type": "faq",
+          "settings": {
+            "icon_text": "",
+            "question": "Do you provide expert farming advice?",
+            "answer": "Yes, our team of experienced agricultural experts provides guidance to help farmers choose the right products and improve their crop yield."
+          }
+        },
+        "faq_KnrPk3": {
+          "type": "faq",
+          "settings": {
+            "icon_text": "",
+            "question": "Do you deliver products all over India?",
+            "answer": "Yes, we have a strong logistics network that enables us to deliver our products across all regions of India."
+          }
+        },
+        "faq_mg3JQb": {
           "type": "faq",
           "settings": {
             "icon_text": "",
@@ -136,34 +152,20 @@
             "answer": "Bhumi Agro offers high-quality products at affordable prices, free shipping, expert guidance, and a customer-friendly payment system, making us a trusted choice for farmers."
           }
         },
-        "faq_wbiRrW": {
+        "faq_gK9NQw": {
           "type": "faq",
           "settings": {
             "icon_text": "",
             "question": "Can I track my order?",
             "answer": "Yes, once your order is shipped, you will receive tracking details to monitor your delivery status."
           }
-        },
-        "faq_K8MmiR": {
-          "type": "faq",
-          "settings": {
-            "question": "Do you provide expert farming advice?",
-            "answer": "Yes, our team of experienced agricultural experts provides guidance to help farmers choose the right products and improve their crop yield."
-          }
-        },
-        "faq_TWhqNd": {
-          "type": "faq",
-          "settings": {
-            "question": "Do you deliver products all over India?",
-            "answer": "Yes, we have a strong logistics network that enables us to deliver our products across all regions of India."
-          }
         }
       },
       "block_order": [
-        "faq_gdFKfx",
-        "faq_wbiRrW",
-        "faq_K8MmiR",
-        "faq_TWhqNd"
+        "faq_NEaE34",
+        "faq_KnrPk3",
+        "faq_mg3JQb",
+        "faq_gK9NQw"
       ],
       "name": "FAQ Bhumi Agro",
       "settings": {
