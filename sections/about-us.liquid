@@ -1,0 +1,239 @@
+{% style %}
+.about-section {
+  max-width: 1100px;
+  margin: auto;
+  padding: 40px 20px;
+  font-family: Arial, sans-serif;
+}
+
+.about-heading {
+  text-align: center;
+  font-size: {{ section.settings.heading_size }}px;
+  letter-spacing: {{ section.settings.heading_spacing }}px;
+  color: {{ section.settings.heading_color }};
+}
+
+.about-text {
+  font-size: {{ section.settings.text_size }}px;
+  letter-spacing: {{ section.settings.text_spacing }}px;
+  color: {{ section.settings.text_color }};
+  margin-top: 15px;
+}
+
+.feature {
+  margin-top: 25px;
+}
+
+.feature-title {
+  font-size: {{ section.settings.feature_title_size }}px;
+  letter-spacing: {{ section.settings.feature_title_spacing }}px;
+  font-weight: bold;
+  color: {{ section.settings.feature_title_color }};
+}
+
+.feature-text {
+  font-size: {{ section.settings.feature_text_size }}px;
+  margin-top: 5px;
+  color: {{ section.settings.text_color }};
+}
+
+.highlight-box {
+  margin-top: 30px;
+  padding: 20px;
+  background: {{ section.settings.box_bg }};
+  border-left: 5px solid {{ section.settings.box_border }};
+}
+{% endstyle %}
+
+<div class="about-section">
+
+  <h1 class="about-heading">
+    {{ section.settings.heading }}
+  </h1>
+
+  <p class="about-text">
+    {{ section.settings.description }}
+  </p>
+
+  <h2 class="about-heading" style="margin-top:30px;">
+    {{ section.settings.offer_heading }}
+  </h2>
+
+  {% for block in section.blocks %}
+    <div class="feature">
+      <div class="feature-title">
+        {{ block.settings.title }}
+      </div>
+      <div class="feature-text">
+        {{ block.settings.text }}
+      </div>
+    </div>
+  {% endfor %}
+
+  <div class="highlight-box">
+    <p class="about-text">
+      {{ section.settings.bottom_text }}
+    </p>
+  </div>
+
+</div>
+
+{% schema %}
+{
+  "name": "About Bhumi Agro",
+  "settings": [
+
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Main Heading",
+      "default": "About Us"
+    },
+    {
+      "type": "textarea",
+      "id": "description",
+      "label": "Description",
+      "default": "Bhumi Agro is committed to sustainable agriculture and high-quality farming solutions."
+    },
+    {
+      "type": "text",
+      "id": "offer_heading",
+      "label": "Offer Heading",
+      "default": "WE OFFER"
+    },
+
+    {
+      "type": "range",
+      "id": "heading_size",
+      "label": "Heading Size",
+      "min": 20,
+      "max": 60,
+      "step": 1,
+      "default": 36
+    },
+    {
+      "type": "range",
+      "id": "heading_spacing",
+      "label": "Heading Letter Spacing",
+      "min": 0,
+      "max": 5,
+      "step": 0.1,
+      "default": 1
+    },
+    {
+      "type": "color",
+      "id": "heading_color",
+      "label": "Heading Color",
+      "default": "#2e7d32"
+    },
+
+    {
+      "type": "range",
+      "id": "text_size",
+      "label": "Text Size",
+      "min": 12,
+      "max": 22,
+      "step": 1,
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "text_spacing",
+      "label": "Text Letter Spacing",
+      "min": 0,
+      "max": 5,
+      "step": 0.1,
+      "default": 0.5
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text Color",
+      "default": "#333333"
+    },
+
+    {
+      "type": "range",
+      "id": "feature_title_size",
+      "label": "Feature Title Size",
+      "min": 14,
+      "max": 28,
+      "step": 1,
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "feature_title_spacing",
+      "label": "Feature Title Spacing",
+      "min": 0,
+      "max": 5,
+      "step": 0.1,
+      "default": 0.5
+    },
+    {
+      "type": "color",
+      "id": "feature_title_color",
+      "label": "Feature Title Color",
+      "default": "#000000"
+    },
+
+    {
+      "type": "range",
+      "id": "feature_text_size",
+      "label": "Feature Text Size",
+      "min": 12,
+      "max": 20,
+      "step": 1,
+      "default": 15
+    },
+
+    {
+      "type": "color",
+      "id": "box_bg",
+      "label": "Bottom Box Background",
+      "default": "#f1f8e9"
+    },
+    {
+      "type": "color",
+      "id": "box_border",
+      "label": "Bottom Border Color",
+      "default": "#2e7d32"
+    },
+    {
+      "type": "textarea",
+      "id": "bottom_text",
+      "label": "Bottom Text",
+      "default": "We believe sustainable agriculture is the future."
+    }
+
+  ],
+
+  "blocks": [
+    {
+      "type": "feature",
+      "name": "Feature Item",
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Feature Title",
+          "default": "Feature Title"
+        },
+        {
+          "type": "textarea",
+          "id": "text",
+          "label": "Feature Description",
+          "default": "Feature description goes here."
+        }
+      ]
+    }
+  ],
+
+  "presets": [
+    {
+      "name": "About Bhumi Agro",
+      "category": "Custom"
+    }
+  ]
+}
+{% endschema %}
