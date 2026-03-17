@@ -3,14 +3,6 @@
   max-width: 900px;
   margin: auto;
   padding: 40px 20px;
-  font-family: Arial, sans-serif;
-}
-
-.faq-heading {
-  text-align: center;
-  font-size: {{ section.settings.heading_size }}px;
-  margin-bottom: 30px;
-  color: {{ section.settings.heading_color }};
 }
 
 .faq-item {
@@ -21,50 +13,68 @@
 .faq-question {
   cursor: pointer;
   font-weight: bold;
-  font-size: {{ section.settings.question_size }}px;
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  justify-content: space-between;
 }
 
-.faq-toggle {
-  font-size: 20px;
-  transition: 0.3s;
+.faq-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.faq-icon {
+  font-size: 18px;
+}
+
+.faq-count {
+  font-weight: bold;
 }
 
 .faq-answer {
-  max-height: 0;
-  overflow: hidden;
-  transition: all 0.4s ease;
-  font-size: {{ section.settings.answer_size }}px;
-  color: {{ section.settings.text_color }};
-}
-
-.faq-item.active .faq-answer {
-  max-height: 200px;
+  display: none;
   margin-top: 10px;
 }
 
-.faq-item.active .faq-toggle {
-  transform: rotate(45deg);
+.faq-item.active .faq-answer {
+  display: block;
 }
 {% endstyle %}
 
 <div class="faq-section">
 
-  <h2 class="faq-heading">
-    {{ section.settings.heading }}
-  </h2>
+  <h2>{{ section.settings.heading }}</h2>
 
   {% for block in section.blocks %}
     <div class="faq-item">
+      
       <div class="faq-question">
-        {{ block.settings.question }}
-        <span class="faq-toggle">+</span>
+        
+        <div class="faq-left">
+
+          {% if section.settings.show_count %}
+            <span class="faq-count">{{ forloop.index }}.</span>
+          {% endif %}
+
+          {% if section.settings.show_icon %}
+            <span class="faq-icon">
+              {{ block.settings.icon }}
+            </span>
+          {% endif %}
+
+          <span>{{ block.settings.question }}</span>
+
+        </div>
+
+        <span>+</span>
+
       </div>
+
       <div class="faq-answer">
         {{ block.settings.answer }}
       </div>
+
     </div>
   {% endfor %}
 
@@ -73,17 +83,7 @@
 <script>
 document.querySelectorAll('.faq-question').forEach((item) => {
   item.addEventListener('click', () => {
-
     const parent = item.parentElement;
-
-    // Close all
-    document.querySelectorAll('.faq-item').forEach(el => {
-      if(el !== parent){
-        el.classList.remove('active');
-      }
-    });
-
-    // Toggle current
     parent.classList.toggle('active');
   });
 });
@@ -100,43 +100,16 @@ document.querySelectorAll('.faq-question').forEach((item) => {
       "default": "Frequently Asked Questions"
     },
     {
-      "type": "range",
-      "id": "heading_size",
-      "label": "Heading Size",
-      "min": 20,
-      "max": 50,
-      "step": 1,
-      "default": 30
+      "type": "checkbox",
+      "id": "show_icon",
+      "label": "Show Icon",
+      "default": true
     },
     {
-      "type": "color",
-      "id": "heading_color",
-      "label": "Heading Color",
-      "default": "#000000"
-    },
-    {
-      "type": "range",
-      "id": "question_size",
-      "label": "Question Size",
-      "min": 14,
-      "max": 24,
-      "step": 1,
-      "default": 18
-    },
-    {
-      "type": "range",
-      "id": "answer_size",
-      "label": "Answer Size",
-      "min": 12,
-      "max": 20,
-      "step": 1,
-      "default": 15
-    },
-    {
-      "type": "color",
-      "id": "text_color",
-      "label": "Answer Color",
-      "default": "#333333"
+      "type": "checkbox",
+      "id": "show_count",
+      "label": "Show Numbering",
+      "default": false
     }
   ],
 
@@ -147,15 +120,21 @@ document.querySelectorAll('.faq-question').forEach((item) => {
       "settings": [
         {
           "type": "text",
+          "id": "icon",
+          "label": "Icon (emoji or text)",
+          "default": "🚚"
+        },
+        {
+          "type": "text",
           "id": "question",
           "label": "Question",
-          "default": "Enter your question"
+          "default": "Enter question"
         },
         {
           "type": "textarea",
           "id": "answer",
           "label": "Answer",
-          "default": "Enter your answer"
+          "default": "Enter answer"
         }
       ]
     }
@@ -163,8 +142,7 @@ document.querySelectorAll('.faq-question').forEach((item) => {
 
   "presets": [
     {
-      "name": "FAQ Bhumi Agro",
-      "category": "Custom"
+      "name": "FAQ Bhumi Agro"
     }
   ]
 }
