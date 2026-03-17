@@ -446,7 +446,7 @@
       "name": "Combo Kit",
       "settings": {
         "heading": "Best Selling Products",
-        "collection": "bio-insecticides",
+        "collection": "micronutrients",
         "products_per_row_desktop": 4,
         "products_per_row_mobile": "2",
         "show_rating": true,
