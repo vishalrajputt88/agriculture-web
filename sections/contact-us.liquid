@@ -1,138 +1,105 @@
-{% style %}
-.contact-section {
-  max-width: 1100px;
-  margin: auto;
-  padding: 50px 20px;
-  font-family: Arial, sans-serif;
-}
 
-.contact-heading {
-  text-align: center;
-  font-size: {{ section.settings.heading_size }}px;
-  font-weight: 700;
-  margin-bottom: 40px;
-}
-
+<style>
 .contact-wrapper {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 40px;
-}
-
-.contact-card {
-  background: #f9f9f9;
-  padding: 25px;
-  border-radius: 12px;
-}
-
-.contact-item {
   display: flex;
-  align-items: flex-start;
-  gap: 12px;
+  flex-wrap: wrap;
+  background: linear-gradient(135deg, #5fa8d3, #4a90c2);
+  padding: 50px;
+  border-radius: 12px;
+  color: #fff;
+}
+
+.contact-left {
+  flex: 1;
+  background: #1f4e79;
+  padding: 30px;
+  border-radius: 10px;
+}
+
+.contact-left h3 {
   margin-bottom: 20px;
 }
 
-.contact-icon {
-  font-size: 20px;
-}
-
-.contact-title {
-  font-weight: 600;
-}
-
-.contact-form {
-  background: #ffffff;
-  padding: 25px;
-  border-radius: 12px;
-  box-shadow: 0 5px 15px rgba(0,0,0,0.05);
-}
-
-.contact-form input,
-.contact-form textarea {
-  width: 100%;
-  padding: 12px;
-  margin-bottom: 12px;
-  border-radius: 8px;
-  border: 1px solid #ddd;
-  font-size: 14px;
-}
-
-.contact-form textarea {
-  min-height: 120px;
-}
-
-.contact-form button {
-  width: 100%;
-  padding: 12px;
-  background: {{ section.settings.button_color }};
+.contact-left a {
   color: #fff;
+  text-decoration: none;
+  display: block;
+  margin-bottom: 10px;
+}
+
+.contact-right {
+  flex: 1;
+  background: #fff;
+  color: #333;
+  padding: 30px;
+  border-radius: 10px;
+  margin-left: 20px;
+}
+
+.contact-right input,
+.contact-right textarea {
+  width: 100%;
+  padding: 12px;
+  margin-bottom: 15px;
   border: none;
-  border-radius: 8px;
-  font-weight: 600;
+  border-radius: 6px;
+  background: #f2f2f2;
+}
+
+.contact-right button {
+  background: #5fa8d3;
+  color: #fff;
+  padding: 12px 30px;
+  border: none;
+  border-radius: 25px;
   cursor: pointer;
 }
 
-@media(max-width: 768px){
-  .contact-wrapper {
-    grid-template-columns: 1fr;
-  }
+.contact-right button:hover {
+  background: #4a90c2;
 }
-{% endstyle %}
+</style>
 
-<div class="contact-section">
+<div class="contact-wrapper">
 
-  <h2 class="contact-heading">
-    {{ section.settings.heading }}
-  </h2>
+  <!-- LEFT SIDE -->
+  <div class="contact-left">
+    <h3>Contact Us</h3>
 
-  <div class="contact-wrapper">
+    <p>{{ section.settings.address }}</p>
 
-    <!-- Left Info -->
-    <div class="contact-card">
+    <a href="mailto:{{ section.settings.email }}">
+      📧 {{ section.settings.email }}
+    </a>
 
-      <div class="contact-item">
-        <div class="contact-icon">📍</div>
-        <div>
-          <div class="contact-title">Address</div>
-          <div>{{ section.settings.address }}</div>
-        </div>
-      </div>
+    <a href="tel:{{ section.settings.phone }}">
+      📞 {{ section.settings.phone }}
+    </a>
 
-      <div class="contact-item">
-        <div class="contact-icon">📞</div>
-        <div>
-          <div class="contact-title">Phone</div>
-          <div>{{ section.settings.phone }}</div>
-        </div>
-      </div>
+  </div>
 
-      <div class="contact-item">
-        <div class="contact-icon">✉️</div>
-        <div>
-          <div class="contact-title">Email</div>
-          <div>{{ section.settings.email }}</div>
-        </div>
-      </div>
+  <!-- RIGHT SIDE -->
+  <div class="contact-right">
+    <h2>{{ section.settings.heading }}</h2>
 
-    </div>
+    <form method="post" action="/contact#contact_form" id="contact_form">
+      
+      <input type="text" name="contact[name]" placeholder="Your Name" required>
 
-    <!-- Right Form -->
-    <div class="contact-form">
-      {% form 'contact' %}
-        <input type="text" name="contact[name]" placeholder="Your Name" required>
-        <input type="email" name="contact[email]" placeholder="Your Email" required>
-        <textarea name="contact[body]" placeholder="Your Message"></textarea>
-        <button type="submit">Send Message</button>
-      {% endform %}
-    </div>
+      <input type="email" name="contact[email]" placeholder="Your Email" required>
 
+      <textarea name="contact[body]" placeholder="Your Message" rows="5" required></textarea>
+
+      <button type="submit">SEND</button>
+
+    </form>
   </div>
 
 </div>
 
 {% schema %}
 {
-  "name": "Contact Bhumi",
+  "name": "Bhumi Agro Contact",
   "settings": [
     {
       "type": "text",
@@ -141,42 +108,27 @@
       "default": "Get in Touch"
     },
     {
-      "type": "range",
-      "id": "heading_size",
-      "label": "Heading Size",
-      "min": 20,
-      "max": 60,
-      "step": 1,
-      "default": 36
-    },
-    {
-      "type": "textarea",
+      "type": "text",
       "id": "address",
       "label": "Address",
-      "default": "Bhumi Agro, Madhya Pradesh, India"
+      "default": "Bhumi Agro, India"
+    },
+    {
+      "type": "text",
+      "id": "email",
+      "label": "Email",
+      "default": "info@bhumiagro.com"
     },
     {
       "type": "text",
       "id": "phone",
       "label": "Phone",
       "default": "+91 9876543210"
-    },
-    {
-      "type": "text",
-      "id": "email",
-      "label": "Email",
-      "default": "support@bhumiagro.com"
-    },
-    {
-      "type": "color",
-      "id": "button_color",
-      "label": "Button Color",
-      "default": "#2e7d32"
     }
   ],
   "presets": [
     {
-      "name": "Contact Bhumi"
+      "name": "Bhumi Agro Contact"
     }
   ]
 }
