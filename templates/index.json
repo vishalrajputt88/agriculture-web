@@ -107,7 +107,7 @@
           "settings": {
             "category_image": "shopify://shop_images/Fertilisers-Products-Bhumi-Agro.png",
             "category_title": "Fertiliser",
-            "category_url": "shopify://collections/fertilizers-products"
+            "category_url": "shopify://collections/bio-fertilizers"
           }
         },
         "category_item_UzbbjW": {
@@ -123,7 +123,7 @@
           "settings": {
             "category_image": "shopify://shop_images/Pesticides-Fungicides-Bhumi-Agro.png",
             "category_title": "Pesticides/ Insecticides",
-            "category_url": "shopify://collections/insecticides-or-pesticides"
+            "category_url": "shopify://collections/insecticides"
           }
         },
         "category_item_QDNMhh": {
