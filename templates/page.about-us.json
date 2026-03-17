@@ -88,6 +88,13 @@
             "title": "Expert Agricultural Guidance:",
             "text": "Our experienced team of agri experts is always ready to assist you with personalized advice and solutions. We aim to empower farmers with the right knowledge for better productivity and profitability."
           }
+        },
+        "feature_w98D9Q": {
+          "type": "feature",
+          "settings": {
+            "title": "Wide Product Range:",
+            "text": "At Bhumi Agro, we offer a comprehensive range of agricultural products including organic inputs, pesticides, bio-pesticides, and plant nutrients, ensuring all your farming needs are met in one place."
+          }
         }
       },
       "block_order": [
@@ -95,7 +102,8 @@
         "feature_BtJUj6",
         "feature_ztC6dt",
         "feature_GEmwRW",
-        "feature_ExFCEm"
+        "feature_ExFCEm",
+        "feature_w98D9Q"
       ],
       "name": "About Bhumi Agro",
       "settings": {
