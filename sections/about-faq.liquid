@@ -1,0 +1,171 @@
+{% style %}
+.faq-section {
+  max-width: 900px;
+  margin: auto;
+  padding: 40px 20px;
+  font-family: Arial, sans-serif;
+}
+
+.faq-heading {
+  text-align: center;
+  font-size: {{ section.settings.heading_size }}px;
+  margin-bottom: 30px;
+  color: {{ section.settings.heading_color }};
+}
+
+.faq-item {
+  border-bottom: 1px solid #ddd;
+  padding: 15px 0;
+}
+
+.faq-question {
+  cursor: pointer;
+  font-weight: bold;
+  font-size: {{ section.settings.question_size }}px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.faq-toggle {
+  font-size: 20px;
+  transition: 0.3s;
+}
+
+.faq-answer {
+  max-height: 0;
+  overflow: hidden;
+  transition: all 0.4s ease;
+  font-size: {{ section.settings.answer_size }}px;
+  color: {{ section.settings.text_color }};
+}
+
+.faq-item.active .faq-answer {
+  max-height: 200px;
+  margin-top: 10px;
+}
+
+.faq-item.active .faq-toggle {
+  transform: rotate(45deg);
+}
+{% endstyle %}
+
+<div class="faq-section">
+
+  <h2 class="faq-heading">
+    {{ section.settings.heading }}
+  </h2>
+
+  {% for block in section.blocks %}
+    <div class="faq-item">
+      <div class="faq-question">
+        {{ block.settings.question }}
+        <span class="faq-toggle">+</span>
+      </div>
+      <div class="faq-answer">
+        {{ block.settings.answer }}
+      </div>
+    </div>
+  {% endfor %}
+
+</div>
+
+<script>
+document.querySelectorAll('.faq-question').forEach((item) => {
+  item.addEventListener('click', () => {
+
+    const parent = item.parentElement;
+
+    // Close all
+    document.querySelectorAll('.faq-item').forEach(el => {
+      if(el !== parent){
+        el.classList.remove('active');
+      }
+    });
+
+    // Toggle current
+    parent.classList.toggle('active');
+  });
+});
+</script>
+
+{% schema %}
+{
+  "name": "FAQ Bhumi Agro",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Frequently Asked Questions"
+    },
+    {
+      "type": "range",
+      "id": "heading_size",
+      "label": "Heading Size",
+      "min": 20,
+      "max": 50,
+      "step": 1,
+      "default": 30
+    },
+    {
+      "type": "color",
+      "id": "heading_color",
+      "label": "Heading Color",
+      "default": "#000000"
+    },
+    {
+      "type": "range",
+      "id": "question_size",
+      "label": "Question Size",
+      "min": 14,
+      "max": 24,
+      "step": 1,
+      "default": 18
+    },
+    {
+      "type": "range",
+      "id": "answer_size",
+      "label": "Answer Size",
+      "min": 12,
+      "max": 20,
+      "step": 1,
+      "default": 15
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Answer Color",
+      "default": "#333333"
+    }
+  ],
+
+  "blocks": [
+    {
+      "type": "faq",
+      "name": "FAQ Item",
+      "settings": [
+        {
+          "type": "text",
+          "id": "question",
+          "label": "Question",
+          "default": "Enter your question"
+        },
+        {
+          "type": "textarea",
+          "id": "answer",
+          "label": "Answer",
+          "default": "Enter your answer"
+        }
+      ]
+    }
+  ],
+
+  "presets": [
+    {
+      "name": "FAQ Bhumi Agro",
+      "category": "Custom"
+    }
+  ]
+}
+{% endschema %}
