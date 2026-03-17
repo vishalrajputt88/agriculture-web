@@ -112,16 +112,16 @@
         "offer_heading": "Why Choose Us?",
         "heading_size": 36,
         "heading_spacing": 1,
-        "heading_color": "#2e7d32",
+        "heading_color": "#16a34a",
         "text_size": 16,
         "text_spacing": 0.5,
-        "text_color": "#333333",
+        "text_color": "#000000",
         "feature_title_size": 20,
         "feature_title_spacing": 0.5,
         "feature_title_color": "#000000",
         "feature_text_size": 15,
         "box_bg": "#f1f8e9",
-        "box_border": "#2e7d32",
+        "box_border": "#16a34a",
         "bottom_text": "At Bhumi Agro, we strongly believe that sustainable agriculture is the foundation of a healthier environment and a prosperous future. Our commitment to quality, customer satisfaction, and ethical business practices continues to drive everything we do."
       }
     }
