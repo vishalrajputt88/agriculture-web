@@ -67,10 +67,19 @@
             "question": "Do you provide expert farming advice?",
             "answer": "Yes, our team of experienced agricultural experts provides guidance to help farmers choose the right products and improve their crop yield."
           }
+        },
+        "faq_Dn9zrj": {
+          "type": "faq",
+          "settings": {
+            "icon_text": "",
+            "question": "Do you deliver products all over India?",
+            "answer": "Yes, we have a strong logistics network that enables us to deliver our products across all regions of India."
+          }
         }
       },
       "block_order": [
-        "faq_bqemgE"
+        "faq_bqemgE",
+        "faq_Dn9zrj"
       ],
       "name": "FAQ Bhumi Agro",
       "settings": {
