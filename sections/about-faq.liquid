@@ -14,8 +14,8 @@
   cursor: pointer;
   font-weight: bold;
   display: flex;
-  align-items: center;
   justify-content: space-between;
+  align-items: center;
 }
 
 .faq-left {
@@ -24,8 +24,9 @@
   gap: 10px;
 }
 
-.faq-icon {
-  font-size: 18px;
+.faq-icon img {
+  width: 20px;
+  height: 20px;
 }
 
 .faq-count {
@@ -57,9 +58,13 @@
             <span class="faq-count">{{ forloop.index }}.</span>
           {% endif %}
 
-          {% if section.settings.show_icon %}
+          {% if block.settings.icon_image != blank %}
             <span class="faq-icon">
-              {{ block.settings.icon }}
+              <img src="{{ block.settings.icon_image | image_url }}" alt="icon">
+            </span>
+          {% elsif block.settings.icon_text != blank %}
+            <span class="faq-icon">
+              {{ block.settings.icon_text }}
             </span>
           {% endif %}
 
@@ -101,15 +106,9 @@ document.querySelectorAll('.faq-question').forEach((item) => {
     },
     {
       "type": "checkbox",
-      "id": "show_icon",
-      "label": "Show Icon",
-      "default": true
-    },
-    {
-      "type": "checkbox",
       "id": "show_count",
-      "label": "Show Numbering",
-      "default": false
+      "label": "Show Auto Numbering",
+      "default": true
     }
   ],
 
@@ -119,22 +118,27 @@ document.querySelectorAll('.faq-question').forEach((item) => {
       "name": "FAQ Item",
       "settings": [
         {
+          "type": "image_picker",
+          "id": "icon_image",
+          "label": "Upload Icon Image"
+        },
+        {
           "type": "text",
-          "id": "icon",
-          "label": "Icon (emoji or text)",
-          "default": "🚚"
+          "id": "icon_text",
+          "label": "Or Use Emoji/Icon Text",
+          "default": "🌱"
         },
         {
           "type": "text",
           "id": "question",
           "label": "Question",
-          "default": "Enter question"
+          "default": "Enter your question"
         },
         {
           "type": "textarea",
           "id": "answer",
           "label": "Answer",
-          "default": "Enter answer"
+          "default": "Enter your answer"
         }
       ]
     }
