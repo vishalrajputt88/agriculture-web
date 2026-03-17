@@ -5017,3 +5017,8 @@ position: fixed !important;
   color: #ffffff !important;
   transform: translateY(-1px) !important;
 }
+
+
+.shopify-policy__title {
+    font-size: 36px;
+}
