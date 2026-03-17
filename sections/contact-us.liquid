@@ -1,45 +1,81 @@
 {% style %}
 .contact-section {
-  max-width: 1000px;
+  max-width: 1100px;
   margin: auto;
-  padding: 40px 20px;
+  padding: 50px 20px;
   font-family: Arial, sans-serif;
 }
 
 .contact-heading {
   text-align: center;
   font-size: {{ section.settings.heading_size }}px;
+  font-weight: 700;
+  margin-bottom: 40px;
+}
+
+.contact-wrapper {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 40px;
+}
+
+.contact-card {
+  background: #f9f9f9;
+  padding: 25px;
+  border-radius: 12px;
+}
+
+.contact-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
   margin-bottom: 20px;
 }
 
-.contact-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 30px;
+.contact-icon {
+  font-size: 20px;
 }
 
-.contact-info {
-  font-size: 16px;
+.contact-title {
+  font-weight: 600;
 }
 
-.contact-box {
-  margin-bottom: 15px;
+.contact-form {
+  background: #ffffff;
+  padding: 25px;
+  border-radius: 12px;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.05);
 }
 
 .contact-form input,
 .contact-form textarea {
   width: 100%;
-  padding: 10px;
-  margin-bottom: 10px;
-  border: 1px solid #ccc;
+  padding: 12px;
+  margin-bottom: 12px;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  font-size: 14px;
+}
+
+.contact-form textarea {
+  min-height: 120px;
 }
 
 .contact-form button {
-  background: #2e7d32;
+  width: 100%;
+  padding: 12px;
+  background: {{ section.settings.button_color }};
   color: #fff;
-  padding: 10px 20px;
   border: none;
+  border-radius: 8px;
+  font-weight: 600;
   cursor: pointer;
+}
+
+@media(max-width: 768px){
+  .contact-wrapper {
+    grid-template-columns: 1fr;
+  }
 }
 {% endstyle %}
 
@@ -49,29 +85,38 @@
     {{ section.settings.heading }}
   </h2>
 
-  <div class="contact-grid">
+  <div class="contact-wrapper">
 
-    <!-- Left Side Info -->
-    <div class="contact-info">
+    <!-- Left Info -->
+    <div class="contact-card">
 
-      <div class="contact-box">
-        <strong>Address:</strong><br>
-        {{ section.settings.address }}
+      <div class="contact-item">
+        <div class="contact-icon">📍</div>
+        <div>
+          <div class="contact-title">Address</div>
+          <div>{{ section.settings.address }}</div>
+        </div>
       </div>
 
-      <div class="contact-box">
-        <strong>Phone:</strong><br>
-        {{ section.settings.phone }}
+      <div class="contact-item">
+        <div class="contact-icon">📞</div>
+        <div>
+          <div class="contact-title">Phone</div>
+          <div>{{ section.settings.phone }}</div>
+        </div>
       </div>
 
-      <div class="contact-box">
-        <strong>Email:</strong><br>
-        {{ section.settings.email }}
+      <div class="contact-item">
+        <div class="contact-icon">✉️</div>
+        <div>
+          <div class="contact-title">Email</div>
+          <div>{{ section.settings.email }}</div>
+        </div>
       </div>
 
     </div>
 
-    <!-- Right Side Form -->
+    <!-- Right Form -->
     <div class="contact-form">
       {% form 'contact' %}
         <input type="text" name="contact[name]" placeholder="Your Name" required>
@@ -87,28 +132,28 @@
 
 {% schema %}
 {
-  "name": "Contact Bhumi Agro",
+  "name": "Contact Bhumi",
   "settings": [
     {
       "type": "text",
       "id": "heading",
       "label": "Heading",
-      "default": "Contact Us"
+      "default": "Get in Touch"
     },
     {
       "type": "range",
       "id": "heading_size",
       "label": "Heading Size",
       "min": 20,
-      "max": 50,
+      "max": 60,
       "step": 1,
-      "default": 32
+      "default": 36
     },
     {
       "type": "textarea",
       "id": "address",
       "label": "Address",
-      "default": "Your company address here"
+      "default": "Bhumi Agro, Madhya Pradesh, India"
     },
     {
       "type": "text",
@@ -121,12 +166,17 @@
       "id": "email",
       "label": "Email",
       "default": "support@bhumiagro.com"
+    },
+    {
+      "type": "color",
+      "id": "button_color",
+      "label": "Button Color",
+      "default": "#2e7d32"
     }
   ],
-
   "presets": [
     {
-      "name": "Contact Bhumi Agro"
+      "name": "Contact Bhumi"
     }
   ]
 }
