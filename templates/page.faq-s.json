@@ -59,6 +59,19 @@
     },
     "about_faq_UngKaF": {
       "type": "about-faq",
+      "blocks": {
+        "faq_bqemgE": {
+          "type": "faq",
+          "settings": {
+            "icon_text": "",
+            "question": "Do you provide expert farming advice?",
+            "answer": "Yes, our team of experienced agricultural experts provides guidance to help farmers choose the right products and improve their crop yield."
+          }
+        }
+      },
+      "block_order": [
+        "faq_bqemgE"
+      ],
       "name": "FAQ Bhumi Agro",
       "settings": {
         "heading": "Frequently Asked Questions",
