@@ -67,11 +67,35 @@
             "title": "Doorstep Delivery Across India:",
             "text": "With our strong and efficient logistics network, we ensure that all our products are delivered directly to your doorstep, anywhere in India, on time and with complete reliability."
           }
+        },
+        "feature_ztC6dt": {
+          "type": "feature",
+          "settings": {
+            "title": "Free Shipping:",
+            "text": "We are dedicated to making quality agricultural products accessible to every farmer. That’s why we offer free shipping on all orders, helping reduce overall costs for our customers."
+          }
+        },
+        "feature_GEmwRW": {
+          "type": "feature",
+          "settings": {
+            "title": "Affordable Pricing – Direct from Manufacturer:",
+            "text": "Being manufacturers ourselves, Bhumi Agro provides products at competitive prices without compromising on quality. By cutting out middlemen, we pass the savings directly to our customers."
+          }
+        },
+        "feature_ExFCEm": {
+          "type": "feature",
+          "settings": {
+            "title": "Expert Agricultural Guidance:",
+            "text": "Our experienced team of agri experts is always ready to assist you with personalized advice and solutions. We aim to empower farmers with the right knowledge for better productivity and profitability."
+          }
         }
       },
       "block_order": [
         "feature_Xc9tFj",
-        "feature_BtJUj6"
+        "feature_BtJUj6",
+        "feature_ztC6dt",
+        "feature_GEmwRW",
+        "feature_ExFCEm"
       ],
       "name": "About Bhumi Agro",
       "settings": {
