@@ -172,11 +172,24 @@
         "heading": "Frequently Asked Questions",
         "show_count": true
       }
+    },
+    "contact_us_xChdni": {
+      "type": "contact-us",
+      "name": "Contact Bhumi",
+      "settings": {
+        "heading": "Get in Touch",
+        "heading_size": 36,
+        "address": "Bhumi Agro, Madhya Pradesh, India",
+        "phone": "+91 9876543210",
+        "email": "support@bhumiagro.com",
+        "button_color": "#2e7d32"
+      }
     }
   },
   "order": [
     "main",
     "about_us_VrXKai",
-    "about_faq_JTmwpG"
+    "about_faq_JTmwpG",
+    "contact_us_xChdni"
   ]
 }
