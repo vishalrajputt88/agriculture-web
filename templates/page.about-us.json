@@ -37,17 +37,12 @@
             "padding-inline-end": 0
           },
           "blocks": {}
-        },
-        "page-content": {
-          "type": "page-content",
-          "settings": {},
-          "blocks": {}
         }
       },
       "block_order": [
-        "heading",
-        "page-content"
+        "heading"
       ],
+      "disabled": true,
       "settings": {
         "content_direction": "column",
         "gap": 32,
@@ -55,9 +50,52 @@
         "padding-block-start": 40,
         "padding-block-end": 80
       }
+    },
+    "about_us_VrXKai": {
+      "type": "about-us",
+      "blocks": {
+        "feature_Xc9tFj": {
+          "type": "feature",
+          "settings": {
+            "title": "Just 10% to Book – Pay Rest on Delivery:",
+            "text": "At Bhumi Agro, you can secure your order by paying just 10% in advance. The remaining amount can be paid at the time of delivery, ensuring a safe, convenient, and hassle-free buying experience"
+          }
+        },
+        "feature_BtJUj6": {
+          "type": "feature",
+          "settings": {
+            "title": "Doorstep Delivery Across India:",
+            "text": "With our strong and efficient logistics network, we ensure that all our products are delivered directly to your doorstep, anywhere in India, on time and with complete reliability."
+          }
+        }
+      },
+      "block_order": [
+        "feature_Xc9tFj",
+        "feature_BtJUj6"
+      ],
+      "name": "About Bhumi Agro",
+      "settings": {
+        "heading": "About Us",
+        "description": "Established with a vision to transform modern agriculture, Bhumi Agro has grown into a reliable and trusted name in the agricultural sector. Since our inception, we have been committed to delivering high-quality organic raw materials, pesticides, bio-pesticides, and plant nutrients. Our mission is to support farmers across India by promoting sustainable, eco-friendly, and result-oriented farming practices.",
+        "offer_heading": "WE OFFER",
+        "heading_size": 36,
+        "heading_spacing": 1,
+        "heading_color": "#2e7d32",
+        "text_size": 16,
+        "text_spacing": 0.5,
+        "text_color": "#333333",
+        "feature_title_size": 20,
+        "feature_title_spacing": 0.5,
+        "feature_title_color": "#000000",
+        "feature_text_size": 15,
+        "box_bg": "#f1f8e9",
+        "box_border": "#2e7d32",
+        "bottom_text": "We believe sustainable agriculture is the future."
+      }
     }
   },
   "order": [
-    "main"
+    "main",
+    "about_us_VrXKai"
   ]
 }
