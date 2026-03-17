@@ -75,11 +75,29 @@
             "question": "Do you deliver products all over India?",
             "answer": "Yes, we have a strong logistics network that enables us to deliver our products across all regions of India."
           }
+        },
+        "faq_cxV7Rg": {
+          "type": "faq",
+          "settings": {
+            "icon_text": "",
+            "question": "Why should I choose Bhumi Agro?",
+            "answer": "Bhumi Agro offers high-quality products at affordable prices, free shipping, expert guidance, and a customer-friendly payment system, making us a trusted choice for farmers."
+          }
+        },
+        "faq_UeqBKi": {
+          "type": "faq",
+          "settings": {
+            "icon_text": "",
+            "question": "Can I track my order?",
+            "answer": "Yes, once your order is shipped, you will receive tracking details to monitor your delivery status."
+          }
         }
       },
       "block_order": [
         "faq_bqemgE",
-        "faq_Dn9zrj"
+        "faq_Dn9zrj",
+        "faq_cxV7Rg",
+        "faq_UeqBKi"
       ],
       "name": "FAQ Bhumi Agro",
       "settings": {
