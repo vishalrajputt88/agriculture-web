@@ -128,6 +128,22 @@
     "about_faq_JTmwpG": {
       "type": "about-faq",
       "blocks": {
+        "faq_gdFKfx": {
+          "type": "faq",
+          "settings": {
+            "icon_text": "",
+            "question": "Why should I choose Bhumi Agro?",
+            "answer": "Bhumi Agro offers high-quality products at affordable prices, free shipping, expert guidance, and a customer-friendly payment system, making us a trusted choice for farmers."
+          }
+        },
+        "faq_wbiRrW": {
+          "type": "faq",
+          "settings": {
+            "icon_text": "",
+            "question": "Can I track my order?",
+            "answer": "Yes, once your order is shipped, you will receive tracking details to monitor your delivery status."
+          }
+        },
         "faq_K8MmiR": {
           "type": "faq",
           "settings": {
@@ -144,6 +160,8 @@
         }
       },
       "block_order": [
+        "faq_gdFKfx",
+        "faq_wbiRrW",
         "faq_K8MmiR",
         "faq_TWhqNd"
       ],
