@@ -48,6 +48,7 @@
         "heading",
         "page-content"
       ],
+      "disabled": true,
       "settings": {
         "content_direction": "column",
         "gap": 32,
@@ -55,9 +56,18 @@
         "padding-block-start": 40,
         "padding-block-end": 80
       }
+    },
+    "about_faq_UngKaF": {
+      "type": "about-faq",
+      "name": "FAQ Bhumi Agro",
+      "settings": {
+        "heading": "Frequently Asked Questions",
+        "show_count": true
+      }
     }
   },
   "order": [
-    "main"
+    "main",
+    "about_faq_UngKaF"
   ]
 }
