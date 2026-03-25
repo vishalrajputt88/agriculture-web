@@ -357,9 +357,9 @@
               "type": "promotional-coupon-banner",
               "name": "Promotional coupon banner",
               "settings": {
-                "price_text": "Use code",
-                "coupon_code": "WHATSUP",
-                "discount_text": "For 5% discount",
+                "price_text": "On first",
+                "coupon_code": "Order Get",
+                "discount_text": "50 Rs OFF use \"FIRST50\"",
                 "button_text": "COPY",
                 "desktop_width_percent": 100,
                 "padding": 14,
