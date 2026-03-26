@@ -516,4 +516,83 @@
 
 </div>
 
-<script src="{{ 'product-technical-information.js' | asset_url }}" defer></script>
+<script >
+
+/* ============================================================
+   product-technical-information.js  (v2)
+   Upload to: Assets folder in Shopify theme
+   ============================================================ */
+
+/* ── Section Card toggle (expand/collapse) ── */
+function ptiToggle(header) {
+  var body   = header.nextElementSibling;
+  var toggle = header.querySelector('.pti-card__toggle');
+  var isOpen = body.classList.contains('pti-card__body--open');
+  body.classList.toggle('pti-card__body--open', !isOpen);
+  header.setAttribute('aria-expanded', String(!isOpen));
+  if (toggle) toggle.classList.toggle('pti-card__toggle--open', !isOpen);
+}
+
+/* ── Tab switching ── */
+function ptiSwitchTab(btn, tabName) {
+  document.querySelectorAll('.pti-tab-btn').forEach(function(b) {
+    b.classList.remove('pti-tab-btn--active');
+    b.setAttribute('aria-selected', 'false');
+  });
+  btn.classList.add('pti-tab-btn--active');
+  btn.setAttribute('aria-selected', 'true');
+  document.querySelectorAll('.pti-tab-panel').forEach(function(p) {
+    p.classList.remove('pti-tab-panel--active');
+  });
+  var target = document.getElementById('tab-' + tabName);
+  if (target) target.classList.add('pti-tab-panel--active');
+}
+
+/* ── FAQ accordion toggle ── */
+function ptiFaqToggle(qEl) {
+  var answerEl = qEl.nextElementSibling;
+  var isOpen   = answerEl.classList.contains('pti-faq-a--open');
+  /* Close all others */
+  document.querySelectorAll('.pti-faq-a--open').forEach(function(a) {
+    a.classList.remove('pti-faq-a--open');
+    a.previousElementSibling.classList.remove('pti-faq-q--open');
+  });
+  /* Open clicked (if it was closed) */
+  if (!isOpen) {
+    answerEl.classList.add('pti-faq-a--open');
+    qEl.classList.add('pti-faq-q--open');
+  }
+}
+
+/* ── On load ── */
+document.addEventListener('DOMContentLoaded', function() {
+  /* Set arrow direction for all pre-open sections */
+  document.querySelectorAll('.pti-card__body--open').forEach(function(body) {
+    var header = body.previousElementSibling;
+    if (!header) return;
+    var toggle = header.querySelector('.pti-card__toggle');
+    if (toggle) toggle.classList.add('pti-card__toggle--open');
+  });
+
+  /* URL hash scroll — e.g. #section-safety auto-opens and scrolls */
+  if (window.location.hash) {
+    var el = document.querySelector(window.location.hash);
+    if (el) {
+      setTimeout(function() {
+        el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        var hdr = el.querySelector('.pti-card__header');
+        if (hdr) {
+          var bdy = hdr.nextElementSibling;
+          if (bdy && !bdy.classList.contains('pti-card__body--open')) ptiToggle(hdr);
+        }
+      }, 300);
+    }
+  }
+});
+
+
+</script>
+
+
+
+
