@@ -1,0 +1,519 @@
+{% comment %}
+  ============================================================
+  FILE:    templates/page.product-technical-information.liquid
+  CSS:     assets/product-technical-information.css  (same file, no change needed)
+  JS:      assets/product-technical-information.js   (updated below)
+
+  URL KAISE KAAM KARTA HAI:
+  /pages/product-technical-information?product=energy-plus
+  /pages/product-technical-information?product=agro-shield-max
+
+  PRODUCT PAGE PE LINK LAGAO:
+  <a href="/pages/product-technical-information?product={{ product.handle }}">
+    View Technical Info
+  </a>
+
+  EXISTING METAFIELDS (Image 3 se):
+  custom.application_scope       → Multi-line text
+  custom.key_features            → Multi-line text
+  custom.additional_information  → Single-line text
+  custom.full_description        → Rich text / Multi-line text
+  custom.product_faqs            → List of metaobjects OR JSON
+  custom.application_method      → Single-line text (category metafield)
+
+  OPTIONAL (baad mein add karo):
+  custom.chemical_composition    → Multi-line text
+  custom.dosage_application      → Multi-line text (JSON array)
+  custom.safety_precautions      → Multi-line text (JSON array)
+  custom.storage_conditions      → Multi-line text
+  custom.shelf_life              → Single-line text
+  custom.temperature_range       → Single-line text
+  custom.registration_number     → Single-line text
+  custom.formulation_type        → Single-line text
+  custom.pack_sizes              → Single-line text
+  custom.technical_datasheet     → File (PDF)
+  ============================================================
+{% endcomment %}
+
+{%- comment -%} URL parameter se product lo {%- endcomment -%}
+{%- assign url_handle = request.parameters.product -%}
+{%- if url_handle != blank -%}
+  {%- assign cur = all_products[url_handle] -%}
+{%- else -%}
+  {%- assign cur = product -%}
+{%- endif -%}
+
+{%- assign mf = cur.metafields.custom -%}
+
+<link rel="stylesheet" href="{{ 'product-technical-information.css' | asset_url }}">
+
+<div class="pti-page">
+
+  {%- comment -%}──── BREADCRUMB ────{%- endcomment -%}
+  <nav class="pti-breadcrumb">
+    <a href="{{ routes.root_url }}">Home</a><span>/</span>
+    <a href="{{ cur.url }}">{{ cur.title }}</a><span>/</span>
+    <span>Technical Information</span>
+  </nav>
+
+  {%- comment -%}──── HERO ────{%- endcomment -%}
+  <div class="pti-hero">
+    <div class="pti-hero__image">
+      {%- if cur.featured_image -%}
+        <img src="{{ cur.featured_image | image_url: width: 600 }}"
+             alt="{{ cur.featured_image.alt | default: cur.title | escape }}" loading="lazy">
+      {%- else -%}
+        <div class="pti-hero__image-placeholder">
+          <svg width="80" height="80" viewBox="0 0 80 80" fill="none">
+            <circle cx="40" cy="40" r="34" fill="#C8E6C0" stroke="#7DC876" stroke-width="1.5"/>
+            <path d="M40 54C40 54 25 44 25 33C25 25.3 32 20 40 26C48 20 55 25.3 55 33C55 44 40 54 40 54Z" fill="#3D8B3A" opacity="0.7"/>
+            <path d="M40 26V54" stroke="#2D6A2A" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+          <span>{{ cur.title }}</span>
+        </div>
+      {%- endif -%}
+      {%- if mf.registration_number != blank -%}
+        <span class="pti-hero__reg-badge">Reg. {{ mf.registration_number.value }}</span>
+      {%- endif -%}
+    </div>
+
+    <div class="pti-hero__info">
+      {%- if cur.type != blank -%}
+        <div class="pti-hero__category">{{ cur.type }}</div>
+      {%- endif -%}
+      <h1 class="pti-hero__title">{{ cur.title }}</h1>
+      {%- if cur.description != blank -%}
+        <p class="pti-hero__desc">{{ cur.description | strip_html | truncate: 200 }}</p>
+      {%- endif -%}
+
+      <div class="pti-hero__badges">
+        {%- if mf.application_method != blank -%}
+          <span class="pti-badge pti-badge--sky">{{ mf.application_method.value }}</span>
+        {%- endif -%}
+        {%- if mf.formulation_type != blank -%}
+          <span class="pti-badge pti-badge--soil">{{ mf.formulation_type.value }}</span>
+        {%- endif -%}
+        {%- for tag in cur.tags -%}
+          <span class="pti-badge pti-badge--green">{{ tag }}</span>
+        {%- endfor -%}
+      </div>
+
+      <div class="pti-hero__meta-grid">
+        {%- comment -%} Pack sizes — variants se auto {%- endcomment -%}
+        {%- if cur.variants.size > 1 -%}
+          <div class="pti-meta-item">
+            <span class="pti-meta-item__label">Pack Sizes</span>
+            <span class="pti-meta-item__value">
+              {%- for v in cur.variants -%}{{ v.title }}{%- unless forloop.last -%}, {%- endunless -%}{%- endfor -%}
+            </span>
+          </div>
+        {%- elsif mf.pack_sizes != blank -%}
+          <div class="pti-meta-item">
+            <span class="pti-meta-item__label">Pack Sizes</span>
+            <span class="pti-meta-item__value">{{ mf.pack_sizes.value }}</span>
+          </div>
+        {%- endif -%}
+
+        {%- if mf.additional_information != blank -%}
+          <div class="pti-meta-item">
+            <span class="pti-meta-item__label">Additional Info</span>
+            <span class="pti-meta-item__value">{{ mf.additional_information.value }}</span>
+          </div>
+        {%- endif -%}
+
+        {%- if mf.shelf_life != blank -%}
+          <div class="pti-meta-item">
+            <span class="pti-meta-item__label">Shelf Life</span>
+            <span class="pti-meta-item__value">{{ mf.shelf_life.value }}</span>
+          </div>
+        {%- endif -%}
+
+        {%- if cur.vendor != blank -%}
+          <div class="pti-meta-item">
+            <span class="pti-meta-item__label">Brand</span>
+            <span class="pti-meta-item__value">{{ cur.vendor }}</span>
+          </div>
+        {%- endif -%}
+      </div>
+    </div>
+  </div>
+
+  {%- comment -%}──── TABS ────{%- endcomment -%}
+  <div class="pti-tabs" role="tablist">
+    <button class="pti-tab-btn pti-tab-btn--active" onclick="ptiSwitchTab(this,'overview')" role="tab" aria-selected="true">Overview</button>
+    <button class="pti-tab-btn" onclick="ptiSwitchTab(this,'technical')" role="tab" aria-selected="false">Technical Details</button>
+    <button class="pti-tab-btn" onclick="ptiSwitchTab(this,'faq')" role="tab" aria-selected="false">FAQs</button>
+    <button class="pti-tab-btn" onclick="ptiSwitchTab(this,'crops')" role="tab" aria-selected="false">Crop Compatibility</button>
+  </div>
+
+  {%- comment -%}════ TAB 1: OVERVIEW ════{%- endcomment -%}
+  <div id="tab-overview" class="pti-tab-panel pti-tab-panel--active">
+    <div class="pti-layout">
+      <div class="pti-main">
+
+        {%- if mf.full_description != blank -%}
+          <div class="pti-card" id="section-description">
+            <div class="pti-card__header" onclick="ptiToggle(this)">
+              <div class="pti-card__icon pti-card__icon--green">
+                <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+                  <rect x="3" y="3" width="12" height="2" rx="1" fill="#2D6A2A"/>
+                  <rect x="3" y="7" width="10" height="2" rx="1" fill="#2D6A2A"/>
+                  <rect x="3" y="11" width="8" height="2" rx="1" fill="#2D6A2A"/>
+                </svg>
+              </div>
+              <span class="pti-card__title">About This Product</span>
+              <span class="pti-card__toggle pti-card__toggle--open">&#8250;</span>
+            </div>
+            <div class="pti-card__body pti-card__body--open">
+              <div class="pti-rich-content">{{ mf.full_description.value }}</div>
+            </div>
+          </div>
+        {%- endif -%}
+
+        {%- if mf.key_features != blank -%}
+          <div class="pti-card" id="section-features">
+            <div class="pti-card__header" onclick="ptiToggle(this)">
+              <div class="pti-card__icon pti-card__icon--leaf">
+                <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+                  <path d="M9 2C9 2 3 6 3 11C3 14.3 5.7 16 9 16C12.3 16 15 14.3 15 11C15 6 9 2 9 2Z" stroke="#2D6A2A" stroke-width="1.3" fill="#EAF5E9"/>
+                  <path d="M9 5V16" stroke="#2D6A2A" stroke-width="1.2" stroke-linecap="round"/>
+                  <path d="M9 10C9 10 5.5 8 4.5 5" stroke="#2D6A2A" stroke-width="1" stroke-linecap="round"/>
+                  <path d="M9 8C9 8 12.5 6 13.5 3" stroke="#2D6A2A" stroke-width="1" stroke-linecap="round"/>
+                </svg>
+              </div>
+              <span class="pti-card__title">Key Features</span>
+              <span class="pti-card__toggle pti-card__toggle--open">&#8250;</span>
+            </div>
+            <div class="pti-card__body pti-card__body--open">
+              <div class="pti-rich-content pti-features-list">{{ mf.key_features.value }}</div>
+            </div>
+          </div>
+        {%- endif -%}
+
+        {%- if mf.application_scope != blank -%}
+          <div class="pti-card" id="section-scope">
+            <div class="pti-card__header" onclick="ptiToggle(this)">
+              <div class="pti-card__icon pti-card__icon--soil">
+                <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+                  <circle cx="9" cy="9" r="6" stroke="#7C5C2A" stroke-width="1.3"/>
+                  <path d="M6 9C6 9 7.5 11 9 11C10.5 11 12 9 12 9" stroke="#7C5C2A" stroke-width="1.2" stroke-linecap="round"/>
+                  <path d="M9 5V9" stroke="#7C5C2A" stroke-width="1.2" stroke-linecap="round"/>
+                </svg>
+              </div>
+              <span class="pti-card__title">Application Scope</span>
+              <span class="pti-card__toggle pti-card__toggle--open">&#8250;</span>
+            </div>
+            <div class="pti-card__body pti-card__body--open">
+              <div class="pti-rich-content">{{ mf.application_scope.value }}</div>
+            </div>
+          </div>
+        {%- endif -%}
+
+        {%- if mf.full_description == blank and mf.key_features == blank and mf.application_scope == blank -%}
+          <div class="pti-empty-state">
+            <p>Overview for <strong>{{ cur.title }}</strong> is being prepared. Please check back soon.</p>
+            <p><a href="{{ cur.url }}">View the main product page &rarr;</a></p>
+          </div>
+        {%- endif -%}
+
+      </div>
+
+      {%- comment -%}── SIDEBAR (reusable snippet) ──{%- endcomment -%}
+      <aside class="pti-sidebar">
+        <div class="pti-sidebar__inner">
+          <div class="pti-sidebar__heading">Quick Reference</div>
+
+          {%- if mf.registration_number != blank -%}
+            <div class="pti-sidebar__field">
+              <span class="pti-sidebar__label">Reg. Number</span>
+              <span class="pti-sidebar__value">{{ mf.registration_number.value }}</span>
+            </div>
+          {%- endif -%}
+          {%- if mf.formulation_type != blank -%}
+            <div class="pti-sidebar__field">
+              <span class="pti-sidebar__label">Formulation</span>
+              <span class="pti-sidebar__value">{{ mf.formulation_type.value }}</span>
+            </div>
+          {%- endif -%}
+          {%- if mf.application_method != blank -%}
+            <div class="pti-sidebar__field">
+              <span class="pti-sidebar__label">Application</span>
+              <span class="pti-sidebar__value">{{ mf.application_method.value }}</span>
+            </div>
+          {%- endif -%}
+          {%- if mf.additional_information != blank -%}
+            <div class="pti-sidebar__field">
+              <span class="pti-sidebar__label">Info</span>
+              <span class="pti-sidebar__value">{{ mf.additional_information.value }}</span>
+            </div>
+          {%- endif -%}
+          {%- if cur.vendor != blank -%}
+            <div class="pti-sidebar__field">
+              <span class="pti-sidebar__label">Manufacturer</span>
+              <span class="pti-sidebar__value">{{ cur.vendor }}</span>
+            </div>
+          {%- endif -%}
+
+          <div class="pti-sidebar__actions">
+            <a href="{{ cur.url }}" class="pti-btn pti-btn--primary">View Product</a>
+            {%- if mf.technical_datasheet != blank -%}
+              <a href="{{ mf.technical_datasheet.value }}" class="pti-btn pti-btn--outline" target="_blank" download>Download TDS</a>
+            {%- endif -%}
+          </div>
+        </div>
+      </aside>
+    </div>
+  </div>
+
+  {%- comment -%}════ TAB 2: TECHNICAL DETAILS ════{%- endcomment -%}
+  <div id="tab-technical" class="pti-tab-panel">
+    <div class="pti-layout">
+      <div class="pti-main">
+
+        {%- if mf.chemical_composition != blank -%}
+          <div class="pti-card" id="section-chemical">
+            <div class="pti-card__header" onclick="ptiToggle(this)">
+              <div class="pti-card__icon pti-card__icon--green">
+                <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+                  <circle cx="6" cy="6" r="3.5" stroke="#2D6A2A" stroke-width="1.3"/>
+                  <circle cx="12" cy="12" r="3.5" stroke="#2D6A2A" stroke-width="1.3"/>
+                  <path d="M9 9l2-2" stroke="#2D6A2A" stroke-width="1.2" stroke-linecap="round"/>
+                </svg>
+              </div>
+              <span class="pti-card__title">Chemical / Biological Composition</span>
+              <span class="pti-card__toggle pti-card__toggle--open">&#8250;</span>
+            </div>
+            <div class="pti-card__body pti-card__body--open">
+              <div class="pti-rich-content">{{ mf.chemical_composition.value }}</div>
+            </div>
+          </div>
+        {%- endif -%}
+
+        {%- if mf.dosage_application != blank -%}
+          <div class="pti-card" id="section-dosage">
+            <div class="pti-card__header" onclick="ptiToggle(this)">
+              <div class="pti-card__icon pti-card__icon--soil">
+                <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+                  <path d="M4 14L9 4L14 14" stroke="#7C5C2A" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
+                  <path d="M6 11h6" stroke="#7C5C2A" stroke-width="1.3" stroke-linecap="round"/>
+                </svg>
+              </div>
+              <span class="pti-card__title">Dosage &amp; Application</span>
+              <span class="pti-card__toggle pti-card__toggle--open">&#8250;</span>
+            </div>
+            <div class="pti-card__body pti-card__body--open">
+              {%- assign dosage_items = mf.dosage_application.value | parse_json -%}
+              {%- if dosage_items -%}
+                <div class="pti-dosage-grid">
+                  {%- for item in dosage_items -%}
+                    <div class="pti-dosage-card">
+                      <div class="pti-dosage-card__crop">{{ item.crop }}</div>
+                      <div class="pti-dosage-card__amount">{{ item.amount }}</div>
+                      <div class="pti-dosage-card__unit">{{ item.unit }}</div>
+                      {%- if item.note != blank -%}<div class="pti-dosage-card__note">{{ item.note }}</div>{%- endif -%}
+                    </div>
+                  {%- endfor -%}
+                </div>
+              {%- else -%}
+                <div class="pti-rich-content">{{ mf.dosage_application.value }}</div>
+              {%- endif -%}
+              {%- if mf.application_method != blank -%}
+                <div class="pti-info-box pti-info-box--soil">
+                  <strong>Application Method</strong>{{ mf.application_method.value }}
+                </div>
+              {%- endif -%}
+            </div>
+          </div>
+        {%- endif -%}
+
+        {%- if mf.safety_precautions != blank -%}
+          <div class="pti-card" id="section-safety">
+            <div class="pti-card__header" onclick="ptiToggle(this)">
+              <div class="pti-card__icon pti-card__icon--warn">
+                <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+                  <path d="M9 3L16 15H2L9 3Z" stroke="#C05621" stroke-width="1.3" stroke-linejoin="round"/>
+                  <path d="M9 8v3.5" stroke="#C05621" stroke-width="1.5" stroke-linecap="round"/>
+                  <circle cx="9" cy="13.5" r="0.8" fill="#C05621"/>
+                </svg>
+              </div>
+              <span class="pti-card__title">Safety &amp; Precautions</span>
+              <span class="pti-card__toggle pti-card__toggle--open">&#8250;</span>
+            </div>
+            <div class="pti-card__body pti-card__body--open">
+              {%- assign safety_items = mf.safety_precautions.value | parse_json -%}
+              {%- if safety_items -%}
+                <div class="pti-safety-grid">
+                  {%- for item in safety_items -%}
+                    <div class="pti-safety-item pti-safety-item--{{ item.type | default: 'warn' }}">
+                      <div class="pti-safety-item__icon">{{ item.icon }}</div>
+                      <div class="pti-safety-item__content">
+                        <strong>{{ item.title }}</strong>{{ item.desc }}
+                      </div>
+                    </div>
+                  {%- endfor -%}
+                </div>
+              {%- else -%}
+                <div class="pti-rich-content">{{ mf.safety_precautions.value }}</div>
+              {%- endif -%}
+            </div>
+          </div>
+        {%- endif -%}
+
+        {%- if mf.storage_conditions != blank or mf.shelf_life != blank -%}
+          <div class="pti-card" id="section-storage">
+            <div class="pti-card__header" onclick="ptiToggle(this)">
+              <div class="pti-card__icon pti-card__icon--sky">
+                <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+                  <rect x="3" y="5" width="12" height="10" rx="2" stroke="#185FA5" stroke-width="1.3"/>
+                  <path d="M6 5V4a3 3 0 016 0v1" stroke="#185FA5" stroke-width="1.3" stroke-linecap="round"/>
+                </svg>
+              </div>
+              <span class="pti-card__title">Storage &amp; Shelf Life</span>
+              <span class="pti-card__toggle pti-card__toggle--open">&#8250;</span>
+            </div>
+            <div class="pti-card__body pti-card__body--open">
+              {%- if mf.temperature_range != blank or mf.humidity_limit != blank or mf.shelf_life != blank -%}
+                <div class="pti-storage-row">
+                  {%- if mf.temperature_range != blank -%}
+                    <div class="pti-storage-stat">
+                      <span class="pti-storage-stat__val">{{ mf.temperature_range.value }}</span>
+                      <span class="pti-storage-stat__lbl">Temperature</span>
+                    </div>
+                  {%- endif -%}
+                  {%- if mf.humidity_limit != blank -%}
+                    <div class="pti-storage-stat">
+                      <span class="pti-storage-stat__val">{{ mf.humidity_limit.value }}</span>
+                      <span class="pti-storage-stat__lbl">Max Humidity</span>
+                    </div>
+                  {%- endif -%}
+                  {%- if mf.shelf_life != blank -%}
+                    <div class="pti-storage-stat">
+                      <span class="pti-storage-stat__val">{{ mf.shelf_life.value }}</span>
+                      <span class="pti-storage-stat__lbl">Shelf Life</span>
+                    </div>
+                  {%- endif -%}
+                </div>
+              {%- endif -%}
+              {%- if mf.storage_conditions != blank -%}
+                <div class="pti-storage-notes">{{ mf.storage_conditions.value | newline_to_br }}</div>
+              {%- endif -%}
+              {%- if mf.technical_datasheet != blank -%}
+                <div class="pti-download-bar">
+                  <span class="pti-download-bar__text">Download Technical Data Sheet (PDF)</span>
+                  <a href="{{ mf.technical_datasheet.value }}" class="pti-download-btn" target="_blank" download>Download TDS</a>
+                </div>
+              {%- endif -%}
+            </div>
+          </div>
+        {%- endif -%}
+
+        {%- if mf.chemical_composition == blank and mf.dosage_application == blank and mf.safety_precautions == blank and mf.storage_conditions == blank -%}
+          <div class="pti-empty-state">
+            <p>Technical details for <strong>{{ cur.title }}</strong> are being added.</p>
+            <p>Check the <strong>Overview</strong> tab for available information.</p>
+          </div>
+        {%- endif -%}
+
+      </div>
+
+      <aside class="pti-sidebar">
+        <div class="pti-sidebar__inner">
+          <div class="pti-sidebar__heading">Quick Reference</div>
+          {%- if mf.registration_number != blank -%}
+            <div class="pti-sidebar__field">
+              <span class="pti-sidebar__label">Reg. Number</span>
+              <span class="pti-sidebar__value">{{ mf.registration_number.value }}</span>
+            </div>
+          {%- endif -%}
+          {%- if mf.formulation_type != blank -%}
+            <div class="pti-sidebar__field">
+              <span class="pti-sidebar__label">Formulation</span>
+              <span class="pti-sidebar__value">{{ mf.formulation_type.value }}</span>
+            </div>
+          {%- endif -%}
+          {%- if mf.application_method != blank -%}
+            <div class="pti-sidebar__field">
+              <span class="pti-sidebar__label">Application</span>
+              <span class="pti-sidebar__value">{{ mf.application_method.value }}</span>
+            </div>
+          {%- endif -%}
+          {%- if cur.vendor != blank -%}
+            <div class="pti-sidebar__field">
+              <span class="pti-sidebar__label">Manufacturer</span>
+              <span class="pti-sidebar__value">{{ cur.vendor }}</span>
+            </div>
+          {%- endif -%}
+          <div class="pti-sidebar__actions">
+            <a href="{{ cur.url }}" class="pti-btn pti-btn--primary">View Product</a>
+            {%- if mf.technical_datasheet != blank -%}
+              <a href="{{ mf.technical_datasheet.value }}" class="pti-btn pti-btn--outline" target="_blank" download>Download TDS</a>
+            {%- endif -%}
+          </div>
+        </div>
+      </aside>
+    </div>
+  </div>
+
+  {%- comment -%}════ TAB 3: FAQs ════{%- endcomment -%}
+  <div id="tab-faq" class="pti-tab-panel">
+    {%- if mf.product_faqs != blank -%}
+      {%- assign faq_raw = mf.product_faqs.value -%}
+      {%- assign faq_parsed = faq_raw | parse_json -%}
+      {%- if faq_parsed -%}
+        <div class="pti-faq-list">
+          {%- for faq in faq_parsed -%}
+            <div class="pti-faq-item">
+              <div class="pti-faq-q" onclick="ptiFaqToggle(this)">
+                <span>{{ faq.q | default: faq.question }}</span>
+                <span class="pti-faq-icon">+</span>
+              </div>
+              <div class="pti-faq-a">{{ faq.a | default: faq.answer | newline_to_br }}</div>
+            </div>
+          {%- endfor -%}
+        </div>
+      {%- else -%}
+        {%- comment -%} Metaobject list — each entry has .question and .answer {%- endcomment -%}
+        <div class="pti-faq-list">
+          {%- for faq_obj in mf.product_faqs.value -%}
+            <div class="pti-faq-item">
+              <div class="pti-faq-q" onclick="ptiFaqToggle(this)">
+                <span>{{ faq_obj.question }}</span>
+                <span class="pti-faq-icon">+</span>
+              </div>
+              <div class="pti-faq-a">{{ faq_obj.answer | newline_to_br }}</div>
+            </div>
+          {%- endfor -%}
+        </div>
+      {%- endif -%}
+    {%- else -%}
+      <div class="pti-empty-state">No FAQs available yet.</div>
+    {%- endif -%}
+  </div>
+
+  {%- comment -%}════ TAB 4: CROP COMPATIBILITY ════{%- endcomment -%}
+  <div id="tab-crops" class="pti-tab-panel">
+    {%- if mf.crop_compatibility != blank -%}
+      <div class="pti-crop-grid">
+        {%- for crop in mf.crop_compatibility.value -%}
+          <div class="pti-crop-tag">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+              <path d="M7 12C7 12 2 8.5 2 5C2 2.8 4.5 1 7 3C9.5 1 12 2.8 12 5C12 8.5 7 12 7 12Z" fill="#4A9E46" opacity="0.7"/>
+            </svg>
+            {{ crop }}
+          </div>
+        {%- endfor -%}
+      </div>
+    {%- elsif mf.application_scope != blank -%}
+      <div class="pti-card">
+        <div class="pti-card__body pti-card__body--open">
+          <div class="pti-rich-content">{{ mf.application_scope.value }}</div>
+        </div>
+      </div>
+    {%- else -%}
+      <div class="pti-empty-state">Crop compatibility data coming soon.</div>
+    {%- endif -%}
+  </div>
+
+</div>
+
+<script src="{{ 'product-technical-information.js' | asset_url }}" defer></script>
