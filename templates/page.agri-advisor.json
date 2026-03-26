@@ -11,8 +11,24 @@
   "sections": {
     "agri-advisor-main": {
       "type": "agri-advisor",
-      "settings": {}
+      "settings": {
+        "badge_text": "Farmer Advisory Center",
+        "hero_line1": "Find the Solution",
+        "hero_line2": "To Every Problem",
+        "hero_line3": "In Your Farm",
+        "hero_subtext": "Talk directly with our expert agronomists — for every problem related to soil, pests, crops, and fertilizers.",
+        "hero_cta": "Get Advice Now",
+        "stat1_num": "5000+",
+        "stat1_label": "Farmers Benefited",
+        "stat2_num": "12+",
+        "stat2_label": "Expert Advisors",
+        "stat3_num": "Free",
+        "stat3_label": "First Consultation",
+        "main_whatsapp": "7770969991"
+      }
     }
   },
-  "order": ["agri-advisor-main"]
+  "order": [
+    "agri-advisor-main"
+  ]
 }
