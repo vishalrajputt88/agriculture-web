@@ -262,7 +262,7 @@
         {%- if mf.additional_information != blank -%}
           <div class="pti-meta-item">
             <span class="pti-meta-item__label">Additional Info</span>
-            <span class="pti-meta-item__value">{{ mf.additional_information.value }}</span>
+            <span class="pti-meta-item__value">{{ mf.additional_information.value | strip_html }}</span>
           </div>
         {%- endif -%}
 
@@ -310,7 +310,7 @@
               <span class="pti-card__toggle pti-card__toggle--open">&#8250;</span>
             </div>
             <div class="pti-card__body pti-card__body--open">
-              <div class="pti-rich-content">{{ mf.full_description.value }}</div>
+              <div class="pti-rich-content">{{ mf.full_description | metafield_tag }}</div>
             </div>
           </div>
         {%- endif -%}
