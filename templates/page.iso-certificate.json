@@ -59,6 +59,18 @@
     },
     "iso_certificate_g7eBKt": {
       "type": "iso-certificate",
+      "blocks": {
+        "iso_EDpGbP": {
+          "type": "iso",
+          "settings": {
+            "title": "ISO 9001 – Quality Management System",
+            "text": "We implement structured quality control processes to ensure that every product and service meets customer expectations.\nThis helps us maintain consistency, efficiency, and continuous improvement in all our operations."
+          }
+        }
+      },
+      "block_order": [
+        "iso_EDpGbP"
+      ],
       "name": "ISO Certification",
       "settings": {
         "heading": "Certified Excellence You Can Trust",
