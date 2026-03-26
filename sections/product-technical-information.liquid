@@ -330,7 +330,7 @@
               <span class="pti-card__toggle pti-card__toggle--open">&#8250;</span>
             </div>
             <div class="pti-card__body pti-card__body--open">
-              <div class="pti-rich-content pti-features-list">{{ mf.key_features.value }}</div>
+             <div class="pti-rich-content pti-features-list">{{ mf.key_features | metafield_tag }}</div>
             </div>
           </div>
         {%- endif -%}
