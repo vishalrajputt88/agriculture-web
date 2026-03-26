@@ -748,3 +748,60 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
 
+{% schema %}
+{
+  "name": "Bhumi PTI",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Frequently Asked Questions"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_count",
+      "label": "Show Auto Numbering",
+      "default": true
+    }
+  ],
+
+  "blocks": [
+    {
+      "type": "faq",
+      "name": "FAQ Item",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "icon_image",
+          "label": "Upload Icon Image"
+        },
+        {
+          "type": "text",
+          "id": "icon_text",
+          "label": "Or Use Emoji/Icon Text",
+          "default": "🌱"
+        },
+        {
+          "type": "text",
+          "id": "question",
+          "label": "Question",
+          "default": "Enter your question"
+        },
+        {
+          "type": "textarea",
+          "id": "answer",
+          "label": "Answer",
+          "default": "Enter your answer"
+        }
+      ]
+    }
+  ],
+
+  "presets": [
+    {
+      "name": "Bhumi PTI"
+    }
+  ]
+}
+{% endschema %}
