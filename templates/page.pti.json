@@ -56,9 +56,40 @@
         "padding-block-start": 40,
         "padding-block-end": 80
       }
+    },
+    "product_technical_information_qkeyej": {
+      "type": "product-technical-information",
+      "blocks": {
+        "faq_RN39EM": {
+          "type": "faq",
+          "settings": {
+            "icon_text": "🌱",
+            "question": "Enter your question",
+            "answer": "Enter your answer"
+          }
+        },
+        "faq_EAwPtm": {
+          "type": "faq",
+          "settings": {
+            "icon_text": "🌱",
+            "question": "Enter your question",
+            "answer": "Enter your answer"
+          }
+        }
+      },
+      "block_order": [
+        "faq_RN39EM",
+        "faq_EAwPtm"
+      ],
+      "name": "Bhumi PTI",
+      "settings": {
+        "heading": "Frequently Asked Questions",
+        "show_count": true
+      }
     }
   },
   "order": [
-    "main"
+    "main",
+    "product_technical_information_qkeyej"
   ]
 }
