@@ -390,7 +390,7 @@
           {%- if mf.additional_information != blank -%}
             <div class="pti-sidebar__field">
               <span class="pti-sidebar__label">Info</span>
-              <span class="pti-sidebar__value">{{ mf.additional_information.value }}</span>
+              <span class="pti-sidebar__value">{{ mf.additional_information.value | strip_html }}</span>
             </div>
           {%- endif -%}
           {%- if cur.vendor != blank -%}
