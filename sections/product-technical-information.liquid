@@ -37,7 +37,7 @@
   --pti-radius-lg:   16px;
 }
 
-.pti-page { max-width: 1440px; margin: 0 auto; padding: 28px 20px 80px; font-family: 'Sora', sans-serif; color: var(--pti-text); font-size: 14px; line-height: 1.6; }
+.pti-page { max-width: 1000px; margin: 0 auto; padding: 28px 20px 80px; font-family: 'Sora', sans-serif; color: var(--pti-text); font-size: 14px; line-height: 1.6; }
 
 /* Breadcrumb */
 .pti-breadcrumb { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--pti-text3); margin-bottom: 22px; flex-wrap: wrap; }
@@ -176,6 +176,12 @@
 .pti-empty-state { background: var(--pti-bg); border: 0.5px solid var(--pti-border); border-radius: var(--pti-radius); padding: 28px; text-align: center; color: var(--pti-text2); font-size: 13px; line-height: 1.7; }
 .pti-empty-state a { color: var(--pti-leaf); }
 
+/* Rich text metafield_tag override */
+.pti-rich-content .metafield-rich-text-block p { margin-bottom: 10px; }
+.pti-rich-content .metafield-rich-text-block ul,
+.pti-rich-content .metafield-rich-text-block ol { padding-left: 20px; margin-bottom: 10px; }
+.pti-rich-content .metafield-rich-text-block li { margin-bottom: 5px; }
+
 /* Responsive */
 @media (max-width: 768px) {
   .pti-hero { grid-template-columns: 1fr; }
@@ -232,7 +238,6 @@
       {%- endif -%}
 
       <div class="pti-hero__badges">
-        {%- comment -%} FIX 1: application_method ab category metafield se aa raha hai {%- endcomment -%}
         {%- if cat_mf.application_method != blank -%}
           <span class="pti-badge pti-badge--sky">{{ cat_mf.application_method.value }}</span>
         {%- endif -%}
@@ -259,11 +264,15 @@
           </div>
         {%- endif -%}
 
+        {%- comment -%} Additional Info — strip_html kyunki yeh metaobject ho sakta hai {%- endcomment -%}
         {%- if mf.additional_information != blank -%}
-          <div class="pti-meta-item">
-            <span class="pti-meta-item__label">Additional Info</span>
-            <span class="pti-meta-item__value">{{ mf.additional_information.value | strip_html }}</span>
-          </div>
+          {%- assign add_info = mf.additional_information.value | strip_html | strip -%}
+          {%- if add_info != blank and add_info != 'MetaobjectListDrop' -%}
+            <div class="pti-meta-item">
+              <span class="pti-meta-item__label">Additional Info</span>
+              <span class="pti-meta-item__value">{{ add_info }}</span>
+            </div>
+          {%- endif -%}
         {%- endif -%}
 
         {%- if mf.shelf_life != blank -%}
@@ -310,6 +319,7 @@
               <span class="pti-card__toggle pti-card__toggle--open">&#8250;</span>
             </div>
             <div class="pti-card__body pti-card__body--open">
+              {%- comment -%} FIX: Rich Text metafield — metafield_tag use karo {%- endcomment -%}
               <div class="pti-rich-content">{{ mf.full_description | metafield_tag }}</div>
             </div>
           </div>
@@ -330,7 +340,8 @@
               <span class="pti-card__toggle pti-card__toggle--open">&#8250;</span>
             </div>
             <div class="pti-card__body pti-card__body--open">
-             <div class="pti-rich-content pti-features-list">{{ mf.key_features | metafield_tag }}</div>
+              {%- comment -%} FIX: Rich Text metafield — metafield_tag use karo {%- endcomment -%}
+              <div class="pti-rich-content pti-features-list">{{ mf.key_features | metafield_tag }}</div>
             </div>
           </div>
         {%- endif -%}
@@ -349,7 +360,8 @@
               <span class="pti-card__toggle pti-card__toggle--open">&#8250;</span>
             </div>
             <div class="pti-card__body pti-card__body--open">
-              <div class="pti-rich-content">{{ mf.application_scope.value }}</div>
+              {%- comment -%} FIX: Rich Text metafield — metafield_tag use karo {%- endcomment -%}
+              <div class="pti-rich-content">{{ mf.application_scope | metafield_tag }}</div>
             </div>
           </div>
         {%- endif -%}
@@ -380,7 +392,6 @@
               <span class="pti-sidebar__value">{{ mf.formulation_type.value }}</span>
             </div>
           {%- endif -%}
-          {%- comment -%} FIX 2: application_method category metafield se {%- endcomment -%}
           {%- if cat_mf.application_method != blank -%}
             <div class="pti-sidebar__field">
               <span class="pti-sidebar__label">Application</span>
@@ -388,10 +399,13 @@
             </div>
           {%- endif -%}
           {%- if mf.additional_information != blank -%}
-            <div class="pti-sidebar__field">
-              <span class="pti-sidebar__label">Info</span>
-              <span class="pti-sidebar__value">{{ mf.additional_information.value | strip_html }}</span>
-            </div>
+            {%- assign add_info_sb = mf.additional_information.value | strip_html | strip -%}
+            {%- if add_info_sb != blank and add_info_sb != 'MetaobjectListDrop' -%}
+              <div class="pti-sidebar__field">
+                <span class="pti-sidebar__label">Info</span>
+                <span class="pti-sidebar__value">{{ add_info_sb }}</span>
+              </div>
+            {%- endif -%}
           {%- endif -%}
           {%- if cur.vendor != blank -%}
             <div class="pti-sidebar__field">
@@ -430,7 +444,8 @@
               <span class="pti-card__toggle pti-card__toggle--open">&#8250;</span>
             </div>
             <div class="pti-card__body pti-card__body--open">
-              <div class="pti-rich-content">{{ mf.chemical_composition.value }}</div>
+              {%- comment -%} FIX: Rich Text metafield {%- endcomment -%}
+              <div class="pti-rich-content">{{ mf.chemical_composition | metafield_tag }}</div>
             </div>
           </div>
         {%- endif -%}
@@ -461,9 +476,8 @@
                   {%- endfor -%}
                 </div>
               {%- else -%}
-                <div class="pti-rich-content">{{ mf.dosage_application.value }}</div>
+                <div class="pti-rich-content">{{ mf.dosage_application | metafield_tag }}</div>
               {%- endif -%}
-              {%- comment -%} FIX 3: application_method category metafield se {%- endcomment -%}
               {%- if cat_mf.application_method != blank -%}
                 <div class="pti-info-box pti-info-box--soil">
                   <strong>Application Method</strong>{{ cat_mf.application_method.value }}
@@ -500,7 +514,8 @@
                   {%- endfor -%}
                 </div>
               {%- else -%}
-                <div class="pti-rich-content">{{ mf.safety_precautions.value }}</div>
+                {%- comment -%} FIX: Rich Text metafield {%- endcomment -%}
+                <div class="pti-rich-content">{{ mf.safety_precautions | metafield_tag }}</div>
               {%- endif -%}
             </div>
           </div>
@@ -542,7 +557,7 @@
                 </div>
               {%- endif -%}
               {%- if mf.storage_conditions != blank -%}
-                <div class="pti-storage-notes">{{ mf.storage_conditions.value | newline_to_br }}</div>
+                <div class="pti-storage-notes">{{ mf.storage_conditions | metafield_tag }}</div>
               {%- endif -%}
               {%- if mf.technical_datasheet != blank -%}
                 <div class="pti-download-bar">
@@ -579,7 +594,6 @@
               <span class="pti-sidebar__value">{{ mf.formulation_type.value }}</span>
             </div>
           {%- endif -%}
-          {%- comment -%} FIX 4: application_method category metafield se {%- endcomment -%}
           {%- if cat_mf.application_method != blank -%}
             <div class="pti-sidebar__field">
               <span class="pti-sidebar__label">Application</span>
@@ -604,14 +618,11 @@
   </div>
 
   {%- comment -%}════ TAB 3: FAQs ════{%- endcomment -%}
-  {%- comment -%} FIX 5: Metaobject list ke liye .fields.question.value aur .fields.answer.value use kiya {%- endcomment -%}
   <div id="tab-faq" class="pti-tab-panel">
     {%- if mf.product_faqs != blank -%}
       <div class="pti-faq-list">
         {%- for faq_obj in mf.product_faqs.value -%}
-          {%- comment -%} Check karo ki yeh metaobject hai ya plain JSON string {%- endcomment -%}
           {%- if faq_obj.fields -%}
-            {%- comment -%} Metaobject format {%- endcomment -%}
             <div class="pti-faq-item">
               <div class="pti-faq-q" onclick="ptiFaqToggle(this)">
                 <span>{{ faq_obj.fields.question.value }}</span>
@@ -620,7 +631,6 @@
               <div class="pti-faq-a">{{ faq_obj.fields.answer.value | newline_to_br }}</div>
             </div>
           {%- else -%}
-            {%- comment -%} Plain object format (question/answer keys directly) {%- endcomment -%}
             <div class="pti-faq-item">
               <div class="pti-faq-q" onclick="ptiFaqToggle(this)">
                 <span>{{ faq_obj.question | default: faq_obj.q }}</span>
@@ -652,7 +662,7 @@
     {%- elsif mf.application_scope != blank -%}
       <div class="pti-card">
         <div class="pti-card__body pti-card__body--open">
-          <div class="pti-rich-content">{{ mf.application_scope.value }}</div>
+          <div class="pti-rich-content">{{ mf.application_scope | metafield_tag }}</div>
         </div>
       </div>
     {%- else -%}
@@ -663,7 +673,6 @@
 </div>
 
 <script>
-/* ── Section Card toggle ── */
 function ptiToggle(header) {
   var body   = header.nextElementSibling;
   var toggle = header.querySelector('.pti-card__toggle');
@@ -673,7 +682,6 @@ function ptiToggle(header) {
   if (toggle) toggle.classList.toggle('pti-card__toggle--open', !isOpen);
 }
 
-/* ── Tab switching ── */
 function ptiSwitchTab(btn, tabName) {
   document.querySelectorAll('.pti-tab-btn').forEach(function(b) {
     b.classList.remove('pti-tab-btn--active');
@@ -688,7 +696,6 @@ function ptiSwitchTab(btn, tabName) {
   if (target) target.classList.add('pti-tab-panel--active');
 }
 
-/* ── FAQ accordion toggle ── */
 function ptiFaqToggle(qEl) {
   var answerEl = qEl.nextElementSibling;
   var isOpen   = answerEl.classList.contains('pti-faq-a--open');
@@ -702,7 +709,6 @@ function ptiFaqToggle(qEl) {
   }
 }
 
-/* ── On load ── */
 document.addEventListener('DOMContentLoaded', function() {
   document.querySelectorAll('.pti-card__body--open').forEach(function(body) {
     var header = body.previousElementSibling;
