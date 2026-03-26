@@ -1,35 +1,37 @@
 <style>
 .agri-container {
-  padding: 50px 20px;
-  max-width: 1000px;
+  padding: 60px 20px;
+  max-width: 900px;
   margin: auto;
   font-family: Arial, sans-serif;
+  text-align: center;
 }
 
 .agri-heading {
-     font-size: 36px;
-    font-weight: bold;
-    margin-bottom: 30px;
-    text-align: center;
-    color: #16a34a;
+  font-size: 36px;
+  font-weight: bold;
+  margin-bottom: 40px;
+  color: #16a34a;
 }
 
 .agri-block {
-  margin-bottom: 25px;
+  margin-bottom: 35px;
 }
 
 .agri-title {
-  font-size: 20px;
+  font-size: 22px;
   font-weight: 600;
-  margin-bottom: 10px;
+  margin-bottom: 12px;
 }
 
 .agri-list {
-  padding-left: 20px;
+  list-style-position: inside;
+  padding: 0;
 }
 
 .agri-list li {
-  margin-bottom: 6px;
+  margin-bottom: 8px;
+  text-align: center;
 }
 </style>
 
@@ -43,10 +45,13 @@
   <!-- Dynamic Blocks -->
   {% for block in section.blocks %}
     <div class="agri-block">
+
+      <!-- Auto Number + Title -->
       <div class="agri-title">
-        {{ block.settings.title }}
+        {{ forloop.index }}. {{ block.settings.title }}
       </div>
 
+      <!-- Points -->
       <ul class="agri-list">
         {% assign points = block.settings.points | newline_to_br | split: '<br />' %}
         {% for point in points %}
@@ -55,6 +60,7 @@
           {% endif %}
         {% endfor %}
       </ul>
+
     </div>
   {% endfor %}
 
