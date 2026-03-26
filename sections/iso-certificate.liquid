@@ -39,6 +39,10 @@
   color: #111;
 }
 
+.iso-title::first-letter {
+  color: #16a34a;
+}
+
 .iso-text {
   font-size: 15px;
   color: #444;
@@ -81,9 +85,9 @@
   <!-- ISO Blocks -->
   {% for block in section.blocks %}
     <div class="iso-block">
-      <div class="iso-title">
-        {{ block.settings.title }}
-      </div>
+     <div class="iso-title">
+  {{ forloop.index }}. {{ block.settings.title }}
+</div>
       <div class="iso-text">
         {{ block.settings.text }}
       </div>
