@@ -1,5 +1,3 @@
-
-
 {%- comment -%} URL parameter se product lo {%- endcomment -%}
 {%- assign url_handle = request.parameters.product -%}
 {%- if url_handle != blank -%}
@@ -10,12 +8,8 @@
 
 {%- assign mf = cur.metafields.custom -%}
 {%- assign cat_mf = cur.metafields.category -%}
-<style>
 
-/* ============================================================
-   product-technical-information.css  (v2)
-   Upload to: Assets folder in Shopify theme
-   ============================================================ */
+<style>
 
 @import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Sora:wght@400;500;600&display=swap');
 
@@ -96,7 +90,7 @@
 .pti-card__body { padding: 20px; display: none; }
 .pti-card__body--open { display: block; }
 
-/* Rich Content — Shopify metafield HTML */
+/* Rich Content */
 .pti-rich-content { font-size: 13px; color: var(--pti-text2); line-height: 1.75; }
 .pti-rich-content p { margin-bottom: 10px; }
 .pti-rich-content p:last-child { margin-bottom: 0; }
@@ -105,7 +99,7 @@
 .pti-rich-content strong,.pti-rich-content b { color: var(--pti-text); font-weight: 600; }
 .pti-rich-content h2,.pti-rich-content h3 { font-family: 'DM Serif Display', serif; color: var(--pti-text); margin: 14px 0 8px; }
 
-/* Key Features styled list */
+/* Key Features */
 .pti-features-list ul { list-style: none; padding: 0; }
 .pti-features-list ul li { padding: 8px 0 8px 24px; position: relative; border-bottom: 0.5px solid var(--pti-border); }
 .pti-features-list ul li:last-child { border-bottom: none; }
@@ -196,8 +190,6 @@
   .pti-hero { padding: 18px; }
   .pti-hero__meta-grid { grid-template-columns: 1fr; }
 }
-
-  
 </style>
 
 <div class="pti-page">
@@ -240,8 +232,9 @@
       {%- endif -%}
 
       <div class="pti-hero__badges">
-        {%- if mf.application_method != blank -%}
-          <span class="pti-badge pti-badge--sky">{{ mf.application_method.value }}</span>
+        {%- comment -%} FIX 1: application_method ab category metafield se aa raha hai {%- endcomment -%}
+        {%- if cat_mf.application_method != blank -%}
+          <span class="pti-badge pti-badge--sky">{{ cat_mf.application_method.value }}</span>
         {%- endif -%}
         {%- if mf.formulation_type != blank -%}
           <span class="pti-badge pti-badge--soil">{{ mf.formulation_type.value }}</span>
@@ -252,7 +245,6 @@
       </div>
 
       <div class="pti-hero__meta-grid">
-        {%- comment -%} Pack sizes — variants se auto {%- endcomment -%}
         {%- if cur.variants.size > 1 -%}
           <div class="pti-meta-item">
             <span class="pti-meta-item__label">Pack Sizes</span>
@@ -371,7 +363,7 @@
 
       </div>
 
-      {%- comment -%}── SIDEBAR (reusable snippet) ──{%- endcomment -%}
+      {%- comment -%}── SIDEBAR — Overview Tab ──{%- endcomment -%}
       <aside class="pti-sidebar">
         <div class="pti-sidebar__inner">
           <div class="pti-sidebar__heading">Quick Reference</div>
@@ -388,10 +380,11 @@
               <span class="pti-sidebar__value">{{ mf.formulation_type.value }}</span>
             </div>
           {%- endif -%}
-          {%- if mf.application_method != blank -%}
+          {%- comment -%} FIX 2: application_method category metafield se {%- endcomment -%}
+          {%- if cat_mf.application_method != blank -%}
             <div class="pti-sidebar__field">
               <span class="pti-sidebar__label">Application</span>
-              <span class="pti-sidebar__value">{{ mf.application_method.value }}</span>
+              <span class="pti-sidebar__value">{{ cat_mf.application_method.value }}</span>
             </div>
           {%- endif -%}
           {%- if mf.additional_information != blank -%}
@@ -470,9 +463,10 @@
               {%- else -%}
                 <div class="pti-rich-content">{{ mf.dosage_application.value }}</div>
               {%- endif -%}
-              {%- if mf.application_method != blank -%}
+              {%- comment -%} FIX 3: application_method category metafield se {%- endcomment -%}
+              {%- if cat_mf.application_method != blank -%}
                 <div class="pti-info-box pti-info-box--soil">
-                  <strong>Application Method</strong>{{ mf.application_method.value }}
+                  <strong>Application Method</strong>{{ cat_mf.application_method.value }}
                 </div>
               {%- endif -%}
             </div>
@@ -569,6 +563,7 @@
 
       </div>
 
+      {%- comment -%}── SIDEBAR — Technical Tab ──{%- endcomment -%}
       <aside class="pti-sidebar">
         <div class="pti-sidebar__inner">
           <div class="pti-sidebar__heading">Quick Reference</div>
@@ -584,10 +579,11 @@
               <span class="pti-sidebar__value">{{ mf.formulation_type.value }}</span>
             </div>
           {%- endif -%}
-          {%- if mf.application_method != blank -%}
+          {%- comment -%} FIX 4: application_method category metafield se {%- endcomment -%}
+          {%- if cat_mf.application_method != blank -%}
             <div class="pti-sidebar__field">
               <span class="pti-sidebar__label">Application</span>
-              <span class="pti-sidebar__value">{{ mf.application_method.value }}</span>
+              <span class="pti-sidebar__value">{{ cat_mf.application_method.value }}</span>
             </div>
           {%- endif -%}
           {%- if cur.vendor != blank -%}
@@ -608,36 +604,33 @@
   </div>
 
   {%- comment -%}════ TAB 3: FAQs ════{%- endcomment -%}
+  {%- comment -%} FIX 5: Metaobject list ke liye .fields.question.value aur .fields.answer.value use kiya {%- endcomment -%}
   <div id="tab-faq" class="pti-tab-panel">
     {%- if mf.product_faqs != blank -%}
-      {%- assign faq_raw = mf.product_faqs.value -%}
-      {%- assign faq_parsed = faq_raw | parse_json -%}
-      {%- if faq_parsed -%}
-        <div class="pti-faq-list">
-          {%- for faq in faq_parsed -%}
+      <div class="pti-faq-list">
+        {%- for faq_obj in mf.product_faqs.value -%}
+          {%- comment -%} Check karo ki yeh metaobject hai ya plain JSON string {%- endcomment -%}
+          {%- if faq_obj.fields -%}
+            {%- comment -%} Metaobject format {%- endcomment -%}
             <div class="pti-faq-item">
               <div class="pti-faq-q" onclick="ptiFaqToggle(this)">
-                <span>{{ faq.q | default: faq.question }}</span>
+                <span>{{ faq_obj.fields.question.value }}</span>
                 <span class="pti-faq-icon">+</span>
               </div>
-              <div class="pti-faq-a">{{ faq.a | default: faq.answer | newline_to_br }}</div>
+              <div class="pti-faq-a">{{ faq_obj.fields.answer.value | newline_to_br }}</div>
             </div>
-          {%- endfor -%}
-        </div>
-      {%- else -%}
-        {%- comment -%} Metaobject list — each entry has .question and .answer {%- endcomment -%}
-        <div class="pti-faq-list">
-          {%- for faq_obj in mf.product_faqs.value -%}
+          {%- else -%}
+            {%- comment -%} Plain object format (question/answer keys directly) {%- endcomment -%}
             <div class="pti-faq-item">
               <div class="pti-faq-q" onclick="ptiFaqToggle(this)">
-                <span>{{ faq_obj.question }}</span>
+                <span>{{ faq_obj.question | default: faq_obj.q }}</span>
                 <span class="pti-faq-icon">+</span>
               </div>
-              <div class="pti-faq-a">{{ faq_obj.answer | newline_to_br }}</div>
+              <div class="pti-faq-a">{{ faq_obj.answer | default: faq_obj.a | newline_to_br }}</div>
             </div>
-          {%- endfor -%}
-        </div>
-      {%- endif -%}
+          {%- endif -%}
+        {%- endfor -%}
+      </div>
     {%- else -%}
       <div class="pti-empty-state">No FAQs available yet.</div>
     {%- endif -%}
@@ -669,14 +662,8 @@
 
 </div>
 
-<script >
-
-/* ============================================================
-   product-technical-information.js  (v2)
-   Upload to: Assets folder in Shopify theme
-   ============================================================ */
-
-/* ── Section Card toggle (expand/collapse) ── */
+<script>
+/* ── Section Card toggle ── */
 function ptiToggle(header) {
   var body   = header.nextElementSibling;
   var toggle = header.querySelector('.pti-card__toggle');
@@ -705,12 +692,10 @@ function ptiSwitchTab(btn, tabName) {
 function ptiFaqToggle(qEl) {
   var answerEl = qEl.nextElementSibling;
   var isOpen   = answerEl.classList.contains('pti-faq-a--open');
-  /* Close all others */
   document.querySelectorAll('.pti-faq-a--open').forEach(function(a) {
     a.classList.remove('pti-faq-a--open');
     a.previousElementSibling.classList.remove('pti-faq-q--open');
   });
-  /* Open clicked (if it was closed) */
   if (!isOpen) {
     answerEl.classList.add('pti-faq-a--open');
     qEl.classList.add('pti-faq-q--open');
@@ -719,7 +704,6 @@ function ptiFaqToggle(qEl) {
 
 /* ── On load ── */
 document.addEventListener('DOMContentLoaded', function() {
-  /* Set arrow direction for all pre-open sections */
   document.querySelectorAll('.pti-card__body--open').forEach(function(body) {
     var header = body.previousElementSibling;
     if (!header) return;
@@ -727,7 +711,6 @@ document.addEventListener('DOMContentLoaded', function() {
     if (toggle) toggle.classList.add('pti-card__toggle--open');
   });
 
-  /* URL hash scroll — e.g. #section-safety auto-opens and scrolls */
   if (window.location.hash) {
     var el = document.querySelector(window.location.hash);
     if (el) {
@@ -742,12 +725,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   }
 });
-
-
 </script>
-
-
-
 
 {% schema %}
 {
@@ -766,7 +744,6 @@ document.addEventListener('DOMContentLoaded', function() {
       "default": true
     }
   ],
-
   "blocks": [
     {
       "type": "faq",
@@ -798,7 +775,6 @@ document.addEventListener('DOMContentLoaded', function() {
       ]
     }
   ],
-
   "presets": [
     {
       "name": "Bhumi PTI"
