@@ -48,6 +48,7 @@
         "heading",
         "page-content"
       ],
+      "disabled": true,
       "settings": {
         "content_direction": "column",
         "gap": 32,
@@ -55,9 +56,21 @@
         "padding-block-start": 40,
         "padding-block-end": 80
       }
+    },
+    "iso_certificate_g7eBKt": {
+      "type": "iso-certificate",
+      "name": "ISO Certification",
+      "settings": {
+        "heading": "Certified Excellence You Can Trust",
+        "subheading": "Delivering Quality, Safety & Sustainability in Every Step",
+        "main_content": "At Bhumi Agro, we believe that true growth in agriculture comes from a strong foundation of quality, safety, and sustainability.\nOur commitment to excellence is reflected in our ISO certifications, which validate that our processes meet internationally recognized standards.\n\nBeing an ISO-certified organization is not just an achievement for us — it is a responsibility. A responsibility to deliver consistent quality, maintain strict safety protocols, and follow environmentally responsible practices across our entire agricultural ecosystem.\n\nFrom sourcing raw produce directly from farmers to delivering it to businesses, we ensure that every step follows a well-defined, transparent, and controlled process.",
+        "points": "High-quality standards\nReliable supply\nFood safety assurance\nSustainable practices\nTrusted partnerships",
+        "cta": "Partner with Bhumi Agro for certified quality and trusted agricultural solutions."
+      }
     }
   },
   "order": [
-    "main"
+    "main",
+    "iso_certificate_g7eBKt"
   ]
 }
