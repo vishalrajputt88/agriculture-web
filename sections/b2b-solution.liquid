@@ -18,6 +18,7 @@
   margin-bottom: 35px;
 }
 
+/* ✅ Title center hi rahe */
 .agri-title {
   font-size: 22px;
   font-weight: 600;
@@ -27,14 +28,16 @@
 
 /* ✅ MAIN FIX */
 .agri-list {
-  display: inline-block;   /* same line alignment */
-  text-align: left;        /* text left but block centered */
-  margin: 0 auto;
+  max-width: 600px;   /* same width for all */
+  margin: 0 auto;     /* center the block */
   padding-left: 20px;
+  text-align: left;   /* text left */
 }
 
+/* optional: better spacing */
 .agri-list li {
   margin-bottom: 8px;
+  line-height: 1.6;
 }
 </style>
 
