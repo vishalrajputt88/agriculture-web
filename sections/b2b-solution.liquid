@@ -4,19 +4,17 @@
   max-width: 900px;
   margin: auto;
   font-family: Arial, sans-serif;
-  text-align: center;
-
-  background: #ffffff; /* ✅ overlap fix */
-  position: relative;
-  z-index: 2;
+  text-align: left; /* ✅ sab left */
+  background: #ffffff;
 }
 
-/* Heading */
+/* Main Heading */
 .agri-heading {
   font-size: 36px;
   font-weight: bold;
   margin-bottom: 40px;
   color: #16a34a;
+  text-align: left; /* ✅ left */
 }
 
 /* Each block */
@@ -29,15 +27,13 @@
   font-size: 22px;
   font-weight: 600;
   margin-bottom: 15px;
-  text-align: center;
+  text-align: left; /* ✅ left */
 }
 
-/* ✅ Perfect aligned list */
+/* List */
 .agri-list {
-  max-width: 650px;
-  margin: 0 auto;        /* center block */
   padding-left: 20px;
-  text-align: left;      /* text left */
+  text-align: left; /* ✅ left */
 }
 
 /* List items */
@@ -46,7 +42,7 @@
   line-height: 1.6;
 }
 
-/* Optional: divider for clean UI */
+/* Divider */
 .agri-block:not(:last-child) {
   border-bottom: 1px solid #eee;
   padding-bottom: 25px;
