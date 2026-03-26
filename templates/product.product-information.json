@@ -9,28 +9,6 @@
  */
 {
   "sections": {
-    "custom_breadcum_RVpRUY": {
-      "type": "custom-breadcum",
-      "name": "Breadcrumb navigation",
-      "settings": {
-        "home_text": "Home",
-        "separator": "/",
-        "background_color": "#ffffff",
-        "link_color": "#666666",
-        "link_hover_color": "#333333",
-        "current_color": "#1e7d3c",
-        "separator_color": "#999999",
-        "font_size": 14,
-        "font_size_mobile": 13,
-        "font_weight": "500",
-        "current_font_weight": "700",
-        "padding_vertical": 25,
-        "padding_horizontal": 20,
-        "padding_vertical_mobile": 12,
-        "padding_horizontal_mobile": 15,
-        "separator_spacing": 8
-      }
-    },
     "main": {
       "type": "product-information",
       "blocks": {
@@ -435,7 +413,6 @@
     }
   },
   "order": [
-    "custom_breadcum_RVpRUY",
     "main",
     "product_technical_information_VKf4re"
   ]
