@@ -56,9 +56,77 @@
         "padding-block-start": 40,
         "padding-block-end": 80
       }
+    },
+    "b2b_solution_M3qqwK": {
+      "type": "b2b-solution",
+      "blocks": {
+        "section_hpp6LV": {
+          "type": "section",
+          "settings": {
+            "title": "Farm-to-Business Supply Chain",
+            "points": "Direct procurement from farmers\nBulk sourcing for retailers, exporters, and processors\nReduced middlemen → better margins\nReal-time inventory tracking"
+          }
+        },
+        "section_kdy3D6": {
+          "type": "section",
+          "settings": {
+            "title": "Agri Marketplace Platform",
+            "points": "Digital platform connecting buyers & sellers\nProduct listings (grains, vegetables, seeds, fertilizers)\nPrice comparison & bidding system\nSecure payments & order management"
+          }
+        },
+        "section_h3ciiU": {
+          "type": "section",
+          "settings": {
+            "title": "Smart Farming & Data Solutions",
+            "points": "IoT-based crop monitoring\nWeather and soil analytics\nYield prediction using AI\nAdvisory for better crop decisions"
+          }
+        },
+        "section_MC3Cm6": {
+          "type": "section",
+          "settings": {
+            "title": "Logistics & Cold Chain Management",
+            "points": "Temperature-controlled storage\nFast delivery network\nReduced post-harvest losses\nRoute optimization for cost savings"
+          }
+        },
+        "section_fFartG": {
+          "type": "section",
+          "settings": {
+            "title": "Input Supply & Distribution",
+            "points": "Bulk supply of seeds, fertilizers, pesticides\nDealer & distributor network\nTransparent pricing for businesses\nQuality assurance"
+          }
+        },
+        "section_Xf96fJ": {
+          "type": "section",
+          "settings": {
+            "title": "Key Benefits",
+            "points": "Increased efficiency in procurement\nCost reduction through direct sourcing\nAccess to reliable suppliers & buyers\nData-driven decision making\n Scalable business growth"
+          }
+        },
+        "section_gkpPrU": {
+          "type": "section",
+          "settings": {
+            "title": "Target Customers",
+            "points": "Food processing companies\nRetail chains & supermarkets\nExporters & wholesalers\nAgri startups\nGovernment & cooperatives"
+          }
+        }
+      },
+      "block_order": [
+        "section_hpp6LV",
+        "section_kdy3D6",
+        "section_h3ciiU",
+        "section_MC3Cm6",
+        "section_fFartG",
+        "section_Xf96fJ",
+        "section_gkpPrU"
+      ],
+      "name": "B2B Agriculture",
+      "settings": {
+        "main_heading": "B2B Agriculture Solutions"
+      }
     }
   },
   "order": [
-    "main"
+    "main",
+    "b2b_solution_M3qqwK"
   ]
 }
