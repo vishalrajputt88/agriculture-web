@@ -1,0 +1,171 @@
+<style>
+.iso-container {
+  max-width: 1000px;
+  margin: auto;
+  padding: 60px 20px;
+  font-family: Arial, sans-serif;
+}
+
+.iso-heading {
+  text-align: center;
+  font-size: 36px;
+  font-weight: bold;
+  color: #16a34a;
+  margin-bottom: 10px;
+}
+
+.iso-subheading {
+  text-align: center;
+  font-size: 18px;
+  margin-bottom: 40px;
+  color: #555;
+}
+
+.iso-content {
+  font-size: 16px;
+  line-height: 1.7;
+  color: #333;
+  margin-bottom: 30px;
+}
+
+.iso-block {
+  margin-bottom: 30px;
+}
+
+.iso-title {
+  font-size: 20px;
+  font-weight: 600;
+  margin-bottom: 10px;
+  color: #111;
+}
+
+.iso-text {
+  font-size: 15px;
+  color: #444;
+  line-height: 1.6;
+}
+
+.iso-list {
+  margin-top: 20px;
+  padding-left: 20px;
+}
+
+.iso-list li {
+  margin-bottom: 8px;
+}
+
+.iso-cta {
+  margin-top: 40px;
+  text-align: center;
+  font-weight: 600;
+  font-size: 18px;
+}
+</style>
+
+<div class="iso-container">
+
+  <!-- Heading -->
+  <div class="iso-heading">
+    {{ section.settings.heading }}
+  </div>
+
+  <div class="iso-subheading">
+    {{ section.settings.subheading }}
+  </div>
+
+  <!-- Main Content -->
+  <div class="iso-content">
+    {{ section.settings.main_content }}
+  </div>
+
+  <!-- ISO Blocks -->
+  {% for block in section.blocks %}
+    <div class="iso-block">
+      <div class="iso-title">
+        {{ block.settings.title }}
+      </div>
+      <div class="iso-text">
+        {{ block.settings.text }}
+      </div>
+    </div>
+  {% endfor %}
+
+  <!-- Points -->
+  <ul class="iso-list">
+    {% assign points = section.settings.points | newline_to_br | split: '<br />' %}
+    {% for point in points %}
+      {% if point != blank %}
+        <li>{{ point }}</li>
+      {% endif %}
+    {% endfor %}
+  </ul>
+
+  <!-- CTA -->
+  <div class="iso-cta">
+    {{ section.settings.cta }}
+  </div>
+
+</div>
+
+{% schema %}
+{
+  "name": "ISO Certification",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Global Standards. Trusted Quality. Sustainable Future."
+    },
+    {
+      "type": "text",
+      "id": "subheading",
+      "label": "Sub Heading",
+      "default": "Certified Processes That Ensure Excellence from Farm to Market"
+    },
+    {
+      "type": "textarea",
+      "id": "main_content",
+      "label": "Main Content",
+      "default": "At Bhumi Agro, we believe that true growth in agriculture comes from a strong foundation of quality, safety, and sustainability. Our ISO certifications validate that our processes meet international standards."
+    },
+    {
+      "type": "textarea",
+      "id": "points",
+      "label": "Why Choose Points",
+      "default": "High-quality standards\nReliable supply\nFood safety assurance\nSustainable practices\nTrusted partnerships"
+    },
+    {
+      "type": "text",
+      "id": "cta",
+      "label": "Call To Action",
+      "default": "Partner with Bhumi Agro for certified quality and trusted agricultural solutions."
+    }
+  ],
+  "blocks": [
+    {
+      "type": "iso",
+      "name": "ISO Block",
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "ISO Title",
+          "default": "ISO 9001 – Quality Management"
+        },
+        {
+          "type": "textarea",
+          "id": "text",
+          "label": "Description",
+          "default": "Ensuring consistent quality and continuous improvement."
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "ISO Certification"
+    }
+  ]
+}
+{% endschema %}
