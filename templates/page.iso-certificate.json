@@ -66,10 +66,34 @@
             "title": "ISO 9001 – Quality Management System",
             "text": "We implement structured quality control processes to ensure that every product and service meets customer expectations.\nThis helps us maintain consistency, efficiency, and continuous improvement in all our operations."
           }
+        },
+        "iso_bqXnA9": {
+          "type": "iso",
+          "settings": {
+            "title": "ISO 22000 – Food Safety Management",
+            "text": "Food safety is at the core of our operations.\nWe follow strict hygiene and safety standards across the supply chain — from procurement and storage to packaging and delivery — ensuring safe and contamination-free products."
+          }
+        },
+        "iso_kKzhPn": {
+          "type": "iso",
+          "settings": {
+            "title": "ISO 14001 – Environmental Management",
+            "text": "We are committed to protecting the environment through sustainable and eco-friendly agricultural practices.\nOur approach focuses on reducing waste, optimizing resources, and minimizing environmental impact."
+          }
+        },
+        "iso_rcWJpm": {
+          "type": "iso",
+          "settings": {
+            "title": "Our Commitment in Action",
+            "text": "At Bhumi Agro, ISO standards are not just guidelines — they are integrated into our daily operations:\n\nWe ensure direct sourcing from farmers with quality checks\nWe maintain transparent supply chain management\nWe use modern technology for monitoring and tracking\nWe follow strict quality inspections before delivery\nWe continuously improve based on feedback and audits"
+          }
         }
       },
       "block_order": [
-        "iso_EDpGbP"
+        "iso_EDpGbP",
+        "iso_bqXnA9",
+        "iso_kKzhPn",
+        "iso_rcWJpm"
       ],
       "name": "ISO Certification",
       "settings": {
