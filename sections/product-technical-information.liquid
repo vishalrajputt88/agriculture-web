@@ -1,39 +1,4 @@
-{% comment %}
-  ============================================================
-  FILE:    templates/page.product-technical-information.liquid
-  CSS:     assets/product-technical-information.css  (same file, no change needed)
-  JS:      assets/product-technical-information.js   (updated below)
 
-  URL KAISE KAAM KARTA HAI:
-  /pages/product-technical-information?product=energy-plus
-  /pages/product-technical-information?product=agro-shield-max
-
-  PRODUCT PAGE PE LINK LAGAO:
-  <a href="/pages/product-technical-information?product={{ product.handle }}">
-    View Technical Info
-  </a>
-
-  EXISTING METAFIELDS (Image 3 se):
-  custom.application_scope       → Multi-line text
-  custom.key_features            → Multi-line text
-  custom.additional_information  → Single-line text
-  custom.full_description        → Rich text / Multi-line text
-  custom.product_faqs            → List of metaobjects OR JSON
-  custom.application_method      → Single-line text (category metafield)
-
-  OPTIONAL (baad mein add karo):
-  custom.chemical_composition    → Multi-line text
-  custom.dosage_application      → Multi-line text (JSON array)
-  custom.safety_precautions      → Multi-line text (JSON array)
-  custom.storage_conditions      → Multi-line text
-  custom.shelf_life              → Single-line text
-  custom.temperature_range       → Single-line text
-  custom.registration_number     → Single-line text
-  custom.formulation_type        → Single-line text
-  custom.pack_sizes              → Single-line text
-  custom.technical_datasheet     → File (PDF)
-  ============================================================
-{% endcomment %}
 
 {%- comment -%} URL parameter se product lo {%- endcomment -%}
 {%- assign url_handle = request.parameters.product -%}
