@@ -142,9 +142,9 @@
               "settings": {
                 "star_size": 20,
                 "font_size": 16,
-                "text_color": "#585858",
+                "text_color": "#eaaa06",
                 "block_aligment": "left",
-                "margin_top": 40,
+                "margin_top": 0,
                 "margin_bottom": 0
               }
             },
@@ -188,6 +188,19 @@
                 "padding-inline-end": 0
               },
               "blocks": {
+                "product_inventory_erLBba": {
+                  "type": "product-inventory",
+                  "name": "t:names.product_inventory",
+                  "settings": {
+                    "inventory_threshold": 10,
+                    "show_inventory_quantity": true,
+                    "padding-block-start": 0,
+                    "padding-block-end": 20,
+                    "padding-inline-start": 0,
+                    "padding-inline-end": 0
+                  },
+                  "blocks": {}
+                },
                 "text_qM4K4p": {
                   "type": "text",
                   "name": "Product description",
@@ -259,6 +272,7 @@
                 }
               },
               "block_order": [
+                "product_inventory_erLBba",
                 "text_qM4K4p",
                 "price_tVjtKg",
                 "product_info_text_KzX9x9"
