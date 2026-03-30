@@ -86,14 +86,6 @@
     "shop_by_catagory_MNBUwx": {
       "type": "shop-by-catagory",
       "blocks": {
-        "category_item_cnmBLT": {
-          "type": "category_item",
-          "settings": {
-            "category_image": "shopify://shop_images/category_icon_1.png",
-            "category_title": "NPK Fertiliser",
-            "category_url": "shopify://collections/water-soluble-fertilizers"
-          }
-        },
         "category_item_wcVT8w": {
           "type": "category_item",
           "settings": {
@@ -116,6 +108,14 @@
             "category_image": "shopify://shop_images/Fertilisers-Products-Bhumi-Agro.png",
             "category_title": "Fertiliser",
             "category_url": "shopify://collections/bio-fertilizers"
+          }
+        },
+        "category_item_cnmBLT": {
+          "type": "category_item",
+          "settings": {
+            "category_image": "shopify://shop_images/category_icon_1.png",
+            "category_title": "NPK Fertiliser",
+            "category_url": "shopify://collections/water-soluble-fertilizers"
           }
         },
         "category_item_UzbbjW": {
@@ -160,10 +160,10 @@
         }
       },
       "block_order": [
-        "category_item_cnmBLT",
         "category_item_wcVT8w",
         "category_item_EyDYqL",
         "category_item_mbf4FC",
+        "category_item_cnmBLT",
         "category_item_UzbbjW",
         "category_item_WdGtxw",
         "category_item_QDNMhh",
