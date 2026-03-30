@@ -417,7 +417,7 @@
       "name": "Funficide",
       "settings": {
         "heading": "Best Selling Products",
-        "collection": "bio-fungicide",
+        "collection": "fungicides",
         "products_per_row_desktop": 4,
         "products_per_row_mobile": "2",
         "show_rating": true,
