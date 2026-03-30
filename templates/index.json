@@ -121,7 +121,7 @@
         "category_item_UzbbjW": {
           "type": "category_item",
           "settings": {
-            "category_image": "shopify://shop_images/Mix-Micronutrients-Bhumi-Agro.png",
+            "category_image": "shopify://shop_images/category_icon_4.png",
             "category_title": "Mix Micronutrients",
             "category_url": "shopify://collections/micronutrients"
           }
@@ -129,8 +129,8 @@
         "category_item_WdGtxw": {
           "type": "category_item",
           "settings": {
-            "category_image": "shopify://shop_images/Pesticides-Fungicides-Bhumi-Agro.png",
-            "category_title": "Pesticides/ Insecticides",
+            "category_image": "shopify://shop_images/category_icon_5.png",
+            "category_title": "Insecticides",
             "category_url": "shopify://collections/insecticides"
           }
         },
