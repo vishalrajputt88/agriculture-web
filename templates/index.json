@@ -153,7 +153,7 @@
         "category_item_PaakAH": {
           "type": "category_item",
           "settings": {
-            "category_image": "shopify://shop_images/Home-Gardening-Bhumi-Agro.png",
+            "category_image": "shopify://shop_images/category_icon_8.png",
             "category_title": "Home Gardening",
             "category_url": "shopify://collections/home-gardening-products"
           }
