@@ -485,7 +485,6 @@
         },
         "video_zeHDRw": {
           "type": "video",
-          "disabled": true,
           "settings": {
             "tab_label": "How to Use Video",
             "video_metafield_namespace": "",
