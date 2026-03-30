@@ -251,7 +251,7 @@
       "type": "common-banner-for-section",
       "name": "Full width image",
       "settings": {
-        "banner_image": "shopify://shop_images/best-selling-bhumi.png",
+        "banner_image": "shopify://shop_images/BEST_SELLER_PRODUCT.png",
         "desktop_width_percent": 100,
         "custom_width": 780,
         "object_fit": "cover",
