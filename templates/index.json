@@ -105,7 +105,7 @@
         "category_item_mbf4FC": {
           "type": "category_item",
           "settings": {
-            "category_image": "shopify://shop_images/Fertilisers-Products-Bhumi-Agro.png",
+            "category_image": "shopify://shop_images/category_icon_3.png",
             "category_title": "Fertiliser",
             "category_url": "shopify://collections/bio-fertilizers"
           }
