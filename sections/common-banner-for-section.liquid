@@ -60,6 +60,8 @@
 
 <div class="full-width-image-{{ custom_selling_banner }}" {{ section.shopify_attributes }}>
   <div class="full-width-image-wrapper-{{ custom_selling_banner }}">
+    <a href="{{ section.settings.banner_link }}"
+   {% if section.settings.open_new_tab %} target="_blank" rel="noopener"{% endif %}>
     {% if section.settings.banner_image %}
       <img
         src="{{ section.settings.banner_image | image_url: width: 2000 }}"
@@ -74,6 +76,7 @@
         height="{{ section.settings.banner_image.height }}"
       >
     {% else %}
+    </a>
       <div class="full-width-image-placeholder-{{ custom_selling_banner }}">
         {{ 'image' | placeholder_svg_tag }}
       </div>
