@@ -534,7 +534,7 @@
       ],
       "name": "Shop by categories",
       "settings": {
-        "heading": "ff",
+        "heading": "",
         "heading_font": "assistant_n4",
         "heading_font_weight": "700",
         "heading_size": 40,
