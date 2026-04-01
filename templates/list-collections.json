@@ -26,7 +26,7 @@
         "sub_collection_card_PCpEBB": {
           "type": "sub_collection_card",
           "settings": {
-            "parent_handle": "seeds",
+            "parent_handle": "bio-insecticides",
             "sub_collection": "ash-gouurd",
             "card_image": "shopify://shop_images/category_icon_7.png",
             "card_label": "",
