@@ -536,7 +536,8 @@
         "category_item_zAqdRV": {
           "type": "category_item",
           "settings": {
-            "category_title": "Category Name",
+            "category_image": "shopify://shop_images/category_icon_4_818b675c-f03a-498e-82a0-c6de8205c1d9.png",
+            "category_title": "Brinjal Crop",
             "category_url": ""
           }
         }
