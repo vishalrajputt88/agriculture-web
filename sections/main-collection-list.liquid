@@ -1,6 +1,33 @@
 {% comment %}
-  Right Shift — Shift Shop Page (FULLY DYNAMIC — No Page Refresh)
-  sections/rs-shift-shop.liquid
+  Right Shift — Agriculture Shop Page  (FULLY DYNAMIC — No Page Refresh)
+  sections/rs-agri-shop.liquid
+
+  ─────────────────────────────────────────────────────────────
+  LAYOUT OVERVIEW
+  ─────────────────────────────────────────────────────────────
+  1. Hero Banner        — Updates dynamically when a category is selected
+  2. Icons Row          — Main agriculture categories (Seeds, Pesticides, etc.)
+  3. Default View       — Multi-row product sliders (product_row blocks)
+  4. Category View      — Grid of sub-collections inside the clicked category
+  ─────────────────────────────────────────────────────────────
+
+  HOW NESTED COLLECTIONS WORK
+  ─────────────────────────────────────────────────────────────
+  Step 1 → Add a "Nav Icon" block  →  assign a parent collection (e.g. "seeds")
+  Step 2 → Add "Sub-Collection Card" blocks
+           Set "Parent Category Handle" = handle of the parent nav collection
+           Pick the sub-collection (e.g. "tomato-seeds", "wheat-seeds", etc.)
+  Step 3 → When a user clicks the nav icon, the sub-collection cards appear
+           Clicking a card navigates to /collections/{handle}
+  ─────────────────────────────────────────────────────────────
+
+  BLOCK TYPES
+  ─────────────────────────────────────────────────────────────
+  nav_icon            — Navigation circle icon (main category)
+  sub_collection_card — Sub-category card shown under a nav_icon
+  product_row         — Horizontal product slider in the default (Shop All) view
+  faq_item            — FAQ accordion entry
+  ─────────────────────────────────────────────────────────────
 {% endcomment %}
 
 {%- liquid
@@ -10,48 +37,56 @@
   assign ppr = section.settings.products_per_row
 -%}
 
-{%- comment -%} Pre-embed all collection data for JS {%- endcomment -%}
+{%- comment -%} ── Pre-embed all data for JS so no extra network requests are needed ── {%- endcomment -%}
 <script>
 window.rsShopData = {
-  
+
+  /* ── Default hero content (shown on "Shop All" / page load) ── */
   defaultBgImgMobile: {% if section.settings.hero_bg_image_mobile != blank %}{{ section.settings.hero_bg_image_mobile | image_url: width: 800 | json }}{% elsif section.settings.hero_bg_image != blank %}{{ section.settings.hero_bg_image | image_url: width: 800 | json }}{% else %}null{% endif %},
-  defaultTitle:      {{ section.settings.hero_heading | default: 'The shift shop' | json }},
-  defaultDesc:       {{ section.settings.hero_description | default: '' | json }},
-  defaultBgImg:      {% if section.settings.hero_bg_image != blank %}{{ section.settings.hero_bg_image | image_url: width: 1600 | json }}{% else %}null{% endif %},
-  defaultProductImg: null,
-  cardColors:        [{{ c1 | json }}, {{ c2 | json }}, {{ c3 | json }}],
-  ppr:               {{ ppr }},
-  singlePpr:         {{ section.settings.single_products_per_row }},
-  atcBg:             {{ section.settings.atc_bg | json }},
-  atcColor:          {{ section.settings.atc_color | json }},
-  buyBg:             {{ section.settings.buy_bg | json }},
-  buyColor:          {{ section.settings.buy_color | json }},
-  cardRadius:        {{ section.settings.card_radius }},
-  cardGap:           {{ section.settings.card_gap }},
-  titleColor:        {{ section.settings.product_title_color | json }},
-  descColor:         {{ section.settings.product_desc_color | json }},
-  priceColor:        {{ section.settings.price_color | json }},
-  singleHeading:     {{ section.settings.single_col_heading | default: 'A variety to choose from' | json }},
-  singleSubheading:  {{ section.settings.single_col_subheading | default: '' | json }},
-  heroBgOpacity:     {{ section.settings.hero_bg_opacity | divided_by: 100.0 }},
-  heroImgWidth:      {{ section.settings.hero_img_width }},
+  defaultTitle:       {{ section.settings.hero_heading | default: 'Agriculture Solutions' | json }},
+  defaultDesc:        {{ section.settings.hero_description | default: '' | json }},
+  defaultBgImg:       {% if section.settings.hero_bg_image != blank %}{{ section.settings.hero_bg_image | image_url: width: 1600 | json }}{% else %}null{% endif %},
+  defaultProductImg:  null,
+
+  /* ── Card colors (rotate: Color1 → Color2 → Color3) ── */
+  cardColors: [{{ c1 | json }}, {{ c2 | json }}, {{ c3 | json }}],
+
+  /* ── Layout settings (passed to JS to avoid re-reading CSS) ── */
+  ppr:            {{ ppr }},
+  singlePpr:      {{ section.settings.single_products_per_row }},
+  atcBg:          {{ section.settings.atc_bg | json }},
+  atcColor:       {{ section.settings.atc_color | json }},
+  buyBg:          {{ section.settings.buy_bg | json }},
+  buyColor:       {{ section.settings.buy_color | json }},
+  cardRadius:     {{ section.settings.card_radius }},
+  cardGap:        {{ section.settings.card_gap }},
+  titleColor:     {{ section.settings.product_title_color | json }},
+  descColor:      {{ section.settings.product_desc_color | json }},
+  priceColor:     {{ section.settings.price_color | json }},
+  singleHeading:  {{ section.settings.single_col_heading | default: 'Select a Category' | json }},
+  singleSubheading: {{ section.settings.single_col_subheading | default: '' | json }},
+  heroBgOpacity:  {{ section.settings.hero_bg_opacity | divided_by: 100.0 }},
+  heroImgWidth:   {{ section.settings.hero_img_width }},
+
+  /* ── Per-category hero banner data (keyed by collection handle) ── */
   collections: {
     {% for block in section.blocks %}
       {% if block.type == 'nav_icon' and block.settings.nav_collection != blank %}
-        {%- assign col = block.settings.nav_collection -%}
-        {%- assign col_meta_img         = col.metafields.custom.banner_image.value -%}
-        {%- assign col_meta_img_mobile  = col.metafields.custom.collection_banner_mobile.value -%}
-        {%- assign col_meta_desc        = col.metafields.custom.banner_description -%}
+        {%- assign col             = block.settings.nav_collection -%}
+        {%- assign col_meta_img    = col.metafields.custom.banner_image.value -%}
+        {%- assign col_meta_img_m  = col.metafields.custom.collection_banner_mobile.value -%}
+        {%- assign col_meta_desc   = col.metafields.custom.banner_description -%}
 
         {%- comment -%}
-          Banner priority (desktop):
-            1. Block image picker  (banner_desktop)
+          Desktop banner priority:
+            1. Block image picker (banner_desktop)
             2. Collection metafield (custom.banner_image)
             3. Collection image
             4. null
-          Banner priority (mobile):
-            1. Block image picker  (banner_mobile)
-            2. Block image picker  (banner_desktop — fallback)
+
+          Mobile banner priority:
+            1. Block image picker (banner_mobile)
+            2. Block image picker (banner_desktop — fallback)
             3. Collection metafield mobile
             4. Collection metafield desktop
             5. Collection image
@@ -59,21 +94,50 @@ window.rsShopData = {
         {%- endcomment -%}
 
         {{ col.handle | json }}: {
-          title:      {{ col.title | json }},
-          description: {% if col_meta_desc != blank %}{{ col_meta_desc | json }}{% else %}{{ section.settings.hero_description | json }}{% endif %},
-          bannerImg:  {% if block.settings.banner_desktop != blank %}{{ block.settings.banner_desktop | image_url: width: 1600 | json }}{% elsif col_meta_img != blank %}{{ col_meta_img | image_url: width: 1600 | json }}{% elsif col.image != blank %}{{ col.image | image_url: width: 1600 | json }}{% else %}null{% endif %},
-          bannerImgMobile: {% if block.settings.banner_mobile != blank %}{{ block.settings.banner_mobile | image_url: width: 800 | json }}{% elsif block.settings.banner_desktop != blank %}{{ block.settings.banner_desktop | image_url: width: 800 | json }}{% elsif col_meta_img_mobile != blank %}{{ col_meta_img_mobile | image_url: width: 800 | json }}{% elsif col_meta_img != blank %}{{ col_meta_img | image_url: width: 800 | json }}{% elsif col.image != blank %}{{ col.image | image_url: width: 800 | json }}{% else %}null{% endif %},
-          productImg: {% if col.image != blank %}{{ col.image | image_url: width: 600 | json }}{% else %}null{% endif %}
+          title:          {{ col.title | json }},
+          description:    {% if col_meta_desc != blank %}{{ col_meta_desc | json }}{% else %}{{ section.settings.hero_description | json }}{% endif %},
+          bannerImg:      {% if block.settings.banner_desktop != blank %}{{ block.settings.banner_desktop | image_url: width: 1600 | json }}{% elsif col_meta_img != blank %}{{ col_meta_img | image_url: width: 1600 | json }}{% elsif col.image != blank %}{{ col.image | image_url: width: 1600 | json }}{% else %}null{% endif %},
+          bannerImgMobile:{% if block.settings.banner_mobile != blank %}{{ block.settings.banner_mobile | image_url: width: 800 | json }}{% elsif block.settings.banner_desktop != blank %}{{ block.settings.banner_desktop | image_url: width: 800 | json }}{% elsif col_meta_img_m != blank %}{{ col_meta_img_m | image_url: width: 800 | json }}{% elsif col_meta_img != blank %}{{ col_meta_img | image_url: width: 800 | json }}{% elsif col.image != blank %}{{ col.image | image_url: width: 800 | json }}{% else %}null{% endif %},
+          productImg:     {% if col.image != blank %}{{ col.image | image_url: width: 600 | json }}{% else %}null{% endif %}
         },
       {% endif %}
     {% endfor %}
+  },
+
+  /* ── Sub-collection data — keyed by parent nav collection handle ──
+     Built at render time; no API fetch needed when user clicks a nav icon.
+     Each entry is an array of sub-collection card objects.              ── */
+  subCollections: {
+    {% for nav_block in section.blocks %}
+      {% if nav_block.type == 'nav_icon' and nav_block.settings.nav_collection != blank %}
+        {%- assign nav_handle = nav_block.settings.nav_collection.handle -%}
+        {{ nav_handle | json }}: [
+          {% for sub_block in section.blocks %}
+            {% if sub_block.type == 'sub_collection_card' %}
+              {%- assign sub_parent = sub_block.settings.parent_handle | downcase | strip -%}
+              {%- assign nav_h      = nav_handle | downcase | strip -%}
+              {% if sub_parent == nav_h %}
+                {%- assign sc = sub_block.settings.sub_collection -%}
+                {
+                  handle: {{ sc.handle | default: '' | json }},
+                  title:  {% if sub_block.settings.card_label != blank %}{{ sub_block.settings.card_label | json }}{% else %}{{ sc.title | json }}{% endif %},
+                  desc:   {% if sub_block.settings.card_desc != blank %}{{ sub_block.settings.card_desc | json }}{% elsif sc.description != blank %}{{ sc.description | strip_html | truncate: 100 | json }}{% else %}null{% endif %},
+                  img:    {% if sub_block.settings.card_image != blank %}{{ sub_block.settings.card_image | image_url: width: 500 | json }}{% elsif sc.image != blank %}{{ sc.image | image_url: width: 500 | json }}{% else %}null{% endif %},
+                  url:    {{ sc.url | default: '#' | json }}
+                },
+              {% endif %}
+            {% endif %}
+          {% endfor %}
+        ],
+      {% endif %}
+    {% endfor %}
   }
+
 };
 </script>
 
-{%- comment -%}══════════ CSS CUSTOM PROPERTIES ══════════{%- endcomment -%}
+{%- comment -%} ══════════ SECTION-SCOPED CSS DESIGN TOKENS ══════════ {%- endcomment -%}
 <style>
-  /* ── Section-scoped design tokens ── */
   #rs-section-{{ section.id }} {
     --rs-c1:             {{ c1 }};
     --rs-c2:             {{ c2 }};
@@ -134,389 +198,368 @@ window.rsShopData = {
     --rs-faq-pt:         {{ section.settings.faq_pt }}px;
     --rs-faq-pb:         {{ section.settings.faq_pb }}px;
   }
+</style>
 
+{%- comment -%} ══════════ ANIMATION CSS ══════════ {%- endcomment -%}
+<style>
 
-  #rs-section-template--21783715021036__rs_shift_shop_Wn99qH .rs-hero { min-height: 637px; }
+  /* ── Flying heart: animates from wishlist button to the wishlist icon in header ── */
+  .rs-fly-heart {
+    position: fixed;
+    pointer-events: none;
+    z-index: 99999;
+    font-size: 22px;
+    color: #e53e3e;
+    animation: rsFlyToWishlist 0.9s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+    will-change: transform, opacity;
+  }
+  @keyframes rsFlyToWishlist {
+    0%   { transform: scale(1)   translate(0, 0);                             opacity: 1; }
+    60%  { transform: scale(1.4) translate(var(--fly-x),  var(--fly-y));      opacity: 1; }
+    100% { transform: scale(0.3) translate(var(--fly-x2), var(--fly-y2));     opacity: 0; }
+  }
 
-  /* ══════════════════════════════
-   FLYING HEART ANIMATION
-══════════════════════════════ */
-.rs-fly-heart {
-  position: fixed;
-  pointer-events: none;
-  z-index: 99999;
-  font-size: 22px;
-  color: #e53e3e;
-  animation: rsFlyToWishlist 0.9s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
-  will-change: transform, opacity;
-}
-@keyframes rsFlyToWishlist {
-  0%   { transform: scale(1) translate(0, 0);     opacity: 1; }
-  60%  { transform: scale(1.4) translate(var(--fly-x), var(--fly-y)); opacity: 1; }
-  100% { transform: scale(0.3) translate(var(--fly-x2), var(--fly-y2)); opacity: 0; }
-}
+  /* ── Add-to-cart particle burst ── */
+  .rs-particle {
+    position: fixed;
+    pointer-events: none;
+    z-index: 99999;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    animation: rsParticleBurst 0.7s ease-out forwards;
+    will-change: transform, opacity;
+  }
+  @keyframes rsParticleBurst {
+    0%   { transform: translate(0, 0) scale(1); opacity: 1; }
+    100% { transform: translate(var(--px), var(--py)) scale(0); opacity: 0; }
+  }
 
-/* ══════════════════════════════
-   ADD TO CART — PARTICLE BURST
-══════════════════════════════ */
-.rs-particle {
-  position: fixed;
-  pointer-events: none;
-  z-index: 99999;
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  animation: rsParticleBurst 0.7s ease-out forwards;
-  will-change: transform, opacity;
-}
-@keyframes rsParticleBurst {
-  0%   { transform: translate(0, 0) scale(1); opacity: 1; }
-  100% { transform: translate(var(--px), var(--py)) scale(0); opacity: 0; }
-}
+  /* ── ATC button flash on click ── */
+  .rs-btn-atc.rs-atc-flash { animation: rsAtcFlash 0.4s ease; }
+  @keyframes rsAtcFlash {
+    0%   { transform: scale(1); }
+    30%  { transform: scale(0.92); filter: brightness(1.3); }
+    60%  { transform: scale(1.06); }
+    100% { transform: scale(1); }
+  }
 
-/* ATC Button flash */
-.rs-btn-atc.rs-atc-flash {
-  animation: rsAtcFlash 0.4s ease;
-}
-@keyframes rsAtcFlash {
-  0%   { transform: scale(1); }
-  30%  { transform: scale(0.92); filter: brightness(1.3); }
-  60%  { transform: scale(1.06); }
-  100% { transform: scale(1); }
-}
+  /* ── Wishlist button pulse on toggle ── */
+  .rs-wishlist-toggle.rs-wl-pulse { animation: rsWlPulse 0.4s ease; }
+  @keyframes rsWlPulse {
+    0%   { transform: scale(1); }
+    40%  { transform: scale(1.5); }
+    100% { transform: scale(1); }
+  }
 
-/* Wishlist button pulse */
-.rs-wishlist-toggle.rs-wl-pulse {
-  animation: rsWlPulse 0.4s ease;
-}
-@keyframes rsWlPulse {
-  0%   { transform: scale(1); }
-  40%  { transform: scale(1.5); }
-  100% { transform: scale(1); }
-}
+  /* ── Sub-collection card: gentle lift on hover ── */
+  .rs-col-card { transition: transform 0.25s ease, box-shadow 0.25s ease; }
+  .rs-col-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 32px rgba(0,0,0,0.12);
+  }
+
 </style>
 
 
-
-{% assign is_wishlisted = false %}
-{%- comment -%}══════════ HERO ══════════{%- endcomment -%}
+{%- comment -%} ══════════ HTML STRUCTURE ══════════ {%- endcomment -%}
 <div id="rs-section-{{ section.id }}" class="rs-section">
 
-<div id="rs-hero" class="rs-hero">
-  <div id="rs-hero-bg" class="rs-hero-bg">
-    <img id="rs-hero-bg-img" src="" alt="" class="rs-hero-bg-img">
-    <img id="rs-hero-bg-img-mobile" src="" alt="" class="rs-hero-bg-img rs-hero-bg-img--mobile">
+  {%- comment -%} ── Hero Banner (background image changes on category selection) ── {%- endcomment -%}
+  <div id="rs-hero" class="rs-hero">
+    <div id="rs-hero-bg" class="rs-hero-bg">
+      <img id="rs-hero-bg-img"        src="" alt="" class="rs-hero-bg-img">
+      <img id="rs-hero-bg-img-mobile" src="" alt="" class="rs-hero-bg-img rs-hero-bg-img--mobile">
+    </div>
   </div>
-</div>
 
+  {%- comment -%} ── Navigation Icons Row (main agriculture categories) ── {%- endcomment -%}
+  {% if section.settings.show_icons_row %}
+  <div class="rs-icons-row">
+    <div class="rs-icons-wrap">
 
-{%- comment -%}══════════ ICONS ROW ══════════{%- endcomment -%}
-{% if section.settings.show_icons_row %}
-<div class="rs-icons-row">
-  <div class="rs-icons-wrap">
+      {%- comment -%} "Shop All" button — resets to default multi-row view {%- endcomment -%}
+      <button class="rs-nav-icon rs-nav-active" onclick="rsShowDefault(this)" aria-label="All Products">
+        <div class="rs-nav-circle rs-nav-circle--all">
+          {% if section.settings.all_icon_image != blank %}
+            <img src="{{ section.settings.all_icon_image | image_url: width: 160 }}" alt="All Products" class="rs-icon-img">
+          {% else %}
+            <span class="rs-icon-emoji">🌱</span>
+          {% endif %}
+        </div>
+        <span class="rs-icon-label">{{ section.settings.all_icon_label | default: 'All Products' }}</span>
+      </button>
 
-    {%- comment -%} Shop All button {%- endcomment -%}
-    <button class="rs-nav-icon rs-nav-active" onclick="rsShowDefault(this)" aria-label="Shop All">
-      <div class="rs-nav-circle rs-nav-circle--all">
-        {% if section.settings.all_icon_image != blank %}
-          <img src="{{ section.settings.all_icon_image | image_url: width: 160 }}" alt="Shop All" class="rs-icon-img">
-        {% else %}
-          <span class="rs-icon-emoji">🛒</span>
-        {% endif %}
-      </div>
-      <span class="rs-icon-label">{{ section.settings.all_icon_label | default: 'Shop all' }}</span>
-    </button>
-
-    {%- comment -%} Collection icons {%- endcomment -%}
-    {% for block in section.blocks %}
-      {% if block.type == 'nav_icon' %}
-        {%- assign col = block.settings.nav_collection -%}
-        {%- assign col_handle = col.handle | default: '' -%}
-        <button class="rs-nav-icon" onclick="rsSelectCollection(this)"
-          data-handle="{{ col_handle }}"
-          data-label="{{ block.settings.icon_label | escape }}"
-          aria-label="{{ block.settings.icon_label | escape }}"
-          style="--rs-this-icon-bg: {{ block.settings.icon_bg }}; --rs-this-icon-bdr: {{ block.settings.icon_border_color }};"
-          {{ block.shopify_attributes }}>
-          <div class="rs-nav-circle rs-nav-circle--col">
-            {% if block.settings.icon_image != blank %}
-              <img src="{{ block.settings.icon_image | image_url: width: 160 }}" alt="{{ block.settings.icon_label }}" class="rs-icon-img">
-            {% elsif col != blank and col.image != blank %}
-              <img src="{{ col.image | image_url: width: 160 }}" alt="{{ block.settings.icon_label }}" class="rs-icon-img">
-            {% endif %}
-          </div>
-          <span class="rs-icon-label">{{ block.settings.icon_label }}</span>
-        </button>
-      {% endif %}
-    {% endfor %}
-  </div>
-</div>
-{% endif %}
-
-<div class="rs-page-bg" {% if section.settings.page_bg != blank %}style="background-image: url('{{ section.settings.page_bg | image_url: width: 2000 }}'); background-size: cover;"{% endif %}>
-
-{%- comment -%}══════════ BREADCRUMB ══════════{%- endcomment -%}
-{% if section.settings.show_breadcrumb %}
-<div class="rs-breadcrumb-wrap">
-  <a href="{{ routes.root_url }}" class="rs-breadcrumb-link">Home</a>
-  <span class="rs-breadcrumb-sep">›</span>
-  <a href="#" class="rs-breadcrumb-link">{{ section.settings.breadcrumb_shop_text | default: 'The shift shop' }}</a>
-  <span id="rs-breadcrumb-col" class="rs-hidden">
-    <span class="rs-breadcrumb-sep">›</span>
-    <span id="rs-breadcrumb-col-name"></span>
-  </span>
-</div>
-{% endif %}
-
-
-{%- comment -%}══════════ MAIN CONTENT ══════════{%- endcomment -%}
-<div class="rs-main-content">
-  <div class="rs-container">
-
-    {%- comment -%}── PANEL A: Multi-row default ──{%- endcomment -%}
-    <div id="rs-panel-multi">
+      {%- comment -%} Dynamic category icons from nav_icon blocks {%- endcomment -%}
       {% for block in section.blocks %}
-        {% if block.type == 'product_row' %}
-          {%- assign row_col   = block.settings.row_collection -%}
-          {%- assign slider_id = 'rss-' | append: block.id -%}
-          <div class="rs-row" {{ block.shopify_attributes }}>
-
-            <div class="rs-row-header">
-              <div class="top_collection">
-                <h2 class="rs-row-heading">{{ block.settings.row_heading }}</h2>
-                {% if block.settings.row_subheading != blank %}
-                  <div class="rs-row-sub">
-                 <div> {{ block.settings.row_subheading }}</div>
-                 <div>Just so you can start your mornings on the right note.</div>
-
-                </div>{% endif %}
-              </div>
-              <div class="rs-badges">
-                <div class="rs_badge_inner">
-                {% if block.settings.badge_grains %}<img src="https://cdn.shopify.com/s/files/1/0817/1264/4332/files/No-Added-Preservatives-1.webp?v=1773949015" alt="No Chemicals">
-                <div>100% Whole Grains</div>{% endif %} </div>
-                <div class="rs_badge_inner">
-                {% if block.settings.badge_nutrition %}  <img src="https://cdn.shopify.com/s/files/1/0817/1264/4332/files/No-Added-Colours-1.webp?v=1773949015" alt="whole grains">  <div>Nutritionally Balanced</div>{% endif %} </div>
-                <div class="rs_badge_inner">
-                {% if block.settings.badge_chemicals %}<img src="https://cdn.shopify.com/s/files/1/0817/1264/4332/files/No-Trans-Fat-1_9e98ae0d-c063-4a02-b5dc-38ec9e42f827.webp?v=1773949013" alt="Nutritionally balanced"> <div>No Chemicals</div>{% endif %} </div>
-              </div>
-            </div>
-
-            <div class="rs-slider-wrap">
-              {% if section.settings.show_arrows %}
-                <button class="rs-arr rs-arr--prev" onclick="rsSlider('{{ slider_id }}',-1)" aria-label="Previous">{{ 'slick-arrow.svg' | inline_asset_content }}</button>
-                <button class="rs-arr rs-arr--next" onclick="rsSlider('{{ slider_id }}',1)" aria-label="Next">{{ 'slick-arrow.svg' | inline_asset_content }}</button>
+        {% if block.type == 'nav_icon' %}
+          {%- assign col        = block.settings.nav_collection -%}
+          {%- assign col_handle = col.handle | default: '' -%}
+          <button class="rs-nav-icon"
+            onclick="rsSelectCollection(this)"
+            data-handle="{{ col_handle }}"
+            data-label="{{ block.settings.icon_label | escape }}"
+            aria-label="{{ block.settings.icon_label | escape }}"
+            style="--rs-this-icon-bg: {{ block.settings.icon_bg }}; --rs-this-icon-bdr: {{ block.settings.icon_border_color }};"
+            {{ block.shopify_attributes }}>
+            <div class="rs-nav-circle rs-nav-circle--col">
+              {% if block.settings.icon_image != blank %}
+                <img src="{{ block.settings.icon_image | image_url: width: 160 }}" alt="{{ block.settings.icon_label }}" class="rs-icon-img">
+              {% elsif col != blank and col.image != blank %}
+                <img src="{{ col.image | image_url: width: 160 }}" alt="{{ block.settings.icon_label }}" class="rs-icon-img">
               {% endif %}
-
-              {%- comment -%} Scrollable viewport with peek effect {%- endcomment -%}
-              <div class="rs-slider-viewport">
-                <div id="{{ slider_id }}" class="rs-slider-track" data-page="0" data-ppr="{{ ppr }}">
-                  {%- assign pi = 0 -%}
-                  {% if row_col != blank %}
-                    {% for product in row_col.products limit: 50 %}
-                      {%- assign ci = pi | modulo: 3 -%}
-                      {%- assign pi = pi | plus: 1 -%}
-                      {%- if ci == 0 -%}{%- assign cbg = c1 -%}{%- elsif ci == 1 -%}{%- assign cbg = c2 -%}{%- else -%}{%- assign cbg = c3 -%}{%- endif -%}
-                      <div class="rs-card rs-card--c{{ ci | plus: 1 }}" style="--rs-card-cbg: {{ cbg }};">
-                        <div class="rs-card-inner">
-                          <a href="{{ product.url }}" class="rs-card-img-link">
-                            {% if product.featured_image != blank %}
-                              <img src="{{ product.featured_image | image_url: width: 500 }}" alt="{{ product.title | escape }}" loading="lazy" class="rs-cimg">
-                            {% else %}
-                              <div class="rs-card-no-img">No Image</div>
-                            {% endif %}
-                          </a>
-                          <button
-  class="rs-wishlist-toggle"
-  id="rs-wl-btn"
-  data-handle="{{ product.handle }}"
-  aria-label="Add to Wishlist"
->
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20">
-    <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
-  </svg>
-</button>
-                          <div class="rs-card-btns">
-                            <button onclick="rsATC('{{ product.variants.first.id }}',this)" class="rs-btn-atc">Add to cart</button>
-                            <a href="{{ product.url }}?buy=true" class="rs-btn-buy">Buy now</a>
-                          </div>
-                        </div>
-                        <div class="rs-card-body">
-                          <p class="rs-card-title"><a href="{{ product.url }}" class="rs-card-title-link">{{ product.title }}</a></p>
-                          {% if product.description != blank %}<p class="rs-card-desc">{{ product.description | strip_html | truncate: 80 }}</p>{% endif %}
-                          <div class="rs-card-price">
-                            {{ product.price | money }}
-                            {% if product.compare_at_price > product.price %}<span class="rs-card-compare">{{ product.compare_at_price | money }}</span>{% endif %}
-                          </div>
-                        </div>
-                      </div>
-                    {% endfor %}
-                  {% else %}
-                    {% for i in (1..ppr) %}
-                      {%- assign ci = forloop.index0 | modulo: 3 -%}
-                      {%- if ci == 0 -%}{%- assign cbg = c1 -%}{%- elsif ci == 1 -%}{%- assign cbg = c2 -%}{%- else -%}{%- assign cbg = c3 -%}{%- endif -%}
-                      <div class="rs-card rs-card-placeholder rs-card--c{{ ci | plus: 1 }}" style="--rs-card-cbg: {{ cbg }};">
-                         <button
-  class="rs-wishlist-toggle"
-  id="rs-wl-btn"
-  data-handle="{{ product.handle }}"
-  aria-label="Add to Wishlist"
->
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20">
-    <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
-  </svg>
-  <span>Add to Wishlist</span>
-</button>
-                        <div class="rs-card-inner">
-                          <div class="rs-card-no-img">Assign collection in editor</div>
-                          <div class="rs-card-btns"><div class="rs-btn-atc">Add to cart</div><div class="rs-btn-buy">Buy now</div></div>
-                        </div>
-                        <div class="rs-card-body">
-                          <div class="rs-skel-line rs-skel-line--lg"></div>
-                          <div class="rs-skel-line rs-skel-line--sm"></div>
-                        </div>
-                      </div>
-                    {% endfor %}
-                  {% endif %}
-                </div>
-              </div>
             </div>
-
-          </div>
+            <span class="rs-icon-label">{{ block.settings.icon_label }}</span>
+          </button>
         {% endif %}
       {% endfor %}
+
     </div>
+  </div>
+  {% endif %}
 
-    {%- comment -%}── PANEL B: Single collection ──{%- endcomment -%}
-    <div id="rs-panel-single" class="rs-hidden">
-      <div class="rs-row-header">
-        <div class="top_collection">
-          <h2 id="rs-single-heading" class="rs-row-heading">{{ section.settings.single_col_heading | default: 'A variety to choose from' }}</h2>
-          <p id="rs-single-subheading" class="rs-row-sub">{{ section.settings.single_col_subheading }}</p>
-        </div>
-        <div class="rs-badges"> 
-          <div>
-          {% if section.settings.single_badge_grains %}<img src="https://cdn.shopify.com/s/files/1/0817/1264/4332/files/No-Trans-Fat-1_9e98ae0d-c063-4a02-b5dc-38ec9e42f827.webp?v=1773949013" alt="No Chemicals"><span > 100% Whole Grains</span>{% endif %} </div>
-          <div>
-          {% if section.settings.single_badge_nutrition %}<img src="https://cdn.shopify.com/s/files/1/0817/1264/4332/files/No-Added-Colours-1.webp?v=1773949015" alt="whole grains"> <span>Nutritionally Balanced</span>{% endif %} </div>
-          <div>
-          {% if section.settings.single_badge_chemicals %}<img src="https://cdn.shopify.com/s/files/1/0817/1264/4332/files/No-Trans-Fat-1_9e98ae0d-c063-4a02-b5dc-38ec9e42f827.webp?v=1773949013" alt="Nutritionally balanced"><span> No Chemicals</span>{% endif %} </div>
-        </div>
-      </div>
+  <div class="rs-page-bg" {% if section.settings.page_bg != blank %}style="background-image: url('{{ section.settings.page_bg | image_url: width: 2000 }}'); background-size: cover;"{% endif %}>
 
-      {%- comment -%} SHIMMER SKELETON LOADER {%- endcomment -%}
-      <div id="rs-single-loader" class="rs-single-grid rs-hidden">
-        {%- assign sk_total = section.settings.single_products_per_row | times: 2 -%}
-        {% for i in (1..sk_total) %}
-          {%- assign ci = forloop.index0 | modulo: 3 -%}
-          {%- if ci == 0 -%}{%- assign cbg = c1 -%}{%- elsif ci == 1 -%}{%- assign cbg = c2 -%}{%- else -%}{%- assign cbg = c3 -%}{%- endif -%}
-          <div class="rs-sk-card" style="--rs-card-cbg: {{ cbg }};">
-            <div class="rs-sk-img">
-              <div class="rs-shimmer"></div>
+    {%- comment -%} ── Breadcrumb Trail ── {%- endcomment -%}
+    {% if section.settings.show_breadcrumb %}
+    <div class="rs-breadcrumb-wrap">
+      <a href="{{ routes.root_url }}" class="rs-breadcrumb-link">Home</a>
+      <span class="rs-breadcrumb-sep">›</span>
+      <a href="#" class="rs-breadcrumb-link">{{ section.settings.breadcrumb_shop_text | default: 'Agri Shop' }}</a>
+      <span id="rs-breadcrumb-col" class="rs-hidden">
+        <span class="rs-breadcrumb-sep">›</span>
+        <span id="rs-breadcrumb-col-name"></span>
+      </span>
+    </div>
+    {% endif %}
+
+    {%- comment -%} ── Main Content Area ── {%- endcomment -%}
+    <div class="rs-main-content">
+      <div class="rs-container">
+
+        {%- comment -%}
+          ════════════════════════════════════════════
+          PANEL A — Default "Shop All" view
+          Shows product_row blocks as horizontal sliders
+          Visible on page load; hidden when a nav icon is clicked
+          ════════════════════════════════════════════
+        {%- endcomment -%}
+        <div id="rs-panel-multi">
+          {% for block in section.blocks %}
+            {% if block.type == 'product_row' %}
+              {%- assign row_col   = block.settings.row_collection -%}
+              {%- assign slider_id = 'rss-' | append: block.id -%}
+              <div class="rs-row" {{ block.shopify_attributes }}>
+
+                <div class="rs-row-header">
+                  <div class="top_collection">
+                    <h2 class="rs-row-heading">{{ block.settings.row_heading }}</h2>
+                    {% if block.settings.row_subheading != blank %}
+                      <div class="rs-row-sub">
+                        <div>{{ block.settings.row_subheading }}</div>
+                      </div>
+                    {% endif %}
+                  </div>
+
+                  {%- comment -%} Quality badges — configurable per row {%- endcomment -%}
+                  <div class="rs-badges">
+                    <div class="rs_badge_inner">
+                      {% if block.settings.badge_certified %}
+                        <img src="https://cdn.shopify.com/s/files/1/0817/1264/4332/files/No-Added-Preservatives-1.webp?v=1773949015" alt="Certified">
+                        <div>Certified Seeds</div>
+                      {% endif %}
+                    </div>
+                    <div class="rs_badge_inner">
+                      {% if block.settings.badge_organic %}
+                        <img src="https://cdn.shopify.com/s/files/1/0817/1264/4332/files/No-Added-Colours-1.webp?v=1773949015" alt="Organic">
+                        <div>Organic Options</div>
+                      {% endif %}
+                    </div>
+                    <div class="rs_badge_inner">
+                      {% if block.settings.badge_quality %}
+                        <img src="https://cdn.shopify.com/s/files/1/0817/1264/4332/files/No-Trans-Fat-1_9e98ae0d-c063-4a02-b5dc-38ec9e42f827.webp?v=1773949013" alt="Quality Assured">
+                        <div>Quality Assured</div>
+                      {% endif %}
+                    </div>
+                  </div>
+                </div>
+
+                {%- comment -%} Slider with optional prev/next arrows {%- endcomment -%}
+                <div class="rs-slider-wrap">
+                  {% if section.settings.show_arrows %}
+                    <button class="rs-arr rs-arr--prev" onclick="rsSlider('{{ slider_id }}',-1)" aria-label="Previous">{{ 'slick-arrow.svg' | inline_asset_content }}</button>
+                    <button class="rs-arr rs-arr--next" onclick="rsSlider('{{ slider_id }}',1)"  aria-label="Next">{{ 'slick-arrow.svg' | inline_asset_content }}</button>
+                  {% endif %}
+
+                  <div class="rs-slider-viewport">
+                    <div id="{{ slider_id }}" class="rs-slider-track" data-page="0" data-ppr="{{ ppr }}">
+                      {%- assign pi = 0 -%}
+                      {% if row_col != blank %}
+                        {% for product in row_col.products limit: 50 %}
+                          {%- assign ci = pi | modulo: 3 -%}
+                          {%- assign pi = pi | plus: 1 -%}
+                          {%- if ci == 0 -%}{%- assign cbg = c1 -%}{%- elsif ci == 1 -%}{%- assign cbg = c2 -%}{%- else -%}{%- assign cbg = c3 -%}{%- endif -%}
+                          <div class="rs-card rs-card--c{{ ci | plus: 1 }}" style="--rs-card-cbg: {{ cbg }};">
+                            <div class="rs-card-inner">
+                              <a href="{{ product.url }}" class="rs-card-img-link">
+                                {% if product.featured_image != blank %}
+                                  <img src="{{ product.featured_image | image_url: width: 500 }}" alt="{{ product.title | escape }}" loading="lazy" class="rs-cimg">
+                                {% else %}
+                                  <div class="rs-card-no-img">No Image</div>
+                                {% endif %}
+                              </a>
+                              <button class="rs-wishlist-toggle" data-handle="{{ product.handle }}" aria-label="Add to Wishlist">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20">
+                                  <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+                                </svg>
+                              </button>
+                              <div class="rs-card-btns">
+                                <button onclick="rsATC('{{ product.variants.first.id }}',this)" class="rs-btn-atc">Add to cart</button>
+                                <a href="{{ product.url }}?buy=true" class="rs-btn-buy">Buy now</a>
+                              </div>
+                            </div>
+                            <div class="rs-card-body">
+                              <p class="rs-card-title"><a href="{{ product.url }}" class="rs-card-title-link">{{ product.title }}</a></p>
+                              {% if product.description != blank %}<p class="rs-card-desc">{{ product.description | strip_html | truncate: 80 }}</p>{% endif %}
+                              <div class="rs-card-price">
+                                {{ product.price | money }}
+                                {% if product.compare_at_price > product.price %}<span class="rs-card-compare">{{ product.compare_at_price | money }}</span>{% endif %}
+                              </div>
+                            </div>
+                          </div>
+                        {% endfor %}
+                      {% else %}
+                        {%- comment -%} Placeholder cards when no collection is assigned in editor {%- endcomment -%}
+                        {% for i in (1..ppr) %}
+                          {%- assign ci = forloop.index0 | modulo: 3 -%}
+                          {%- if ci == 0 -%}{%- assign cbg = c1 -%}{%- elsif ci == 1 -%}{%- assign cbg = c2 -%}{%- else -%}{%- assign cbg = c3 -%}{%- endif -%}
+                          <div class="rs-card rs-card-placeholder rs-card--c{{ ci | plus: 1 }}" style="--rs-card-cbg: {{ cbg }};">
+                            <div class="rs-card-inner">
+                              <div class="rs-card-no-img">Assign a collection in the editor</div>
+                              <div class="rs-card-btns">
+                                <div class="rs-btn-atc">Add to cart</div>
+                                <div class="rs-btn-buy">Buy now</div>
+                              </div>
+                            </div>
+                            <div class="rs-card-body">
+                              <div class="rs-skel-line rs-skel-line--lg"></div>
+                              <div class="rs-skel-line rs-skel-line--sm"></div>
+                            </div>
+                          </div>
+                        {% endfor %}
+                      {% endif %}
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            {% endif %}
+          {% endfor %}
+        </div>
+        {%- comment -%} /Panel A {%- endcomment -%}
+
+        {%- comment -%}
+          ════════════════════════════════════════════
+          PANEL B — Category sub-collections view
+          Hidden by default; shown when a nav icon is clicked.
+          Displays a grid of sub-collection cards (no products, no ATC).
+          Each card links directly to /collections/{handle}
+          ════════════════════════════════════════════
+        {%- endcomment -%}
+        <div id="rs-panel-single" class="rs-hidden">
+
+          <div class="rs-row-header">
+            <div class="top_collection">
+              <h2 id="rs-single-heading" class="rs-row-heading">{{ section.settings.single_col_heading | default: 'Select a Category' }}</h2>
+              <p id="rs-single-subheading" class="rs-row-sub">{{ section.settings.single_col_subheading }}</p>
             </div>
-             <button
-  class="rs-wishlist-toggle"
-  id="rs-wl-btn"
-  data-handle="{{ product.handle }}"
-  aria-label="Add to Wishlist"
->
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20">
-    <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
-  </svg>
-  <span>Add to Wishlist</span>
-</button>
-            <div class="rs-card-btns">
-              <div class="rs-btn-atc rs-sk-btn"><div class="rs-shimmer rs-shimmer-dark"></div></div>
-              <div class="rs-btn-buy rs-sk-btn"><div class="rs-shimmer rs-shimmer-light"></div></div>
-            </div>
-            <div class="rs-sk-body">
-              <div class="rs-skel-line rs-skel-line--lg"><div class="rs-shimmer"></div></div>
-              <div class="rs-skel-line rs-skel-line--md"><div class="rs-shimmer"></div></div>
-              <div class="rs-skel-line rs-skel-line--md rs-skel-line--short"><div class="rs-shimmer"></div></div>
-              <div class="rs-skel-line rs-skel-line--price"><div class="rs-shimmer"></div></div>
+            {%- comment -%} Quality badges for category view {%- endcomment -%}
+            <div class="rs-badges">
+              <div>
+                {% if section.settings.single_badge_certified %}<img src="https://cdn.shopify.com/s/files/1/0817/1264/4332/files/No-Trans-Fat-1_9e98ae0d-c063-4a02-b5dc-38ec9e42f827.webp?v=1773949013" alt="Certified"><span>Certified Seeds</span>{% endif %}
+              </div>
+              <div>
+                {% if section.settings.single_badge_organic %}<img src="https://cdn.shopify.com/s/files/1/0817/1264/4332/files/No-Added-Colours-1.webp?v=1773949015" alt="Organic"><span>Organic Options</span>{% endif %}
+              </div>
+              <div>
+                {% if section.settings.single_badge_quality %}<img src="https://cdn.shopify.com/s/files/1/0817/1264/4332/files/No-Trans-Fat-1_9e98ae0d-c063-4a02-b5dc-38ec9e42f827.webp?v=1773949013" alt="Quality Assured"><span>Quality Assured</span>{% endif %}
+              </div>
             </div>
           </div>
+
+          {%- comment -%}
+            Sub-collection cards grid — populated instantly by JS
+            No async fetch; all data is pre-embedded in window.rsShopData.subCollections
+          {%- endcomment -%}
+          <div id="rs-single-grid" class="rs-single-grid"></div>
+
+          {%- comment -%}
+            "View All" link at bottom — JS rewrites href to /collections/{parent-handle}
+            and updates the text to "View All {Category Name} →"
+          {%- endcomment -%}
+          <div id="rs-single-viewall" class="rs-viewall rs-hidden">
+            <a id="rs-single-viewall-link" href="#" class="rs-btn-viewall">View All Products →</a>
+          </div>
+
+        </div>
+        {%- comment -%} /Panel B {%- endcomment -%}
+
+      </div>
+    </div>
+
+  </div>
+  {%- comment -%} /rs-page-bg {%- endcomment -%}
+
+  {%- comment -%} ══════════ FAQ ACCORDION ══════════ {%- endcomment -%}
+  {%- assign faq_blocks = section.blocks | where: 'type', 'faq_item' -%}
+  {% if faq_blocks.size > 0 %}
+  <div class="rs-faq-section">
+    <div class="rs-faq-inner">
+      <div class="rs-faq-content">
+        {% if section.settings.faq_heading != blank %}<h2 class="rs-faq-heading">{{ section.settings.faq_heading }}</h2>{% endif %}
+        {%- assign fi = 0 -%}
+        {% for block in section.blocks %}
+          {% if block.type == 'faq_item' %}
+            {%- assign fi = fi | plus: 1 -%}
+            <div class="rs-faq-item{% if fi == 1 %} rs-faq-item--first{% endif %}" {{ block.shopify_attributes }}>
+              <button onclick="rsFaq(this)" class="rs-faq-btn" aria-expanded="{% if forloop.first %}true{% else %}false{% endif %}">
+                <span class="rs-faq-q">{{ block.settings.question }}</span>
+                <span class="rs-faq-icon{% if forloop.first %} rs-faq-icon--open{% endif %}">{{ section.settings.faq_icon }}</span>
+              </button>
+              <div class="rs-faq-answer{% if forloop.first %} rs-faq-answer--open{% endif %}">
+                <div class="rs-faq-answer-inner">{{ block.settings.answer }}</div>
+              </div>
+            </div>
+          {% endif %}
         {% endfor %}
       </div>
-
-      {%- comment -%} Products Grid — filled by JS {%- endcomment -%}
-      <div id="rs-single-grid" class="rs-single-grid"></div>
-
-      <div id="rs-single-viewall" class="rs-viewall rs-hidden">
-        <a id="rs-single-viewall-link" href="#" class="rs-btn-viewall">View All Products</a>
-      </div>
+      {% if section.settings.faq_side_image != blank %}
+        <div class="rs-faq-img-wrap">
+          <img src="{{ section.settings.faq_side_image | image_url: width: 600 }}" alt="FAQ" class="rs-faq-img">
+        </div>
+      {% endif %}
     </div>
-
   </div>
+  {% endif %}
+
 </div>
-
-</div>{%- comment -%} /rs-page-bg {%- endcomment -%}
-
-{%- comment -%}══════════ FAQ ══════════{%- endcomment -%}
-{%- assign faq_blocks = section.blocks | where: 'type', 'faq_item' -%}
-{% if faq_blocks.size > 0 %}
-<div class="rs-faq-section">
-  <div class="rs-faq-inner">
-    <div class="rs-faq-content">
-      {% if section.settings.faq_heading != blank %}<h2 class="rs-faq-heading">{{ section.settings.faq_heading }}</h2>{% endif %}
-      {%- assign fi = 0 -%}
-      {% for block in section.blocks %}
-        {% if block.type == 'faq_item' %}
-          {%- assign fi = fi | plus: 1 -%}
-          <div class="rs-faq-item{% if fi == 1 %} rs-faq-item--first{% endif %}" {{ block.shopify_attributes }}>
-            <button onclick="rsFaq(this)" class="rs-faq-btn" aria-expanded="{% if forloop.first %}true{% else %}false{% endif %}">
-              <span class="rs-faq-q">{{ block.settings.question }}</span>
-              <span class="rs-faq-icon{% if forloop.first %} rs-faq-icon--open{% endif %}">{{ section.settings.faq_icon }}</span>
-            </button>
-            <div class="rs-faq-answer{% if forloop.first %} rs-faq-answer--open{% endif %}">
-              <div class="rs-faq-answer-inner">{{ block.settings.answer }}</div>
-            </div>
-          </div>
-        {% endif %}
-      {% endfor %}
-    </div>
-    {% if section.settings.faq_side_image != blank %}
-      <div class="rs-faq-img-wrap">
-        <img src="{{ section.settings.faq_side_image | image_url: width: 600 }}" alt="FAQ" class="rs-faq-img">
-      </div>
-    {% endif %}
-  </div>
-</div>
-{% endif %}
-
-</div>{%- comment -%} /rs-section {%- endcomment -%}
+{%- comment -%} /rs-section {%- endcomment -%}
 
 
+{%- comment -%} ══════════ COMPONENT STYLES ══════════ {%- endcomment -%}
 <style>
-  .rs-wishlist-toggle svg { width: 30px; height: 30px; }
-.rs-wishlist-toggle {
-  position: absolute;
-      right: 10px;
-    top: 10px;
-  display: inline-flex; align-items: center; gap: 8px;
-  background: none; border: none; border-radius: 8px;
-  padding: 10px 16px; cursor: pointer; font-size: 0.9rem; color: #175c2e;
-  transition: all 0.2s;
-}
-.rs-wishlist-toggle:hover { border-color: #e53e3e; color: #e53e3e; }
-.rs-wishlist-toggle.rs-wishlisted { border-color: #e53e3e; color: #e53e3e; }
-.rs-wishlist-toggle.rs-wishlisted svg { fill: #e53e3e; stroke: #e53e3e; }
-</style>
 
-{%- comment -%}══════════ STYLES ══════════{%- endcomment -%}
-<style>
-  /* ─────────────────────────────────────────────
-     BASE UTILITIES
-  ───────────────────────────────────────────── */
+  /* ── Utilities ── */
   .rs-hidden { display: none !important; }
-  .rs-badges .rs_badge_inner {     display: inline-flex;
+  .rs-badges .rs_badge_inner {
+    display: inline-flex;
     flex-direction: column;
     justify-content: center;
-    text-align: center; }
-.rs-badges .rs_badge_inner { font-size: 17px; }
-  /* ─────────────────────────────────────────────
-     HERO
-  ───────────────────────────────────────────── */
+    text-align: center;
+  }
+  .rs-badges .rs_badge_inner { font-size: 17px; }
+
+  /* ── Hero ── */
   .rs-hero {
     background-color: var(--rs-hero-bg);
     min-height: var(--rs-hero-h);
@@ -526,11 +569,7 @@ window.rsShopData = {
     align-items: center;
     transition: background-color .4s;
   }
-  .rs-hero-bg {
-    position: absolute;
-    inset: 0;
-    z-index: 0;
-  }
+  .rs-hero-bg { position: absolute; inset: 0; z-index: 0; }
   .rs-hero-bg-img {
     width: 100%;
     height: 100%;
@@ -539,47 +578,8 @@ window.rsShopData = {
     opacity: var(--rs-hero-bg-op);
   }
   .rs-hero-bg-img--visible { display: block; }
-  .rs-hero-inner {
-    position: relative;
-    z-index: 1;
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: var(--rs-hero-pv) var(--rs-hero-ph);
-    width: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 40px;
-    flex-wrap: wrap;
-  }
-  .rs-hero-text { max-width: 520px; }
-  .rs-hero-title {
-    color: var(--rs-hero-heading-c);
-    font-size: var(--rs-hero-heading-s);
-    font-weight: 800;
-    margin: 0 0 14px;
-    line-height: 1.2;
-    transition: opacity .25s;
-  }
-  .rs-hero-desc {
-    color: var(--rs-hero-desc-c);
-    font-size: var(--rs-hero-desc-s);
-    margin: 0;
-    line-height: 1.6;
-    transition: opacity .25s;
-  }
-  .rs-hero-img-wrap { flex-shrink: 0; }
-  .rs-hero-img {
-    max-width: var(--rs-hero-img-w);
-    width: 100%;
-    height: auto;
-    display: block;
-    transition: opacity .25s;
-  }
 
-  /* ─────────────────────────────────────────────
-     ICONS ROW
-  ───────────────────────────────────────────── */
+  /* ── Icons Row ── */
   .rs-icons-row {
     background-color: var(--rs-icons-bg);
     padding: var(--rs-icons-pad) var(--rs-hero-ph);
@@ -620,28 +620,23 @@ window.rsShopData = {
     border-color: var(--rs-all-icon-bdr);
   }
   .rs-nav-circle--col {
-    background: var(--rs-this-icon-bg, #f5f0e8);
-
+    background: var(--rs-this-icon-bg, #e8f5e9);
+    border-color: var(--rs-this-icon-bdr, #4caf50);
   }
-  .rs-icon-img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .rs-icon-img   { width: 100%; height: 100%; object-fit: cover; display: block; }
   .rs-icon-emoji { font-size: 24px; }
   .rs-icon-label {
     color: var(--rs-icon-label-c);
     font-size: var(--rs-icon-label-s);
     text-align: center;
     line-height: 1.3;
-        font-family: 'Paytone One';
-        margin-top: 5px;
+    font-family: 'Paytone One', sans-serif;
+    margin-top: 5px;
   }
   .rs-nav-icon:hover .rs-nav-circle { transform: scale(1.1); }
-  .rs-nav-active .rs-nav-circle {
-    outline: 3px solid #fff;
-    outline-offset: 0px;
-  }
+  .rs-nav-active .rs-nav-circle { outline: 3px solid #fff; outline-offset: 0; }
 
-  /* ─────────────────────────────────────────────
-     BREADCRUMB
-  ───────────────────────────────────────────── */
+  /* ── Breadcrumb ── */
   .rs-breadcrumb-wrap {
     max-width: 1470px;
     margin: 0 auto;
@@ -650,18 +645,14 @@ window.rsShopData = {
     color: var(--rs-crumb-c);
   }
   .rs-breadcrumb-link { color: var(--rs-crumb-c); text-decoration: none; }
-  .rs-breadcrumb-sep { margin: 0 5px; }
+  .rs-breadcrumb-sep  { margin: 0 5px; }
 
-  /* ─────────────────────────────────────────────
-     MAIN CONTENT
-  ───────────────────────────────────────────── */
+  /* ── Main Content ── */
   .rs-main-content { padding: var(--rs-section-pt) 0 var(--rs-section-pb); }
-  .rs-container { max-width: 1470px; margin: 0 auto; padding: 0 var(--rs-hero-ph); }
+  .rs-container    { max-width: 1470px; margin: 0 auto; padding: 0 var(--rs-hero-ph); }
 
-  /* ─────────────────────────────────────────────
-     PRODUCT ROW
-  ───────────────────────────────────────────── */
-  .rs-row { margin-bottom: var(--rs-row-gap); }
+  /* ── Product Row (Panel A) ── */
+  .rs-row       { margin-bottom: var(--rs-row-gap); }
   .rs-row-header {
     display: flex;
     align-items: center;
@@ -678,61 +669,26 @@ window.rsShopData = {
   }
   .rs-row-sub { color: var(--rs-row-sub-c); font-size: 20px; margin: 0; line-height: 1.4; }
 
-  /* ─────────────────────────────────────────────
-     BADGES
-  ───────────────────────────────────────────── */
+  /* ── Quality Badges ── */
   .rs-badges { display: flex; gap: 30px; flex-wrap: wrap; align-items: center; }
-  .rs-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 5px;
-    background: #fff8e6;
-    border: 1px solid #d4a91e;
-    color: #7a5c00;
-    font-size: 11px;
-    padding: 5px 11px;
-    border-radius: 20px;
-    font-weight: 600;
-    white-space: nowrap;
-  }
-  .rs-badge-dot {
-    width: 18px;
-    height: 18px;
-    border-radius: 50%;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 9px;
-    color: #fff;
-    font-weight: 900;
-    flex-shrink: 0;
-  }
-  .rs-badge-dot--gold  { background: #f5c518; }
-  .rs-badge-dot--green { background: #4caf50; }
+  .rs-badges img   { max-width: 40px; margin: 0 auto; }
+  .rs-badges span  { max-width: 100px; font-size: 14px; }
 
-  /* ─────────────────────────────────────────────
-     SLIDER
-  ───────────────────────────────────────────── */
-  .rs-slider-wrap { position: relative; max-width: 1250px; margin: 0 auto; }
-
-  .rs-slider-viewport {
-    overflow: hidden;
-    padding-right: 0;
-  }
-
-  .rs-slider-track {
+  /* ── Slider ── */
+  .rs-slider-wrap     { position: relative; max-width: 1250px; margin: 0 auto; }
+  .rs-slider-viewport { overflow: hidden; }
+  .rs-slider-track    {
     display: flex;
-    gap: 46px;
+    gap: var(--rs-card-gap);
     transition: transform .38s cubic-bezier(.4,0,.2,1);
     will-change: transform;
   }
-
   .rs-slider-track .rs-card {
-  flex: 0 0 calc((100% - (var(--rs-ppr) - 1) * var(--rs-card-gap) - 5%) / 3);
+    flex: 0 0 calc((100% - (var(--rs-ppr) - 1) * var(--rs-card-gap) - 5%) / 3);
     min-width: 0;
   }
 
-  /* Arrows */
+  /* Prev / Next arrows */
   .rs-arr {
     position: absolute;
     top: 38%;
@@ -741,8 +697,7 @@ window.rsShopData = {
     background: transparent;
     color: var(--rs-arrow-c);
     border: none;
-    width: 42px;
-    height: 42px;
+    width: 42px; height: 42px;
     border-radius: 50%;
     font-size: 24px;
     cursor: pointer;
@@ -752,28 +707,25 @@ window.rsShopData = {
     padding: 0;
     transition: opacity .2s;
   }
-  .rs-arr:hover { opacity: .8; }
-  .rs-arr--prev { left: -80px; }
-  .rs-arr--next { right: -80px; rotate: 180deg; top: 28%; }
-  .rs-arr--hidden { opacity: .3; pointer-events: none; }
+  .rs-arr:hover        { opacity: .8; }
+  .rs-arr--prev        { left: -80px; }
+  .rs-arr--next        { right: -80px; rotate: 180deg; top: 28%; }
+  .rs-arr--hidden      { opacity: .3; pointer-events: none; }
 
-  /* ─────────────────────────────────────────────
-     CARDS
-  ───────────────────────────────────────────── */
+  /* ── Product Cards (Panel A — product_row sliders) ── */
   .rs-card {
     border-radius: var(--rs-card-r);
     overflow: hidden;
     display: flex;
     flex-direction: column;
-        background: transparent;
-}
+    background: transparent;
+  }
   .rs-card-inner {
     border-radius: var(--rs-card-r);
     overflow: hidden;
     background: var(--rs-card-cbg);
     position: relative;
   }
-  .rs-card-btns { position: absolute;  bottom: 0px; width: 100%; }
   .rs-card-img-link {
     display: block;
     overflow: hidden;
@@ -829,12 +781,7 @@ window.rsShopData = {
     align-items: center;
     justify-content: center;
   }
-
-  /* Multi-row card buttons — larger font as in original */
-  #rs-panel-multi .rs-btn-atc,
-  #rs-panel-multi .rs-btn-buy { font-size: 23px; }
-
-  .rs-card-body { padding: 12px 0 16px; flex: 1; }
+  .rs-card-body  { padding: 12px 0 16px; flex: 1; }
   .rs-card-title {
     color: var(--rs-title-c);
     font-size: 19px;
@@ -842,7 +789,7 @@ window.rsShopData = {
     line-height: 1.35;
     font-weight: 600;
   }
-  .rs-card-title-link { color: inherit; text-decoration: none; }
+  .rs-card-title-link  { color: inherit; text-decoration: none; }
   .rs-card-desc {
     color: var(--rs-desc-c);
     font-size: 19px;
@@ -853,113 +800,61 @@ window.rsShopData = {
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
   }
-  .rs-card-price {
-    color: var(--rs-price-c);
-    font-size: 24px;
-    font-weight: 800;
-  }
-  .rs-card-compare {
-    color: #aaa;
-    font-size: 12px;
-    font-weight: 400;
-    text-decoration: line-through;
-    margin-left: 4px;
-  }
-  .rs-badges img { max-width: 40px; margin: 0 auto; }
-  .rs-badges span { max-width: 100px; font-size; 14px; }
+  .rs-card-price   { color: var(--rs-price-c); font-size: 24px; font-weight: 800; }
+  .rs-card-compare { color: #aaa; font-size: 12px; font-weight: 400; text-decoration: line-through; margin-left: 4px; }
 
-  /* ─────────────────────────────────────────────
-     SINGLE COLLECTION PANEL
-  ───────────────────────────────────────────── */
+  /* Product card buttons larger in multi-row panel */
+  #rs-panel-multi .rs-btn-atc,
+  #rs-panel-multi .rs-btn-buy { font-size: 23px; }
+
+  /* Wishlist toggle button */
+  .rs-wishlist-toggle svg { width: 30px; height: 30px; }
+  .rs-wishlist-toggle {
+    position: absolute;
+    right: 10px; top: 10px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: none;
+    border: none;
+    border-radius: 8px;
+    padding: 10px 16px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    color: #175c2e;
+    transition: all 0.2s;
+  }
+  .rs-wishlist-toggle:hover            { color: #e53e3e; }
+  .rs-wishlist-toggle.rs-wishlisted    { color: #e53e3e; }
+  .rs-wishlist-toggle.rs-wishlisted svg{ fill: #e53e3e; stroke: #e53e3e; }
+
+  /* ── Sub-Collection Cards (Panel B) ── */
+
+  /* Grid layout for category cards */
   .rs-single-grid {
     display: grid;
     grid-template-columns: repeat(var(--rs-single-ppr), 1fr);
     gap: var(--rs-card-gap);
   }
-  /* Single panel card body text — smaller */
+
+  /* Collection card — "Explore →" button spans full width */
+  .rs-col-card .rs-card-btns {
+    grid-template-columns: 1fr;
+  }
+  .rs-col-explore {
+    font-size: 16px !important;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    grid-column: 1 / -1;
+  }
+
+  /* Smaller text in single/category panel */
   #rs-panel-single .rs-card-title { font-size: 14px; }
   #rs-panel-single .rs-card-price { font-size: 15px; }
   #rs-panel-single .rs-card-body  { padding: 12px 14px 16px; }
+  #rs-panel-single .rs-cimg       { aspect-ratio: 4/3; object-fit: cover; padding: 0; }
 
-  /* View All */
-  .rs-viewall { text-align: center; margin-top: 32px; }
-  .rs-btn-viewall {
-    background: var(--rs-atc-bg);
-    color: var(--rs-atc-c);
-    padding: 13px 36px;
-    border-radius: 6px;
-    text-decoration: none;
-    font-weight: 700;
-    font-size: 15px;
-    display: inline-block;
-  }
-
-  /* ─────────────────────────────────────────────
-     SKELETON LOADER
-  ───────────────────────────────────────────── */
-  .rs-sk-card {
-    border-radius: var(--rs-card-r);
-    overflow: hidden;
-    background: #fff;
-    display: flex;
-    flex-direction: column;
-    animation: rsFadeUp .3s ease both;
-  }
-  .rs-sk-card:nth-child(2) { animation-delay: .06s; }
-  .rs-sk-card:nth-child(3) { animation-delay: .12s; }
-  .rs-sk-img {
-    background: var(--rs-card-cbg);
-    aspect-ratio: 1/1;
-    position: relative;
-    overflow: hidden;
-  }
-  .rs-sk-btn { height: 42px; position: relative; overflow: hidden; }
-  .rs-sk-body { padding: 14px 14px 18px; flex: 1; display: flex; flex-direction: column; gap: 8px; }
-
-  /* Skeleton lines */
-  .rs-skel-line {
-    background: #e5e5e5;
-    border-radius: 6px;
-    position: relative;
-    overflow: hidden;
-  }
-  .rs-skel-line--lg    { height: 14px; width: 88%; }
-  .rs-skel-line--md    { height: 11px; width: 100%; background: #efefef; }
-  .rs-skel-line--short { width: 68%; }
-  .rs-skel-line--price { height: 16px; width: 42%; margin-top: 4px; }
-
-  /* ─────────────────────────────────────────────
-     SHIMMER ANIMATION
-  ───────────────────────────────────────────── */
-  .rs-shimmer {
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,.55) 45%, rgba(255,255,255,.8) 50%, rgba(255,255,255,.55) 55%, transparent 100%);
-    background-size: 250% 100%;
-    animation: rsShimmer 1.5s infinite linear;
-  }
-  .rs-shimmer-dark {
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,.18) 45%, rgba(255,255,255,.3) 50%, rgba(255,255,255,.18) 55%, transparent 100%);
-    background-size: 250% 100%;
-    animation: rsShimmer 1.5s infinite linear;
-  }
-  .rs-shimmer-light {
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,.4) 45%, rgba(255,255,255,.6) 50%, rgba(255,255,255,.4) 55%, transparent 100%);
-    background-size: 250% 100%;
-    animation: rsShimmer 1.5s infinite linear;
-  }
-  @keyframes rsShimmer {
-    0%   { background-position: 200% 0; }
-    100% { background-position: -200% 0; }
-  }
-
-  /* ─────────────────────────────────────────────
-     CARD ENTRANCE ANIMATIONS
-  ───────────────────────────────────────────── */
+  /* Card entrance animations */
   #rs-single-grid .rs-card { animation: rsFadeUp .4s ease both; opacity: 0; }
   #rs-single-grid .rs-card:nth-child(1) { animation-delay: .04s; }
   #rs-single-grid .rs-card:nth-child(2) { animation-delay: .09s; }
@@ -974,9 +869,30 @@ window.rsShopData = {
     to   { opacity: 1; transform: translateY(0); }
   }
 
-  /* ─────────────────────────────────────────────
-     FAQ
-  ───────────────────────────────────────────── */
+  /* View All button */
+  .rs-viewall    { text-align: center; margin-top: 32px; }
+  .rs-btn-viewall {
+    background: var(--rs-atc-bg);
+    color: var(--rs-atc-c);
+    padding: 13px 36px;
+    border-radius: 6px;
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 15px;
+    display: inline-block;
+  }
+
+  /* Skeleton lines (used for placeholder cards in editor) */
+  .rs-skel-line {
+    background: #e5e5e5;
+    border-radius: 6px;
+    position: relative;
+    overflow: hidden;
+  }
+  .rs-skel-line--lg  { height: 14px; width: 88%; }
+  .rs-skel-line--sm  { height: 11px; width: 60%; background: #efefef; margin-top: 6px; }
+
+  /* ── FAQ ── */
   .rs-faq-section {
     background-color: var(--rs-faq-bg);
     padding: var(--rs-faq-pt) var(--rs-hero-ph) var(--rs-faq-pb);
@@ -989,14 +905,9 @@ window.rsShopData = {
     gap: 60px;
     flex-wrap: wrap;
   }
-  .rs-faq-content { flex: 1; min-width: 280px; }
-  .rs-faq-heading {
-    color: var(--rs-faq-h-c);
-    font-size: var(--rs-faq-h-s);
-    font-weight: 800;
-    margin: 0 0 32px;
-  }
-  .rs-faq-item { border-bottom: 1px solid var(--rs-faq-div); }
+  .rs-faq-content   { flex: 1; min-width: 280px; }
+  .rs-faq-heading   { color: var(--rs-faq-h-c); font-size: var(--rs-faq-h-s); font-weight: 800; margin: 0 0 32px; }
+  .rs-faq-item      { border-bottom: 1px solid var(--rs-faq-div); }
   .rs-faq-item--first { border-top: 1px solid var(--rs-faq-div); }
   .rs-faq-btn {
     width: 100%;
@@ -1014,7 +925,7 @@ window.rsShopData = {
     color: var(--rs-faq-q-c);
     font-size: var(--rs-faq-q-s);
     font-weight: 600;
-        font-family: 'Paytone One';
+    font-family: 'Paytone One', sans-serif;
   }
   .rs-faq-icon {
     color: var(--rs-faq-icon-c);
@@ -1023,86 +934,72 @@ window.rsShopData = {
     transition: transform .3s;
     display: inline-block;
   }
-  .rs-faq-icon--open { transform: rotate(45deg); }
-  .rs-faq-answer { display: none; padding-bottom: var(--rs-faq-item-pad); }
-  .rs-faq-answer--open { display: block; }
-  .rs-faq-answer-inner {
-    color: var(--rs-faq-a-c);
-    font-size: var(--rs-faq-a-s);
-    line-height: 1.3;
-  }
-  .rs-faq-img-wrap { flex-shrink: 0; width: var(--rs-faq-img-w); max-width: 100%; }
-  .rs-faq-img { width: 100%; height: auto; display: block; border-radius: var(--rs-faq-img-r); }
+  .rs-faq-icon--open      { transform: rotate(45deg); }
+  .rs-faq-answer          { display: none; padding-bottom: var(--rs-faq-item-pad); }
+  .rs-faq-answer--open    { display: block; }
+  .rs-faq-answer-inner    { color: var(--rs-faq-a-c); font-size: var(--rs-faq-a-s); line-height: 1.3; }
+  .rs-faq-img-wrap        { flex-shrink: 0; width: var(--rs-faq-img-w); max-width: 100%; }
+  .rs-faq-img             { width: 100%; height: auto; display: block; border-radius: var(--rs-faq-img-r); }
 
-  /* ─────────────────────────────────────────────
-     RESPONSIVE
-  ───────────────────────────────────────────── */
+  /* ── Hero BG — desktop vs mobile ── */
+  .rs-hero-bg-img--mobile { display: none !important; }
+
+  /* ── Responsive ── */
   @media (max-width: 768px) {
-     #rs-section-template--21783715021036__rs_shift_shop_Wn99qH .rs-hero { min-height: 481px; } 
+    .rs-arr--next    { right: 2px; top: 13% !important; }
+    .rs-arr--prev    { left: 0; }
+    .rs-arr          { top: 25%; }
+    .rs-hero-bg-img:not(.rs-hero-bg-img--mobile) { display: none !important; }
+    .rs-hero-bg-img--mobile { display: block !important; width: 100%; height: 100%; object-fit: cover; }
     .rs-faq-img-wrap { width: 100%; }
-    .rs-faq-section { padding: 0px 20px; }
-    .rs-faq-heading { font-size: 20px; }
-    .rs-faq-q { font-size: 13px; }
-  .rs-arr--next { top: 13% !important; }
-  .rs-arr--prev { left: 0px; }
-  .rs-wishlist-toggle svg { width: 20px; height: 20px; }
-  .rs-card-desc { font-size: 12px; }
-  .rs-cimg { aspect-ratio: 1 / 1.2; }
-  .rs-breadcrumb-wrap { padding-left: 20px; padding-bottom: 0px; }
-  .rs-row-sub { font-size: 15px; margin-top: 20px; }
-  .rs-badges { gap: 4px; }
-  .rs_badge_inner div { max-width: 70px; text-align: left; }
-  .rs-badges .rs_badge_inner {
-    font-size: 10px;
-    justify-content: start;
-    flex-direction: row;
-    align-items: center;
-    gap: 5px;
+    .rs-faq-section  { padding: 0 20px; }
+    .rs-faq-heading  { font-size: 20px; }
+    .rs-faq-q        { font-size: 13px; }
+    .rs-wishlist-toggle svg { width: 20px; height: 20px; }
+    .rs-card-desc    { font-size: 12px; }
+    .rs-breadcrumb-wrap  { padding-left: 20px; padding-bottom: 0; }
+    .rs-row-sub      { font-size: 15px; margin-top: 20px; }
+    .rs-badges       { gap: 4px; }
+    .rs_badge_inner div { max-width: 70px; text-align: left; }
+    .rs-badges .rs_badge_inner {
+      font-size: 10px;
+      justify-content: flex-start;
+      flex-direction: row;
+      align-items: center;
+      gap: 5px;
+    }
+    .rs-slider-track { gap: 20px; }
+    .rs-container    { padding: 0 15px !important; }
+    .rs-badges span  { max-width: 77px; font-size: 10px; line-height: normal; }
+    .top_collection  { width: 100%; text-align: center; }
+    .rs-row-heading  { font-size: 28px; }
+    .rs-card-body    { text-align: center; }
+    .rs-card-title   { font-size: 16px; }
+    .rs-card-price   { font-size: 16px; }
+    .rs-single-grid  { grid-template-columns: repeat(2, 1fr) !important; }
+    #rs-panel-multi .rs-btn-atc,
+    #rs-panel-multi .rs-btn-buy { font-size: 13px; }
+    .rs-btn-atc, .rs-btn-buy { font-size: 13px; }
   }
-  .rs-slider-track { gap: 20px; }
-  .rs-arr { top: 25%; }
-  .rs-arr--next { right: 2px; }
-  .rs-container { padding: 0px 15px !important; }
-  .rs-badges span { max-width: 77px; font-size: 10px; line-height: normal; }
-  .top_collection { width: 100%; text-align: center; }
-  .rs-row-heading { font-size: 28px; }
-  .rs-card-body { text-align: center; }
-  .rs-card-title { font-size: 16px; }
-  .rs-card-price { font-size: 16px; }
-  .rs-single-grid { grid-template-columns: repeat(2, 1fr) !important; }
-  #rs-panel-multi .rs-btn-atc,
-  #rs-panel-multi .rs-btn-buy { font-size: 13px; }
-  .rs-btn-atc,
-  .rs-btn-buy { font-size: 13px; }
-}
 
-@media (max-width: 480px) {
-  .rs-slider-track .rs-card { flex: 0 0 calc(48%); }
-  .rs-single-grid { grid-template-columns: repeat(1, 1fr) !important; }
-}
-
-/* ─────────────────────────────────────────────
-   HERO BG IMAGE — Desktop vs Mobile
-───────────────────────────────────────────── */
-.rs-hero-bg-img--mobile { display: none !important; }
-
-@media (max-width: 768px) {
-  .rs-hero-bg-img:not(.rs-hero-bg-img--mobile) { display: none !important; }
-  .rs-hero-bg-img--mobile { 
-    display: block !important; 
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
+  @media (max-width: 480px) {
+    .rs-slider-track .rs-card { flex: 0 0 calc(48%); }
+    .rs-single-grid { grid-template-columns: repeat(1, 1fr) !important; }
   }
-}
+
 </style>
 
 
+{%- comment -%} ══════════ JAVASCRIPT ══════════ {%- endcomment -%}
 <script>
-(function() {
+(function () {
+
   var d = window.rsShopData;
+
+  /* ── Cache for product API calls (Panel A slider use only) ── */
   var productCache = {};
 
+  /* ── Format paise to ₹ with Indian number formatting ── */
   function fmtPrice(cents) {
     if (cents === null || cents === undefined) return '';
     var n = parseInt(cents, 10);
@@ -1110,6 +1007,7 @@ window.rsShopData = {
     return '₹' + (n / 100).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
   }
 
+  /* ── Replace {width} placeholder and ensure https in image URLs ── */
   function fixImg(src) {
     if (!src) return null;
     var s = src.replace(/\{width\}/g, '500');
@@ -1117,16 +1015,12 @@ window.rsShopData = {
     return s;
   }
 
-  /* ══════════════════════════════
-     updateHero — FIXED
-  ══════════════════════════════ */
+  /* ══════════════════════════════════════
+     HERO — update banner image and text
+  ══════════════════════════════════════ */
   function updateHero(title, desc, bgImg, productImg, bgImgMobile) {
     var bgEl       = document.getElementById('rs-hero-bg-img');
     var bgElMobile = document.getElementById('rs-hero-bg-img-mobile');
-    var titleEl    = document.getElementById('rs-hero-title');
-    var descEl     = document.getElementById('rs-hero-desc');
-    var imgEl      = document.getElementById('rs-hero-img');
-    var imgWrap    = document.getElementById('rs-hero-img-wrap');
 
     /* Desktop banner */
     if (bgEl) {
@@ -1139,7 +1033,7 @@ window.rsShopData = {
       }
     }
 
-    /* Mobile banner — block image fallback to desktop block image, then metafield, then desktop */
+    /* Mobile banner — fallback to desktop if no mobile image */
     if (bgElMobile) {
       var mSrc = bgImgMobile || bgImg;
       if (mSrc) {
@@ -1150,23 +1044,13 @@ window.rsShopData = {
         bgElMobile.classList.remove('rs-hero-bg-img--visible');
       }
     }
-
-    /* Title */
-    if (titleEl && title) titleEl.textContent = title;
-
-    /* Description */
-    if (descEl && desc !== undefined) descEl.textContent = desc;
-
-    /* Product image */
-    if (imgEl && productImg) {
-      imgEl.src = productImg;
-      if (imgWrap) imgWrap.classList.remove('rs-hidden');
-    } else if (imgWrap) {
-      imgWrap.classList.add('rs-hidden');
-    }
   }
 
-  function buildCard(p, idx) {
+  /* ══════════════════════════════════════════════════════════
+     BUILD PRODUCT CARD — used in Panel A (product_row sliders)
+     Includes Add-to-Cart and wishlist functionality
+  ══════════════════════════════════════════════════════════ */
+  function buildProductCard(p, idx) {
     var bg = d.cardColors[idx % 3];
     var rawSrc = null;
     if (p.featured_image) {
@@ -1214,96 +1098,132 @@ window.rsShopData = {
     ].join('');
   }
 
+  /* ══════════════════════════════════════════════════════════
+     BUILD COLLECTION CARD — used in Panel B (sub-collection grid)
+     No ATC / wishlist — clicking navigates to the collection page
+  ══════════════════════════════════════════════════════════ */
+  function buildCollectionCard(sub, idx) {
+    var bg  = d.cardColors[idx % 3];
+    var alt = (sub.title || '').replace(/"/g, '&quot;');
+    var imgHtml = sub.img
+      ? '<img src="' + sub.img + '" alt="' + alt + '" loading="lazy" class="rs-cimg">'
+      : '<div class="rs-card-no-img">No Image</div>';
+
+    return [
+      '<div class="rs-card rs-col-card" style="--rs-card-cbg:' + bg + '">',
+        '<div class="rs-card-inner">',
+          '<a href="' + sub.url + '" class="rs-card-img-link">' + imgHtml + '</a>',
+          /* Full-width "Shop Now →" button (no ATC, no wishlist for collection cards) */
+          '<div class="rs-card-btns">',
+            '<a href="' + sub.url + '" class="rs-btn-buy rs-col-explore">Shop Now →</a>',
+          '</div>',
+        '</div>',
+        '<div class="rs-card-body">',
+          '<p class="rs-card-title"><a href="' + sub.url + '" class="rs-card-title-link">' + (sub.title || '') + '</a></p>',
+          sub.desc ? '<p class="rs-card-desc">' + sub.desc + '</p>' : '',
+        '</div>',
+      '</div>'
+    ].join('');
+  }
+
+  /* ── Fetch products for a collection via AJAX (used by product sliders) ── */
   function fetchProducts(handle, cb) {
     if (productCache[handle]) { cb(productCache[handle]); return; }
     fetch('/collections/' + handle + '/products.json?limit=50')
-      .then(function(r){ return r.json(); })
-      .then(function(data){ productCache[handle] = data.products || []; cb(productCache[handle]); })
-      .catch(function(){ cb([]); });
+      .then(function (r) { return r.json(); })
+      .then(function (data) { productCache[handle] = data.products || []; cb(productCache[handle]); })
+      .catch(function ()   { cb([]); });
   }
 
-  function showSingle(handle, label) {
+  /* ══════════════════════════════════════════════════════════════════
+     SHOW SUB-COLLECTIONS (Panel B)
+     Called when a nav icon is clicked.
+     Reads pre-embedded data from window.rsShopData.subCollections —
+     no fetch needed, renders instantly.
+  ══════════════════════════════════════════════════════════════════ */
+  function showSubCollections(handle, label) {
     var multi  = document.getElementById('rs-panel-multi');
     var single = document.getElementById('rs-panel-single');
-    var loader = document.getElementById('rs-single-loader');
     var grid   = document.getElementById('rs-single-grid');
     var vaWrap = document.getElementById('rs-single-viewall');
     var vaLink = document.getElementById('rs-single-viewall-link');
     var hEl    = document.getElementById('rs-single-heading');
+    var subEl  = document.getElementById('rs-single-subheading');
     var crumb  = document.getElementById('rs-breadcrumb-col');
     var crumbN = document.getElementById('rs-breadcrumb-col-name');
 
+    /* Update breadcrumb */
     if (crumb)  crumb.classList.remove('rs-hidden');
     if (crumbN) crumbN.textContent = label;
-    if (hEl)    hEl.textContent    = d.singleHeading;
 
+    /* Update panel heading */
+    if (hEl)  hEl.textContent  = label;
+    if (subEl) subEl.textContent = d.singleSubheading || '';
+
+    /* Switch from Panel A to Panel B */
     multi.classList.add('rs-hidden');
     single.classList.remove('rs-hidden');
-    grid.innerHTML = '';
+
+    /* Remove any leftover slider arrows from a previous view */
+    var sWrap = grid.parentElement;
+    sWrap.querySelectorAll('.rs-arr').forEach(function (a) { a.remove(); });
+    sWrap.style.overflow = '';
+    sWrap.style.position = '';
+
+    /* Get sub-collection array for this category (pre-embedded, no fetch) */
+    var subs = (d.subCollections && d.subCollections[handle]) || [];
+
+    /* Reset grid to a static grid layout (not a slider) */
+    grid.className    = 'rs-single-grid';
     grid.style.transform = '';
-    grid.setAttribute('data-page', '0');
-    loader.classList.remove('rs-hidden');
-    loader.style.display = 'grid';
-    if (vaWrap) vaWrap.classList.add('rs-hidden');
-    if (vaLink) vaLink.href = '/collections/' + handle;
+    grid.removeAttribute('data-page');
+    grid.removeAttribute('data-ppr');
 
-    fetchProducts(handle, function(products) {
-      loader.classList.add('rs-hidden');
-      if (!products.length) {
-        grid.innerHTML = '<p style="color:#666;font-size:14px;padding:20px 0;">No products found.</p>';
-        return;
+    if (!subs.length) {
+      /* Show a helpful message in the Shopify editor if no sub-collections are set up */
+      grid.innerHTML = [
+        '<p style="color:#666;font-size:14px;padding:30px 0;grid-column:1/-1;text-align:center;">',
+          'No sub-categories found for this section.<br>',
+          'Add <strong>Sub-Collection Card</strong> blocks in the editor and set Parent Category Handle to <em>' + handle + '</em>',
+        '</p>'
+      ].join('');
+      if (vaWrap) vaWrap.classList.add('rs-hidden');
+    } else {
+      /* Render collection cards */
+      grid.innerHTML = subs.map(function (sub, i) { return buildCollectionCard(sub, i); }).join('');
+
+      /* "View All" link → parent collection page so user can browse all products */
+      if (vaWrap) vaWrap.classList.remove('rs-hidden');
+      if (vaLink) {
+        vaLink.href        = '/collections/' + handle;
+        vaLink.textContent = 'View All ' + label + ' →';
       }
+    }
 
-      grid.innerHTML = products.map(function(p, i){ return buildCard(p, i); }).join('');
-
-      var singlePpr = d.singlePpr || 3;
-      grid.classList.remove('rs-single-grid');
-      grid.classList.add('rs-slider-track');
-      grid.setAttribute('data-page', '0');
-      grid.setAttribute('data-ppr', singlePpr);
-      grid.style.transform = '';
-
-      var sWrap = grid.parentElement;
-      var oldArrows = sWrap.querySelectorAll('.rs-arr');
-      oldArrows.forEach(function(a){ a.parentElement.removeChild(a); });
-
-      var pBtn = document.createElement('button');
-      pBtn.className = 'rs-arr rs-arr--prev rs-arr--hidden';
-      pBtn.innerHTML = '&#8249;';
-      pBtn.setAttribute('aria-label', 'Previous');
-      pBtn.onclick = function(){ rsSlider('rs-single-grid', -1); };
-
-      var nBtn = document.createElement('button');
-      nBtn.className = 'rs-arr rs-arr--next';
-      nBtn.innerHTML = '&#8250;';
-      nBtn.setAttribute('aria-label', 'Next');
-      nBtn.onclick = function(){ rsSlider('rs-single-grid', 1); };
-
-      sWrap.style.position = 'relative';
-      sWrap.style.overflow = 'hidden';
-      sWrap.insertBefore(pBtn, grid);
-      sWrap.insertBefore(nBtn, grid);
-
-      if (products.length >= 50 && vaWrap) vaWrap.classList.remove('rs-hidden');
-
-      updateAllWishlistBtns();
-    });
+    setHash(handle);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
+  /* ── Push/replace URL hash (enables back button and sharable URLs) ── */
   function setHash(hash) {
     if (history.replaceState) {
       history.replaceState(null, '', hash ? '#' + hash : window.location.pathname + window.location.search);
     }
   }
 
-  window.rsSelectCollection = function(btn) {
+  /* ══════════════════════════════════════════════════════════════════
+     NAV ICON CLICK — update hero + show sub-collections for that category
+  ══════════════════════════════════════════════════════════════════ */
+  window.rsSelectCollection = function (btn) {
     var handle = btn.getAttribute('data-handle');
     var label  = btn.getAttribute('data-label');
     if (!handle) return;
 
-    document.querySelectorAll('.rs-nav-icon').forEach(function(b){ b.classList.remove('rs-nav-active'); });
+    /* Mark active icon */
+    document.querySelectorAll('.rs-nav-icon').forEach(function (b) { b.classList.remove('rs-nav-active'); });
     btn.classList.add('rs-nav-active');
 
+    /* Update hero banner image */
     var col = d.collections[handle];
     if (col) {
       updateHero(col.title, col.description, col.bannerImg, col.productImg, col.bannerImgMobile);
@@ -1311,18 +1231,25 @@ window.rsShopData = {
       updateHero(label, d.defaultDesc, d.defaultBgImg, d.defaultProductImg, d.defaultBgImgMobile);
     }
 
-    setHash(handle);
-    showSingle(handle, label);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    /* Show sub-collection cards for this category */
+    showSubCollections(handle, label);
   };
 
-  window.rsShowDefault = function(btn) {
-    document.querySelectorAll('.rs-nav-icon').forEach(function(b){ b.classList.remove('rs-nav-active'); });
+  /* ══════════════════════════════════════════════════════════════════
+     "SHOP ALL" CLICK — restore default multi-row Panel A view
+  ══════════════════════════════════════════════════════════════════ */
+  window.rsShowDefault = function (btn) {
+    document.querySelectorAll('.rs-nav-icon').forEach(function (b) { b.classList.remove('rs-nav-active'); });
     btn.classList.add('rs-nav-active');
+
+    /* Restore default hero */
     updateHero(d.defaultTitle, d.defaultDesc, d.defaultBgImg, d.defaultProductImg, d.defaultBgImgMobile);
 
+    /* Show Panel A, hide Panel B */
     document.getElementById('rs-panel-multi').classList.remove('rs-hidden');
     document.getElementById('rs-panel-single').classList.add('rs-hidden');
+
+    /* Hide breadcrumb sub-item */
     var crumb = document.getElementById('rs-breadcrumb-col');
     if (crumb) crumb.classList.add('rs-hidden');
 
@@ -1330,45 +1257,49 @@ window.rsShopData = {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  window.rsSlider = function(id, dir) {
+  /* ══════════════════════════════════════════════════════════════════
+     SLIDER — advance/retreat a product row by one page
+     Used by the prev/next arrows in Panel A product rows
+  ══════════════════════════════════════════════════════════════════ */
+  window.rsSlider = function (id, dir) {
     var track = document.getElementById(id);
     if (!track) return;
 
-    var cards  = Array.from(track.querySelectorAll('.rs-card'));
-    var ppr    = parseInt(track.dataset.ppr) || 3;
-    var total  = cards.length;
+    var cards = Array.from(track.querySelectorAll('.rs-card'));
+    var ppr   = parseInt(track.dataset.ppr) || 3;
+    var total = cards.length;
     if (total <= ppr) return;
 
     var cur  = parseInt(track.dataset.page || '0');
-    var next = cur + dir;
-    if (next < 0) next = 0;
-
-    var maxPage = total - ppr;
-    if (next > maxPage) next = maxPage;
+    var next = Math.max(0, Math.min(cur + dir, total - ppr));
     track.dataset.page = next;
 
-    var gap       = parseInt(getComputedStyle(track).gap) || 46;
+    var gap       = parseInt(getComputedStyle(track).gap) || 18;
     var cardWidth = cards[0] ? cards[0].offsetWidth : 0;
-    var offset    = next * (cardWidth + gap);
+    track.style.transform = 'translateX(-' + (next * (cardWidth + gap)) + 'px)';
 
-    track.style.transform = 'translateX(-' + offset + 'px)';
-
+    /* Toggle arrow disabled states */
     var wrap    = track.closest('.rs-slider-wrap') || track.parentElement;
-    var prev    = wrap && wrap.querySelector('.rs-arr--prev');
+    var prevBtn = wrap && wrap.querySelector('.rs-arr--prev');
     var nextBtn = wrap && wrap.querySelector('.rs-arr--next');
-    if (prev)    prev.classList.toggle('rs-arr--hidden', next === 0);
+    if (prevBtn) prevBtn.classList.toggle('rs-arr--hidden', next === 0);
     if (nextBtn) nextBtn.classList.toggle('rs-arr--hidden', next >= total - ppr);
   };
 
-  window.rsFaq = function(btn) {
+  /* ══════════════════════════════════════════════════════════════════
+     FAQ ACCORDION
+  ══════════════════════════════════════════════════════════════════ */
+  window.rsFaq = function (btn) {
     var answer = btn.parentElement.querySelector('.rs-faq-answer');
     var icon   = btn.querySelector('.rs-faq-icon');
     var isOpen = answer.classList.contains('rs-faq-answer--open');
 
-    document.querySelectorAll('.rs-faq-answer').forEach(function(a){ a.classList.remove('rs-faq-answer--open'); });
-    document.querySelectorAll('.rs-faq-icon').forEach(function(i){ i.classList.remove('rs-faq-icon--open'); });
-    document.querySelectorAll('.rs-faq-btn').forEach(function(b){ b.setAttribute('aria-expanded', 'false'); });
+    /* Close all first */
+    document.querySelectorAll('.rs-faq-answer').forEach(function (a) { a.classList.remove('rs-faq-answer--open'); });
+    document.querySelectorAll('.rs-faq-icon').forEach(function (i)   { i.classList.remove('rs-faq-icon--open'); });
+    document.querySelectorAll('.rs-faq-btn').forEach(function (b)    { b.setAttribute('aria-expanded', 'false'); });
 
+    /* Toggle clicked item */
     if (!isOpen) {
       answer.classList.add('rs-faq-answer--open');
       icon.classList.add('rs-faq-icon--open');
@@ -1376,39 +1307,39 @@ window.rsShopData = {
     }
   };
 
-  /* ══════════════════════════════
+  /* ══════════════════════════════════════════════════════════════════
      ANIMATIONS
-  ══════════════════════════════ */
+  ══════════════════════════════════════════════════════════════════ */
+
+  /* Particle burst on ATC click */
   function burstParticles(fromBtn) {
     var rect   = fromBtn.getBoundingClientRect();
     var cx     = rect.left + rect.width  / 2;
     var cy     = rect.top  + rect.height / 2;
-    var colors = ['#1a5c2a', '#e0c97a', '#e53e3e', '#1bbde8', '#f5b800'];
+    var colors = ['#2e7d32', '#f9a825', '#c62828', '#0277bd', '#558b2f'];
     var count  = 10;
 
     for (var i = 0; i < count; i++) {
-      (function(i) {
-        var p      = document.createElement('div');
+      (function (i) {
+        var p     = document.createElement('div');
         p.className = 'rs-particle';
-        var angle  = (i / count) * 2 * Math.PI;
-        var dist   = 50 + Math.random() * 40;
-        var px     = Math.cos(angle) * dist;
-        var py     = Math.sin(angle) * dist;
-        var color  = colors[i % colors.length];
+        var angle = (i / count) * 2 * Math.PI;
+        var dist  = 50 + Math.random() * 40;
 
         p.style.left        = (cx - 4) + 'px';
         p.style.top         = (cy - 4) + 'px';
-        p.style.background  = color;
-        p.style.setProperty('--px', px + 'px');
-        p.style.setProperty('--py', py + 'px');
+        p.style.background  = colors[i % colors.length];
+        p.style.setProperty('--px', (Math.cos(angle) * dist) + 'px');
+        p.style.setProperty('--py', (Math.sin(angle) * dist) + 'px');
         p.style.animationDelay = (Math.random() * 0.1) + 's';
 
         document.body.appendChild(p);
-        p.addEventListener('animationend', function() { p.remove(); });
+        p.addEventListener('animationend', function () { p.remove(); });
       })(i);
     }
   }
 
+  /* Heart flies from wishlist button toward header wishlist icon */
   function flyHeartToWishlist(fromBtn) {
     var wishlistIcon =
       document.getElementById('rs-wishlist-count') ||
@@ -1427,70 +1358,61 @@ window.rsShopData = {
 
     var dx = toRect.left + toRect.width  / 2 - (fromRect.left + fromRect.width  / 2);
     var dy = toRect.top  + toRect.height / 2 - (fromRect.top  + fromRect.height / 2);
-
     heart.style.setProperty('--fly-x',  (dx * 0.5) + 'px');
     heart.style.setProperty('--fly-y',  (dy * 0.5) + 'px');
     heart.style.setProperty('--fly-x2', dx + 'px');
     heart.style.setProperty('--fly-y2', dy + 'px');
 
     document.body.appendChild(heart);
-    heart.addEventListener('animationend', function() { heart.remove(); });
-
-    wishlistIcon.classList.remove('rs-bump');
-    void wishlistIcon.offsetWidth;
-    wishlistIcon.classList.add('rs-bump');
-    wishlistIcon.addEventListener('animationend', function() {
-      wishlistIcon.classList.remove('rs-bump');
-    }, { once: true });
+    heart.addEventListener('animationend', function () { heart.remove(); });
   }
 
-  /* ══════════════════════════════
-     ADD TO CART — animation included
-  ══════════════════════════════ */
-  window.rsATC = function(variantId, btn) {
+  /* ══════════════════════════════════════════════════════════════════
+     ADD TO CART — with particle + flash animation
+  ══════════════════════════════════════════════════════════════════ */
+  window.rsATC = function (variantId, btn) {
     if (btn.disabled) return;
 
     burstParticles(btn);
     btn.classList.remove('rs-atc-flash');
-    void btn.offsetWidth;
+    void btn.offsetWidth; /* force reflow to restart animation */
     btn.classList.add('rs-atc-flash');
-    btn.addEventListener('animationend', function() {
-      btn.classList.remove('rs-atc-flash');
-    }, { once: true });
+    btn.addEventListener('animationend', function () { btn.classList.remove('rs-atc-flash'); }, { once: true });
 
-    var orig = btn.textContent;
+    var orig   = btn.textContent;
     btn.textContent = 'Adding...';
-    btn.disabled = true;
+    btn.disabled    = true;
 
     fetch('/cart/add.js', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ id: parseInt(variantId), quantity: 1 })
     })
-    .then(function(r){ return r.json(); })
-    .then(function() {
+    .then(function (r) { return r.json(); })
+    .then(function () {
       btn.textContent = 'Added ✓';
       document.dispatchEvent(new CustomEvent('cart:updated'));
-      setTimeout(function(){ btn.textContent = orig; btn.disabled = false; }, 1600);
+      setTimeout(function () { btn.textContent = orig; btn.disabled = false; }, 1600);
     })
-    .catch(function() {
+    .catch(function () {
       btn.textContent = 'Error!';
-      setTimeout(function(){ btn.textContent = orig; btn.disabled = false; }, 1600);
+      setTimeout(function () { btn.textContent = orig; btn.disabled = false; }, 1600);
     });
   };
 
-  /* ══════════════════════════════
-     WISHLIST — Event Delegation only
-  ══════════════════════════════ */
+  /* ══════════════════════════════════════════════════════════════════
+     WISHLIST — localStorage-based, event delegation
+  ══════════════════════════════════════════════════════════════════ */
   function getWL() { return JSON.parse(localStorage.getItem('rs_wishlist') || '[]'); }
   function setWL(wl) {
     localStorage.setItem('rs_wishlist', JSON.stringify(wl));
     window.dispatchEvent(new Event('wishlist:updated'));
   }
 
+  /* Sync all visible wishlist buttons to current localStorage state */
   function updateAllWishlistBtns() {
     var wl = getWL();
-    document.querySelectorAll('.rs-wishlist-toggle').forEach(function(btn) {
+    document.querySelectorAll('.rs-wishlist-toggle').forEach(function (btn) {
       var handle = btn.dataset.handle;
       if (!handle) return;
       var active = wl.indexOf(handle) !== -1;
@@ -1500,30 +1422,26 @@ window.rsShopData = {
     });
   }
 
-  document.addEventListener('click', function(e) {
+  /* Single delegated listener on document for all wishlist buttons */
+  document.addEventListener('click', function (e) {
     var wlBtn = e.target.closest('.rs-wishlist-toggle');
     if (!wlBtn) return;
 
     var handle = wlBtn.dataset.handle;
     if (!handle) return;
 
-    var wl    = getWL();
-    var idx   = wl.indexOf(handle);
+    var wl     = getWL();
+    var idx    = wl.indexOf(handle);
     var adding = idx === -1;
 
-    if (adding) {
-      wl.push(handle);
-      flyHeartToWishlist(wlBtn);
-    } else {
-      wl.splice(idx, 1);
-    }
+    if (adding) { wl.push(handle); flyHeartToWishlist(wlBtn); }
+    else        { wl.splice(idx, 1); }
 
+    /* Pulse animation */
     wlBtn.classList.remove('rs-wl-pulse');
     void wlBtn.offsetWidth;
     wlBtn.classList.add('rs-wl-pulse');
-    wlBtn.addEventListener('animationend', function() {
-      wlBtn.classList.remove('rs-wl-pulse');
-    }, { once: true });
+    wlBtn.addEventListener('animationend', function () { wlBtn.classList.remove('rs-wl-pulse'); }, { once: true });
 
     setWL(wl);
     updateAllWishlistBtns();
@@ -1532,22 +1450,23 @@ window.rsShopData = {
   updateAllWishlistBtns();
   window.addEventListener('wishlist:updated', updateAllWishlistBtns);
 
-  /* ══════════════════════════════
-     INIT — Hero on page load + hash routing
-  ══════════════════════════════ */
+  /* ══════════════════════════════════════════════════════════════════
+     INIT — set default hero on page load + handle URL hash routing
+     e.g. /pages/agri-shop#seeds will auto-open the Seeds category
+  ══════════════════════════════════════════════════════════════════ */
   (function init() {
     var hash = window.location.hash.replace('#', '');
     if (hash) {
-      // Hash present — let collection click handle hero update
+      /* Hash present — find and click the matching nav icon */
       var btn = document.querySelector('.rs-nav-icon[data-handle="' + hash + '"]');
       if (btn) {
-        setTimeout(function(){ rsSelectCollection(btn); }, 100);
+        setTimeout(function () { rsSelectCollection(btn); }, 100);
       } else {
-        // Hash exists but no matching nav button — still show default hero
+        /* Hash exists but no matching nav button — still load default hero */
         updateHero(d.defaultTitle, d.defaultDesc, d.defaultBgImg, d.defaultProductImg, d.defaultBgImgMobile);
       }
     } else {
-      // No hash — show default hero image immediately on page load
+      /* No hash — show default hero and Panel A */
       updateHero(d.defaultTitle, d.defaultDesc, d.defaultBgImg, d.defaultProductImg, d.defaultBgImgMobile);
     }
   })();
@@ -1558,88 +1477,97 @@ window.rsShopData = {
 
 {% schema %}
 {
-  "name": "RS - Shift Shop Page",
+  "name": "Agriculture Shop Page",
   "tag": "section",
   "settings": [
-    { "type": "image_picker", "id": "page_bg", "label": "Page Background" },
-    { "type": "header", "content": "🎨 Card Colors (rotate: Yellow → Blue → Green)" },
-    { "type": "color", "id": "card_color_1", "label": "Card Color 1 (Yellow)", "default": "#f5b800" },
-    { "type": "color", "id": "card_color_2", "label": "Card Color 2 (Blue)",   "default": "#1bbde8" },
-    { "type": "color", "id": "card_color_3", "label": "Card Color 3 (Green)",  "default": "#8dc63f" },
+    { "type": "image_picker", "id": "page_bg", "label": "Page Background Image" },
+
+    { "type": "header", "content": "🎨 Card Colors (rotate: Color 1 → 2 → 3)" },
+    { "type": "color", "id": "card_color_1", "label": "Card Color 1", "default": "#e8f5e9" },
+    { "type": "color", "id": "card_color_2", "label": "Card Color 2", "default": "#fff9c4" },
+    { "type": "color", "id": "card_color_3", "label": "Card Color 3", "default": "#e3f2fd" },
+
     { "type": "header", "content": "🖼️ Hero Banner" },
-    { "type": "image_picker", "id": "hero_bg_image",        "label": "Default Hero Background Image (Desktop)" },
-    { "type": "image_picker", "id": "hero_bg_image_mobile", "label": "Default Hero Background Image (Mobile)" },
-    { "type": "color",       "id": "hero_bg_color",     "label": "Hero Background Color",        "default": "#6aaa64" },
-    { "type": "range",       "id": "hero_bg_opacity",    "label": "Hero BG Image Opacity",        "min": 10, "max": 100, "step": 5,  "default": 100, "unit": "%" },
-    { "type": "range",       "id": "hero_height",        "label": "Hero Min Height",              "min": 200,"max": 700, "step": 10, "default": 460, "unit": "px" },
-    { "type": "text",        "id": "hero_heading",       "label": "Hero Heading (default)",       "default": "The shift shop" },
-    { "type": "color",       "id": "hero_heading_color", "label": "Hero Heading Color",           "default": "#ffffff" },
-    { "type": "range",       "id": "hero_heading_size",  "label": "Hero Heading Size",            "min": 20, "max": 72, "step": 2,  "default": 44,  "unit": "px" },
-    { "type": "textarea",    "id": "hero_description",   "label": "Hero Description (default)",   "default": "Embark on a journey of wellness inspiration. Connect with fellow health enthusiasts like you." },
-    { "type": "color",       "id": "hero_desc_color",    "label": "Hero Description Color",       "default": "#ffffff" },
-    { "type": "range",       "id": "hero_desc_size",     "label": "Hero Description Size",        "min": 12, "max": 22, "step": 1,  "default": 15,  "unit": "px" },
-    { "type": "range",       "id": "hero_img_width",     "label": "Hero Image Width",             "min": 150,"max": 650, "step": 10, "default": 440, "unit": "px" },
-    { "type": "range",       "id": "hero_padding_v",     "label": "Hero Padding Vertical",        "min": 20, "max": 120, "step": 4, "default": 60,  "unit": "px" },
-    { "type": "range",       "id": "hero_padding_h",     "label": "Page Side Padding",            "min": 0,  "max": 80,  "step": 4, "default": 60,  "unit": "px" },
-    { "type": "header", "content": "🔘 Icons Row" },
-    { "type": "checkbox",    "id": "show_icons_row",       "label": "Show Icons Row",            "default": true },
-    { "type": "color",       "id": "icons_bg",             "label": "Icons Row Background",      "default": "#2c2c2c" },
-    { "type": "range",       "id": "icons_padding",        "label": "Icons Row Padding",         "min": 8,  "max": 60, "step": 4, "default": 20, "unit": "px" },
-    { "type": "select",      "id": "icons_align",          "label": "Icons Alignment", "options": [{"value":"flex-start","label":"Left"},{"value":"center","label":"Center"},{"value":"space-between","label":"Space Between"}], "default": "center" },
-    { "type": "range",       "id": "icons_gap",            "label": "Icons Gap",                 "min": 4,  "max": 48, "step": 2, "default": 12, "unit": "px" },
-    { "type": "range",       "id": "icon_size",            "label": "Icon Circle Size",          "min": 40, "max": 120,"step": 4, "default": 68, "unit": "px" },
-    { "type": "range",       "id": "icon_border",          "label": "Icon Border Width",         "min": 0,  "max": 5,  "step": 1, "default": 2,  "unit": "px" },
-    { "type": "range",       "id": "icon_item_width",      "label": "Icon Item Width",           "min": 50, "max": 160,"step": 2, "default": 80, "unit": "px" },
-    { "type": "color",       "id": "icon_label_color",     "label": "Icon Label Color",          "default": "#ffffff" },
-    { "type": "range",       "id": "icon_label_size",      "label": "Icon Label Size",           "min": 9,  "max": 16, "step": 1, "default": 11, "unit": "px" },
-    { "type": "header", "content": "🛍️ Shop All Button" },
-    { "type": "image_picker","id": "all_icon_image",       "label": "Shop All Icon Image" },
-    { "type": "text",        "id": "all_icon_label",       "label": "Shop All Label",            "default": "Shop all" },
-    { "type": "color",       "id": "all_icon_bg",          "label": "Shop All Background",       "default": "#f5f0e8" },
-    { "type": "color",       "id": "all_icon_border_color","label": "Shop All Border Color",     "default": "#e0c97a" },
+    { "type": "image_picker", "id": "hero_bg_image",        "label": "Default Hero BG Image (Desktop)" },
+    { "type": "image_picker", "id": "hero_bg_image_mobile", "label": "Default Hero BG Image (Mobile)" },
+    { "type": "color",        "id": "hero_bg_color",        "label": "Hero Background Color",     "default": "#2e7d32" },
+    { "type": "range",        "id": "hero_bg_opacity",      "label": "Hero BG Image Opacity",     "min": 10, "max": 100, "step": 5,  "default": 100, "unit": "%" },
+    { "type": "range",        "id": "hero_height",          "label": "Hero Min Height",           "min": 200,"max": 700, "step": 10, "default": 460, "unit": "px" },
+    { "type": "text",         "id": "hero_heading",         "label": "Hero Heading (default)",    "default": "Agriculture Solutions" },
+    { "type": "color",        "id": "hero_heading_color",   "label": "Hero Heading Color",        "default": "#ffffff" },
+    { "type": "range",        "id": "hero_heading_size",    "label": "Hero Heading Size",         "min": 20, "max": 72, "step": 2,  "default": 44,  "unit": "px" },
+    { "type": "textarea",     "id": "hero_description",     "label": "Hero Description (default)","default": "Quality seeds, fertilizers and crop protection products for every farmer." },
+    { "type": "color",        "id": "hero_desc_color",      "label": "Hero Description Color",    "default": "#ffffff" },
+    { "type": "range",        "id": "hero_desc_size",       "label": "Hero Description Size",     "min": 12, "max": 22, "step": 1,  "default": 15,  "unit": "px" },
+    { "type": "range",        "id": "hero_img_width",       "label": "Hero Image Width",          "min": 150,"max": 650, "step": 10, "default": 440, "unit": "px" },
+    { "type": "range",        "id": "hero_padding_v",       "label": "Hero Padding Vertical",     "min": 20, "max": 120, "step": 4, "default": 60,  "unit": "px" },
+    { "type": "range",        "id": "hero_padding_h",       "label": "Page Side Padding",         "min": 0,  "max": 80,  "step": 4, "default": 60,  "unit": "px" },
+
+    { "type": "header", "content": "🔘 Icons Row (Navigation)" },
+    { "type": "checkbox", "id": "show_icons_row",       "label": "Show Icons Row",            "default": true },
+    { "type": "color",    "id": "icons_bg",             "label": "Icons Row Background",      "default": "#1b5e20" },
+    { "type": "range",    "id": "icons_padding",        "label": "Icons Row Padding",         "min": 8,  "max": 60, "step": 4, "default": 20, "unit": "px" },
+    { "type": "select",   "id": "icons_align",          "label": "Icons Alignment", "options": [{"value":"flex-start","label":"Left"},{"value":"center","label":"Center"},{"value":"space-between","label":"Space Between"}], "default": "center" },
+    { "type": "range",    "id": "icons_gap",            "label": "Icons Gap",                 "min": 4,  "max": 48, "step": 2, "default": 12, "unit": "px" },
+    { "type": "range",    "id": "icon_size",            "label": "Icon Circle Size",          "min": 40, "max": 120,"step": 4, "default": 68, "unit": "px" },
+    { "type": "range",    "id": "icon_border",          "label": "Icon Border Width",         "min": 0,  "max": 5,  "step": 1, "default": 2,  "unit": "px" },
+    { "type": "range",    "id": "icon_item_width",      "label": "Icon Item Width",           "min": 50, "max": 160,"step": 2, "default": 80, "unit": "px" },
+    { "type": "color",    "id": "icon_label_color",     "label": "Icon Label Color",          "default": "#ffffff" },
+    { "type": "range",    "id": "icon_label_size",      "label": "Icon Label Size",           "min": 9,  "max": 16, "step": 1, "default": 11, "unit": "px" },
+
+    { "type": "header", "content": "🌱 'All Products' Button" },
+    { "type": "image_picker","id": "all_icon_image",       "label": "All Products Icon Image" },
+    { "type": "text",        "id": "all_icon_label",       "label": "Label",                  "default": "All Products" },
+    { "type": "color",       "id": "all_icon_bg",          "label": "Background",             "default": "#e8f5e9" },
+    { "type": "color",       "id": "all_icon_border_color","label": "Border Color",           "default": "#4caf50" },
+
     { "type": "header", "content": "🍞 Breadcrumb" },
-    { "type": "checkbox",    "id": "show_breadcrumb",      "label": "Show Breadcrumb",           "default": true },
-    { "type": "text",        "id": "breadcrumb_shop_text", "label": "Shop Label",                "default": "The shift shop" },
-    { "type": "text",        "id": "shop_page_handle",     "label": "Shop Page Handle",          "default": "shift-shop" },
-    { "type": "color",       "id": "breadcrumb_color",     "label": "Breadcrumb Color",          "default": "#2D2119" },
-    { "type": "header", "content": "📦 Products & Cards" },
-    { "type": "range",  "id": "section_pt",           "label": "Section Padding Top",      "min": 0, "max": 80, "step": 4, "default": 40, "unit": "px" },
-    { "type": "range",  "id": "section_pb",           "label": "Section Padding Bottom",   "min": 0, "max": 80, "step": 4, "default": 40, "unit": "px" },
-    { "type": "color",  "id": "row_heading_color",    "label": "Row Heading Color",        "default": " #175C2E" },
-    { "type": "range",  "id": "row_heading_size",     "label": "Row Heading Size",         "min": 18,"max": 49, "step": 1, "default": 49, "unit": "px" },
-    { "type": "color",  "id": "row_sub_color",        "label": "Row Subheading Color",     "default": "#2d2119" },
-    { "type": "range",  "id": "row_gap",              "label": "Gap Between Rows",         "min": 20,"max": 100,"step": 4, "default": 48, "unit": "px" },
-    { "type": "range",  "id": "products_per_row",     "label": "Products Per Row (Multi)", "min": 2, "max": 5,  "step": 1, "default": 3 },
-    { "type": "range",  "id": "card_gap",             "label": "Card Gap",                 "min": 8, "max": 40, "step": 2, "default": 18, "unit": "px" },
-    { "type": "range",  "id": "card_radius",          "label": "Card Border Radius",       "min": 0, "max": 24, "step": 2, "default": 14, "unit": "px" },
-    { "type": "color",  "id": "product_title_color",  "label": "Product Title Color",      "default": "#1a1a1a" },
-    { "type": "color",  "id": "product_desc_color",   "label": "Product Desc Color",       "default": "#2d2119" },
-    { "type": "color",  "id": "price_color",          "label": "Price Color",              "default": "#1a1a1a" },
-    { "type": "color",  "id": "atc_bg",               "label": "Add to Cart Background",   "default": "#1a1a1a" },
-    { "type": "color",  "id": "atc_color",            "label": "Add to Cart Text",         "default": "#ffffff" },
-    { "type": "color",  "id": "buy_bg",               "label": "Buy Now Background",       "default": "#e0c97a" },
-    { "type": "color",  "id": "buy_color",            "label": "Buy Now Text",             "default": "#1a1a1a" },
-    { "type": "checkbox","id": "show_arrows",         "label": "Show Prev/Next Arrows",    "default": true },
-    { "type": "color",  "id": "arrow_bg",             "label": "Arrow Background",         "default": "#ffffff" },
-    { "type": "color",  "id": "arrow_color",          "label": "Arrow Color",              "default": "#1a1a1a" },
-    { "type": "header", "content": "📋 Single Collection View" },
-    { "type": "text",    "id": "single_col_heading",    "label": "Heading",             "default": "A variety to choose from" },
-    { "type": "text",    "id": "single_col_subheading", "label": "Subheading",          "default": "Something corny. Something healthy. All things crunchy." },
-    { "type": "checkbox","id": "single_badge_grains",   "label": "Show Whole Grains",   "default": true },
-    { "type": "checkbox","id": "single_badge_nutrition","label": "Show Nutritionally Balanced","default": true },
-    { "type": "checkbox","id": "single_badge_chemicals","label": "Show No Chemicals",   "default": true },
-    { "type": "range",   "id": "single_products_per_row","label": "Products Per Row",   "min": 2, "max": 5, "step": 1, "default": 3 },
+    { "type": "checkbox", "id": "show_breadcrumb",      "label": "Show Breadcrumb",           "default": true },
+    { "type": "text",     "id": "breadcrumb_shop_text", "label": "Shop Label",                "default": "Agri Shop" },
+    { "type": "text",     "id": "shop_page_handle",     "label": "Shop Page Handle",          "default": "agri-shop" },
+    { "type": "color",    "id": "breadcrumb_color",     "label": "Breadcrumb Color",          "default": "#2d2119" },
+
+    { "type": "header", "content": "📦 Products & Cards (Panel A — Shop All view)" },
+    { "type": "range",  "id": "section_pt",          "label": "Section Padding Top",     "min": 0, "max": 80, "step": 4, "default": 40, "unit": "px" },
+    { "type": "range",  "id": "section_pb",          "label": "Section Padding Bottom",  "min": 0, "max": 80, "step": 4, "default": 40, "unit": "px" },
+    { "type": "color",  "id": "row_heading_color",   "label": "Row Heading Color",       "default": "#1b5e20" },
+    { "type": "range",  "id": "row_heading_size",    "label": "Row Heading Size",        "min": 18,"max": 49, "step": 1, "default": 40, "unit": "px" },
+    { "type": "color",  "id": "row_sub_color",       "label": "Row Subheading Color",    "default": "#2d2119" },
+    { "type": "range",  "id": "row_gap",             "label": "Gap Between Rows",        "min": 20,"max": 100,"step": 4, "default": 48, "unit": "px" },
+    { "type": "range",  "id": "products_per_row",    "label": "Products Per Row",        "min": 2, "max": 5,  "step": 1, "default": 3 },
+    { "type": "range",  "id": "card_gap",            "label": "Card Gap",                "min": 8, "max": 40, "step": 2, "default": 18, "unit": "px" },
+    { "type": "range",  "id": "card_radius",         "label": "Card Border Radius",      "min": 0, "max": 24, "step": 2, "default": 14, "unit": "px" },
+    { "type": "color",  "id": "product_title_color", "label": "Product Title Color",     "default": "#1a1a1a" },
+    { "type": "color",  "id": "product_desc_color",  "label": "Product Desc Color",      "default": "#2d2119" },
+    { "type": "color",  "id": "price_color",         "label": "Price Color",             "default": "#1a1a1a" },
+    { "type": "color",  "id": "atc_bg",              "label": "Add to Cart Background",  "default": "#2e7d32" },
+    { "type": "color",  "id": "atc_color",           "label": "Add to Cart Text",        "default": "#ffffff" },
+    { "type": "color",  "id": "buy_bg",              "label": "Buy Now Background",      "default": "#f9a825" },
+    { "type": "color",  "id": "buy_color",           "label": "Buy Now Text",            "default": "#1a1a1a" },
+    { "type": "checkbox","id": "show_arrows",         "label": "Show Prev/Next Arrows",   "default": true },
+    { "type": "color",  "id": "arrow_bg",            "label": "Arrow Background",        "default": "#ffffff" },
+    { "type": "color",  "id": "arrow_color",         "label": "Arrow Color",             "default": "#2e7d32" },
+
+    { "type": "header", "content": "🗂️ Category View (Panel B — Sub-collection grid)" },
+    { "type": "paragraph", "content": "This panel appears when a user clicks a nav category icon. It shows sub-collection cards." },
+    { "type": "text",    "id": "single_col_heading",    "label": "Default Heading",      "default": "Select a Category" },
+    { "type": "text",    "id": "single_col_subheading", "label": "Sub-heading",          "default": "Choose a variety to explore all available options." },
+    { "type": "checkbox","id": "single_badge_certified","label": "Show 'Certified Seeds' badge",   "default": true },
+    { "type": "checkbox","id": "single_badge_organic",  "label": "Show 'Organic Options' badge",  "default": true },
+    { "type": "checkbox","id": "single_badge_quality",  "label": "Show 'Quality Assured' badge",  "default": true },
+    { "type": "range",   "id": "single_products_per_row","label": "Sub-collection Cards Per Row", "min": 2, "max": 5, "step": 1, "default": 3 },
+
     { "type": "header", "content": "❓ FAQ" },
     { "type": "text",        "id": "faq_heading",       "label": "FAQ Heading",          "default": "Frequently Asked Questions" },
-    { "type": "color",       "id": "faq_bg",            "label": "FAQ Background",       "default": "#ffffff" },
-    { "type": "color",       "id": "faq_heading_color", "label": "FAQ Heading Color",    "default": "#1a1a1a" },
+    { "type": "color",       "id": "faq_bg",            "label": "FAQ Background",       "default": "#f9fbe7" },
+    { "type": "color",       "id": "faq_heading_color", "label": "FAQ Heading Color",    "default": "#1b5e20" },
     { "type": "range",       "id": "faq_heading_size",  "label": "FAQ Heading Size",     "min": 18,"max": 52,"step": 2,"default": 36,"unit": "px" },
-    { "type": "color",       "id": "faq_divider",       "label": "Divider Color",        "default": "#e5e5e5" },
+    { "type": "color",       "id": "faq_divider",       "label": "Divider Color",        "default": "#c8e6c9" },
     { "type": "color",       "id": "faq_q_color",       "label": "Question Color",       "default": "#1a1a1a" },
     { "type": "range",       "id": "faq_q_size",        "label": "Question Size",        "min": 12,"max": 22,"step": 1,"default": 15,"unit": "px" },
     { "type": "color",       "id": "faq_a_color",       "label": "Answer Color",         "default": "#444444" },
     { "type": "range",       "id": "faq_a_size",        "label": "Answer Size",          "min": 12,"max": 18,"step": 1,"default": 14,"unit": "px" },
-    { "type": "color",       "id": "faq_icon_color",    "label": "Toggle Icon Color",    "default": "#1a1a1a" },
+    { "type": "color",       "id": "faq_icon_color",    "label": "Toggle Icon Color",    "default": "#2e7d32" },
     { "type": "select",      "id": "faq_icon",          "label": "Toggle Icon", "options": [{"value":"+","label":"+ (Plus)"},{"value":"▼","label":"▼ (Arrow)"}], "default": "+" },
     { "type": "range",       "id": "faq_item_pad",      "label": "FAQ Item Padding",     "min": 8,"max": 36,"step": 2,"default": 16,"unit": "px" },
     { "type": "image_picker","id": "faq_side_image",    "label": "FAQ Side Image" },
@@ -1648,65 +1576,87 @@ window.rsShopData = {
     { "type": "range",       "id": "faq_pt",            "label": "FAQ Padding Top",      "min": 0,"max": 100,"step": 4,"default": 60,"unit": "px" },
     { "type": "range",       "id": "faq_pb",            "label": "FAQ Padding Bottom",   "min": 0,"max": 100,"step": 4,"default": 60,"unit": "px" }
   ],
+
   "blocks": [
+
     {
       "type": "nav_icon",
-      "name": "Nav Icon",
+      "name": "Nav Icon (Category)",
       "settings": [
-        { "type": "paragraph", "content": "Collection assign karo. Metafields se banner image aur description automatically fetch hoga." },
-        { "type": "collection",  "id": "nav_collection",  "label": "Collection" },
-        { "type": "image_picker","id": "icon_image",       "label": "Icon Image (overrides collection image)" },
-        { "type": "text",        "id": "icon_label",       "label": "Label",            "default": "Category" },
-        { "type": "color",       "id": "icon_bg",          "label": "Icon Background",  "default": "#f5f0e8" },
-        { "type": "color",       "id": "icon_border_color","label": "Icon Border Color","default": "#e0c97a" },
+        { "type": "paragraph",   "content": "Assign a parent collection (e.g. 'Seeds'). Sub-collection cards are linked via Sub-Collection Card blocks below." },
+        { "type": "collection",  "id": "nav_collection",   "label": "Collection" },
+        { "type": "image_picker","id": "icon_image",        "label": "Icon Image (overrides collection image)" },
+        { "type": "text",        "id": "icon_label",        "label": "Label",             "default": "Category" },
+        { "type": "color",       "id": "icon_bg",           "label": "Icon Background",   "default": "#e8f5e9" },
+        { "type": "color",       "id": "icon_border_color", "label": "Icon Border Color", "default": "#4caf50" },
         { "type": "header",      "content": "🖼️ Hero Banner Images" },
-        { "type": "paragraph",   "content": "Yahan upload karo — yeh images tab dikhenge jab user is tab pe click kare. Desktop aur mobile dono alag set kar sakte ho." },
-        { "type": "image_picker","id": "banner_desktop",   "label": "Banner Image — Desktop" },
-        { "type": "image_picker","id": "banner_mobile",    "label": "Banner Image — Mobile (agar nahi diya toh desktop waala use hoga)" }
+        { "type": "paragraph",   "content": "These images appear in the hero when a user clicks this category icon." },
+        { "type": "image_picker","id": "banner_desktop",    "label": "Banner — Desktop" },
+        { "type": "image_picker","id": "banner_mobile",     "label": "Banner — Mobile (falls back to desktop if blank)" }
       ]
     },
+
+    {
+      "type": "sub_collection_card",
+      "name": "Sub-Collection Card",
+      "settings": [
+        { "type": "paragraph",   "content": "This card appears in the grid when the parent category nav icon is clicked." },
+        {
+          "type": "text",
+          "id": "parent_handle",
+          "label": "Parent Category Handle",
+          "info": "Paste the URL handle of the parent nav icon's collection (e.g. 'seeds', 'pesticides'). Find it in Shopify Admin → Collections → [Collection] → the URL slug shown in the address bar."
+        },
+        { "type": "collection",  "id": "sub_collection", "label": "Sub-Collection" },
+        { "type": "image_picker","id": "card_image",      "label": "Card Image (overrides collection image)" },
+        { "type": "text",        "id": "card_label",      "label": "Display Label (overrides collection title)" },
+        { "type": "text",        "id": "card_desc",       "label": "Short Description (overrides collection description)" }
+      ]
+    },
+
     {
       "type": "product_row",
-      "name": "Product (default view)",
+      "name": "Product Row",
       "settings": [
-        { "type": "paragraph",  "content": "Multi-row default view mein dikhta hai." },
+        { "type": "paragraph",  "content": "Shown in the default 'All Products' view as a horizontal slider." },
         { "type": "collection", "id": "row_collection",  "label": "Collection" },
-        { "type": "text",       "id": "row_heading",     "label": "Row Heading",    "default": "Shift to better breakfast" },
-        { "type": "text",       "id": "row_subheading",  "label": "Row Subheading", "default": "Something corny. Something healthy. All things crunchy." },
-        { "type": "checkbox",   "id": "badge_grains",    "label": "100% Whole Grains",        "default": true },
-        { "type": "checkbox",   "id": "badge_nutrition", "label": "Nutritionally Balanced",   "default": true },
-        { "type": "checkbox",   "id": "badge_chemicals", "label": "No Chemicals",             "default": true }
+        { "type": "text",       "id": "row_heading",     "label": "Row Heading",    "default": "Top Selling Seeds" },
+        { "type": "text",       "id": "row_subheading",  "label": "Row Subheading", "default": "High germination rate, field-tested varieties." },
+        { "type": "checkbox",   "id": "badge_certified", "label": "Show 'Certified Seeds' badge",   "default": true },
+        { "type": "checkbox",   "id": "badge_organic",   "label": "Show 'Organic Options' badge",  "default": true },
+        { "type": "checkbox",   "id": "badge_quality",   "label": "Show 'Quality Assured' badge",  "default": true }
       ]
     },
+
     {
       "type": "faq_item",
       "name": "FAQ Item",
       "settings": [
-        { "type": "text",     "id": "question", "label": "Question", "default": "Lorem Ipsum Dolor Sit, conswqaytu Adipiscing?" },
-        { "type": "richtext", "id": "answer",   "label": "Answer",   "default": "<p>Nam malesuada quic theru kubits. Doing ac three lotreyu aio ger, there will thaddguth.</p>" }
+        { "type": "text",     "id": "question", "label": "Question", "default": "What is the germination rate of your seeds?" },
+        { "type": "richtext", "id": "answer",   "label": "Answer",   "default": "<p>All our seeds are certified with a minimum 90% germination rate under recommended conditions.</p>" }
       ]
     }
+
   ],
+
   "presets": [{
-    "name": "RS - Shift Shop Page",
+    "name": "Agriculture Shop Page",
     "blocks": [
-      { "type": "nav_icon",    "settings": { "icon_label": "Shop all" } },
-      { "type": "nav_icon",    "settings": { "icon_label": "Shop by Occasion" } },
-      { "type": "nav_icon",    "settings": { "icon_label": "Oats" } },
-      { "type": "nav_icon",    "settings": { "icon_label": "Cooking Mixes" } },
-      { "type": "nav_icon",    "settings": { "icon_label": "Drink Mix" } },
-      { "type": "nav_icon",    "settings": { "icon_label": "Healthy Snacks" } },
-      { "type": "nav_icon",    "settings": { "icon_label": "Cookies" } },
-      { "type": "nav_icon",    "settings": { "icon_label": "Gluten Free Indulges" } },
-      { "type": "nav_icon",    "settings": { "icon_label": "Millets" } },
-      { "type": "product_row", "settings": { "row_heading": "Shift to better breakfast",   "row_subheading": "Something corny. Something healthy. All things crunchy." } },
-      { "type": "product_row", "settings": { "row_heading": "Shift to better meals",       "row_subheading": "Something corny. Something healthy. All things crunchy." } },
-      { "type": "product_row", "settings": { "row_heading": "Shift to gluten free snacks", "row_subheading": "Something corny. Something healthy. All things crunchy." } },
-      { "type": "product_row", "settings": { "row_heading": "Shift to better energy",      "row_subheading": "Something corny. Something healthy. All things crunchy." } },
-      { "type": "faq_item",    "settings": { "question": "Lorem Ipsum Dolor Sit, conswqaytu Adipiscing?" } },
-      { "type": "faq_item",    "settings": { "question": "Lorem Ipsum Dolor Sit, conswqaytu Adipiscing?" } },
-      { "type": "faq_item",    "settings": { "question": "Lorem Ipsum Dolor Sit, conswqaytu Adipiscing?" } },
-      { "type": "faq_item",    "settings": { "question": "Lorem Ipsum Dolor Sit, conswqaytu Adipiscing?" } }
+      { "type": "nav_icon", "settings": { "icon_label": "Seeds" } },
+      { "type": "nav_icon", "settings": { "icon_label": "Fertilizers" } },
+      { "type": "nav_icon", "settings": { "icon_label": "Pesticides" } },
+      { "type": "nav_icon", "settings": { "icon_label": "Bio-Inputs" } },
+      { "type": "nav_icon", "settings": { "icon_label": "Micronutrients" } },
+      { "type": "nav_icon", "settings": { "icon_label": "Plant Growth" } },
+      { "type": "nav_icon", "settings": { "icon_label": "Herbicides" } },
+      { "type": "nav_icon", "settings": { "icon_label": "Fungicides" } },
+      { "type": "product_row", "settings": { "row_heading": "Top Selling Seeds",           "row_subheading": "High germination rate, field-tested varieties." } },
+      { "type": "product_row", "settings": { "row_heading": "Crop Protection Essentials",  "row_subheading": "Keep pests and disease away from your harvest." } },
+      { "type": "product_row", "settings": { "row_heading": "Soil Health Products",        "row_subheading": "Better soil, better yield — naturally." } },
+      { "type": "faq_item", "settings": { "question": "What is the germination rate of your seeds?" } },
+      { "type": "faq_item", "settings": { "question": "Are your fertilizers safe for organic farming?" } },
+      { "type": "faq_item", "settings": { "question": "How should I store pesticides safely?" } },
+      { "type": "faq_item", "settings": { "question": "Do you provide bulk pricing for farmers?" } }
     ]
   }]
 }
