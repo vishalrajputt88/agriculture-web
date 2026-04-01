@@ -12,11 +12,20 @@
     "custom_agri_slidder_UPBpVU": {
       "type": "custom-agri-slidder",
       "blocks": {
+        "slide_MxDPmg": {
+          "type": "slide",
+          "settings": {
+            "heading": "",
+            "subheading": "",
+            "description": "",
+            "button_text": "",
+            "button_link": ""
+          }
+        },
         "slide_myrchD": {
           "type": "slide",
           "settings": {
-            "image": "shopify://shop_images/Rectangle_3_1.png",
-            "mobile_image": "shopify://shop_images/kisan-mobile-banner.png",
+            "image": "shopify://shop_images/2000_x_860_px.png",
             "heading": "",
             "subheading": "",
             "description": "",
@@ -27,8 +36,7 @@
         "slide_hqTtrp": {
           "type": "slide",
           "settings": {
-            "image": "shopify://shop_images/ChatGPT_Image_Feb_25_2026_06_31_35_PM.png",
-            "mobile_image": "shopify://shop_images/ChatGPT_Image_Feb_25_2026_06_36_13_PM.png",
+            "image": "shopify://shop_images/1774950846926.png",
             "heading": "",
             "subheading": "",
             "description": "",
@@ -38,6 +46,7 @@
         }
       },
       "block_order": [
+        "slide_MxDPmg",
         "slide_myrchD",
         "slide_hqTtrp"
       ],
@@ -54,10 +63,10 @@
         "nav_button_size": 45,
         "nav_offset": 20,
         "nav_icon_color": "#ffffff",
-        "dot_size": 14,
+        "dot_size": 10,
         "dots_spacing": 8,
         "dot_color": "#ffffff",
-        "dot_active_color": "#ffffff",
+        "dot_active_color": "#7cb342",
         "overlay_style": "left_fade",
         "overlay_opacity": 1,
         "text_area_width": 50,
@@ -492,18 +501,11 @@
     "shop_by_catagory_eB4UKe": {
       "type": "shop-by-catagory",
       "blocks": {
-        "category_item_PCq3bX": {
-          "type": "category_item",
-          "settings": {
-            "category_image": "shopify://shop_images/WhatsApp_Image_2026-03-26_at_5.15.13_PM_2.jpg",
-            "category_title": "Okra Crop",
-            "category_url": "shopify://pages/okra"
-          }
-        },
         "category_item_fCbfiF": {
           "type": "category_item",
           "settings": {
-            "category_title": "Category Name",
+            "category_image": "shopify://shop_images/category_icon_fe2c398d-f3d3-48ce-a864-ecbe8305a7cf.png",
+            "category_title": "Moong crop",
             "category_url": ""
           }
         },
@@ -512,6 +514,14 @@
           "settings": {
             "category_title": "Category Name",
             "category_url": ""
+          }
+        },
+        "category_item_PCq3bX": {
+          "type": "category_item",
+          "settings": {
+            "category_image": "shopify://shop_images/WhatsApp_Image_2026-03-26_at_5.15.13_PM_2.jpg",
+            "category_title": "Okra Crop",
+            "category_url": "shopify://pages/okra"
           }
         },
         "category_item_zAqdRV": {
@@ -523,9 +533,9 @@
         }
       },
       "block_order": [
-        "category_item_PCq3bX",
         "category_item_fCbfiF",
         "category_item_MPBiFD",
+        "category_item_PCq3bX",
         "category_item_zAqdRV"
       ],
       "name": "Shop by categories",
