@@ -6,165 +6,115 @@
  * or related systems. Please exercise caution as any changes
  * made to this file may be overwritten.
  * ------------------------------------------------------------
- */{
+ */
+{
   "sections": {
     "collection_list_Wfgh3m": {
       "type": "main-collection-list",
       "blocks": {
-        "group_4FtiAg": {
-          "type": "group",
-          "name": "t:names.header",
+        "nav_icon_ATMy88": {
+          "type": "nav_icon",
           "settings": {
-            "open_in_new_tab": false,
-            "content_direction": "column",
-            "vertical_on_mobile": true,
-            "horizontal_alignment": "flex-start",
-            "vertical_alignment": "center",
-            "align_baseline": false,
-            "horizontal_alignment_flex_direction_column": "flex-start",
-            "vertical_alignment_flex_direction_column": "center",
-            "gap": 12,
-            "width": "fit-content",
-            "custom_width": 100,
-            "width_mobile": "fit-content",
-            "custom_width_mobile": 100,
-            "height": "fit",
-            "custom_height": 100,
-            "inherit_color_scheme": true,
-            "color_scheme": "",
-            "background_media": "none",
-            "video_position": "cover",
-            "background_image_position": "cover",
-            "border": "none",
-            "border_width": 1,
-            "border_opacity": 100,
-            "border_radius": 0,
-            "toggle_overlay": false,
-            "overlay_color": "#00000026",
-            "overlay_style": "solid",
-            "gradient_direction": "to top",
-            "padding-block-start": 0,
-            "padding-block-end": 48,
-            "padding-inline-start": 0,
-            "padding-inline-end": 0
-          },
-          "blocks": {
-            "text_fRMQMR": {
-              "type": "text",
-              "name": "t:names.text",
-              "settings": {
-                "text": "<h1>Collections</h1>",
-                "width": "100%",
-                "max_width": "normal",
-                "alignment": "left",
-                "type_preset": "h2",
-                "font": "var(--font-primary--family)",
-                "font_size": "",
-                "line_height": "normal",
-                "letter_spacing": "normal",
-                "case": "none",
-                "wrap": "pretty",
-                "color": "",
-                "background": false,
-                "background_color": "#00000026",
-                "corner_radius": 0,
-                "padding-block-start": 0,
-                "padding-block-end": 16,
-                "padding-inline-start": 0,
-                "padding-inline-end": 0
-              },
-              "blocks": {}
-            }
-          },
-          "block_order": [
-            "text_fRMQMR"
-          ]
+            "nav_collection": "bio-insecticides",
+            "icon_image": "shopify://shop_images/category_icon_4.png",
+            "icon_label": "Category",
+            "icon_bg": "#e8f5e9",
+            "icon_border_color": "#4caf50",
+            "banner_desktop": "shopify://shop_images/2000_x_860_px.png"
+          }
         },
-        "static-collection-card": {
-          "type": "_collection-card",
-          "name": "t:names.collection_card",
-          "static": true,
+        "sub_collection_card_PCpEBB": {
+          "type": "sub_collection_card",
           "settings": {
-            "placement": "below_image",
-            "horizontal_alignment": "flex-start",
-            "vertical_alignment": "flex-start",
-            "collection_card_gap": 8,
-            "inherit_color_scheme": true,
-            "color_scheme": "",
-            "border": "none",
-            "border_width": 1,
-            "border_opacity": 100,
-            "border_radius": 0
-          },
-          "blocks": {
-            "collection_title_7YgBPU": {
-              "type": "collection-title",
-              "name": "t:names.collection_title",
-              "settings": {
-                "width": "fit-content",
-                "max_width": "normal",
-                "alignment": "left",
-                "type_preset": "rte",
-                "font": "var(--font-body--family)",
-                "font_size": "1rem",
-                "line_height": "normal",
-                "letter_spacing": "normal",
-                "case": "none",
-                "wrap": "pretty",
-                "color": "var(--color-foreground)",
-                "background": false,
-                "background_color": "#00000026",
-                "corner_radius": 0,
-                "padding-block-start": 0,
-                "padding-block-end": 0,
-                "padding-inline-start": 0,
-                "padding-inline-end": 0
-              },
-              "blocks": {}
-            },
-            "collection-card-image": {
-              "type": "_collection-card-image",
-              "name": "t:names.collection_card_image",
-              "static": true,
-              "settings": {
-                "image_ratio": "adapt",
-                "toggle_overlay": false,
-                "overlay_color": "#00000026",
-                "overlay_style": "solid",
-                "gradient_direction": "to top",
-                "border": "none",
-                "border_width": 1,
-                "border_opacity": 100,
-                "border_radius": 0
-              },
-              "blocks": {}
-            }
-          },
-          "block_order": [
-            "collection_title_7YgBPU"
-          ]
+            "parent_handle": "seeds",
+            "sub_collection": "ash-gouurd",
+            "card_image": "shopify://shop_images/category_icon_7.png",
+            "card_label": "",
+            "card_desc": ""
+          }
         }
       },
       "block_order": [
-        "group_4FtiAg"
+        "nav_icon_ATMy88",
+        "sub_collection_card_PCpEBB"
       ],
       "name": "Collection list",
       "settings": {
-        "layout_type": "grid",
-        "carousel_on_mobile": false,
-        "columns": 3,
-        "mobile_columns": "2",
-        "columns_gap": 12,
-        "bento_gap": 8,
-        "rows_gap": 24,
-        "max_collections": 4,
-        "icons_style": "arrow",
-        "icons_shape": "none",
-        "section_width": "page-width",
-        "gap": 12,
-        "color_scheme": "",
-        "padding-block-start": 48,
-        "padding-block-end": 48
+        "card_color_1": "#e8f5e9",
+        "card_color_2": "#fff9c4",
+        "card_color_3": "#e3f2fd",
+        "hero_bg_image": "shopify://shop_images/1774950054337_1.png",
+        "hero_bg_color": "#2e7d32",
+        "hero_bg_opacity": 100,
+        "hero_height": 460,
+        "hero_heading": "Agriculture Solutions",
+        "hero_heading_color": "#ffffff",
+        "hero_heading_size": 44,
+        "hero_description": "Quality seeds, fertilizers and crop protection products for every farmer.",
+        "hero_desc_color": "#ffffff",
+        "hero_desc_size": 15,
+        "hero_img_width": 440,
+        "hero_padding_v": 60,
+        "hero_padding_h": 60,
+        "show_icons_row": true,
+        "icons_bg": "#1b5e20",
+        "icons_padding": 20,
+        "icons_align": "center",
+        "icons_gap": 12,
+        "icon_size": 68,
+        "icon_border": 2,
+        "icon_item_width": 80,
+        "icon_label_color": "#ffffff",
+        "icon_label_size": 11,
+        "all_icon_image": "shopify://shop_images/category_icon_5.png",
+        "all_icon_label": "All Products",
+        "all_icon_bg": "#e8f5e9",
+        "all_icon_border_color": "#4caf50",
+        "show_breadcrumb": true,
+        "breadcrumb_shop_text": "Agri Shop",
+        "shop_page_handle": "agri-shop",
+        "breadcrumb_color": "#2d2119",
+        "section_pt": 40,
+        "section_pb": 40,
+        "row_heading_color": "#1b5e20",
+        "row_heading_size": 40,
+        "row_sub_color": "#2d2119",
+        "row_gap": 48,
+        "products_per_row": 3,
+        "card_gap": 18,
+        "card_radius": 14,
+        "product_title_color": "#1a1a1a",
+        "product_desc_color": "#2d2119",
+        "price_color": "#1a1a1a",
+        "atc_bg": "#2e7d32",
+        "atc_color": "#ffffff",
+        "buy_bg": "#f9a825",
+        "buy_color": "#1a1a1a",
+        "show_arrows": true,
+        "arrow_bg": "#ffffff",
+        "arrow_color": "#2e7d32",
+        "single_col_heading": "Select a Category",
+        "single_col_subheading": "Choose a variety to explore all available options.",
+        "single_badge_certified": true,
+        "single_badge_organic": true,
+        "single_badge_quality": true,
+        "single_products_per_row": 3,
+        "faq_heading": "Frequently Asked Questions",
+        "faq_bg": "#f9fbe7",
+        "faq_heading_color": "#1b5e20",
+        "faq_heading_size": 36,
+        "faq_divider": "#c8e6c9",
+        "faq_q_color": "#1a1a1a",
+        "faq_q_size": 15,
+        "faq_a_color": "#444444",
+        "faq_a_size": 14,
+        "faq_icon_color": "#2e7d32",
+        "faq_icon": "+",
+        "faq_item_pad": 16,
+        "faq_img_width": 280,
+        "faq_img_radius": 12,
+        "faq_pt": 60,
+        "faq_pb": 60
       }
     }
   },
