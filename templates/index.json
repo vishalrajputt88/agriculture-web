@@ -525,19 +525,19 @@
             "category_url": ""
           }
         },
+        "category_item_PCq3bX": {
+          "type": "category_item",
+          "settings": {
+            "category_image": "shopify://shop_images/category_icon_3_d6b68435-87c2-40a3-9f43-d0455b67f7a1.png",
+            "category_title": "Okra Crop",
+            "category_url": "shopify://pages/okra"
+          }
+        },
         "category_item_zAqdRV": {
           "type": "category_item",
           "settings": {
             "category_title": "Category Name",
             "category_url": ""
-          }
-        },
-        "category_item_PCq3bX": {
-          "type": "category_item",
-          "settings": {
-            "category_image": "shopify://shop_images/WhatsApp_Image_2026-03-26_at_5.15.13_PM_2.jpg",
-            "category_title": "Okra Crop",
-            "category_url": "shopify://pages/okra"
           }
         }
       },
@@ -545,8 +545,8 @@
         "category_item_fCbfiF",
         "category_item_MPBiFD",
         "category_item_nVRcqY",
-        "category_item_zAqdRV",
-        "category_item_PCq3bX"
+        "category_item_PCq3bX",
+        "category_item_zAqdRV"
       ],
       "name": "Shop by categories",
       "settings": {
