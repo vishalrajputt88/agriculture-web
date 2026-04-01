@@ -512,7 +512,8 @@
         "category_item_MPBiFD": {
           "type": "category_item",
           "settings": {
-            "category_title": "Category Name",
+            "category_image": "shopify://shop_images/category_icon_1_46b957eb-6138-44d4-8046-6cb9a5ebd032.png",
+            "category_title": "Chilli Crop",
             "category_url": ""
           }
         },
@@ -543,7 +544,7 @@
         "heading": "",
         "heading_font": "assistant_n4",
         "heading_font_weight": "700",
-        "heading_size": 40,
+        "heading_size": 26,
         "heading_text_transform": "none",
         "heading_letter_spacing": 0,
         "heading_color": "#000000",
