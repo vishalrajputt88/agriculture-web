@@ -33,12 +33,14 @@
     width: 100%;
     height: 100%;
     opacity: 0;
+    display: none;
     transition: opacity {{ section.settings.transition_speed }}s ease-in-out;
   }
 
   .health-slider-slide-{{ custom_health_slider }}.active {
     opacity: 1;
     z-index: 1;
+    display: block;
   }
 
   .health-slider-image-{{ custom_health_slider }} {
