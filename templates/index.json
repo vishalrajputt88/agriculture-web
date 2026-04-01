@@ -501,14 +501,6 @@
     "shop_by_catagory_eB4UKe": {
       "type": "shop-by-catagory",
       "blocks": {
-        "category_item_erMx7e": {
-          "type": "category_item",
-          "settings": {
-            "category_image": "shopify://shop_images/category_icon_5_a7b94a42-aac9-473d-8511-fdd5f928170e.png",
-            "category_title": "Watermelon Crop",
-            "category_url": ""
-          }
-        },
         "category_item_fCbfiF": {
           "type": "category_item",
           "settings": {
@@ -548,15 +540,23 @@
             "category_title": "Brinjal Crop",
             "category_url": ""
           }
+        },
+        "category_item_erMx7e": {
+          "type": "category_item",
+          "settings": {
+            "category_image": "shopify://shop_images/category_icon_5_a7b94a42-aac9-473d-8511-fdd5f928170e.png",
+            "category_title": "Watermelon Crop",
+            "category_url": ""
+          }
         }
       },
       "block_order": [
-        "category_item_erMx7e",
         "category_item_fCbfiF",
         "category_item_MPBiFD",
         "category_item_nVRcqY",
         "category_item_PCq3bX",
-        "category_item_zAqdRV"
+        "category_item_zAqdRV",
+        "category_item_erMx7e"
       ],
       "name": "Shop by categories",
       "settings": {
