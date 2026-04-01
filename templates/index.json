@@ -12,16 +12,6 @@
     "custom_agri_slidder_UPBpVU": {
       "type": "custom-agri-slidder",
       "blocks": {
-        "slide_MxDPmg": {
-          "type": "slide",
-          "settings": {
-            "heading": "",
-            "subheading": "",
-            "description": "",
-            "button_text": "",
-            "button_link": ""
-          }
-        },
         "slide_myrchD": {
           "type": "slide",
           "settings": {
@@ -43,12 +33,23 @@
             "button_text": "",
             "button_link": ""
           }
+        },
+        "slide_AKdbjF": {
+          "type": "slide",
+          "settings": {
+            "image": "shopify://shop_images/file_0000000098ac71faaea037d915b80d0e.png",
+            "heading": "",
+            "subheading": "",
+            "description": "",
+            "button_text": "",
+            "button_link": ""
+          }
         }
       },
       "block_order": [
-        "slide_MxDPmg",
         "slide_myrchD",
-        "slide_hqTtrp"
+        "slide_hqTtrp",
+        "slide_AKdbjF"
       ],
       "name": "Agriculture slider",
       "settings": {
