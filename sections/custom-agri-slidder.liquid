@@ -26,7 +26,7 @@
     position: relative;
   }
 
-  /* .health-slider-slide-{{ custom_health_slider }} {
+  .health-slider-slide-{{ custom_health_slider }} {
     position: absolute;
     top: 0;
     left: 0;
@@ -34,14 +34,14 @@
     height: 100%;
     opacity: 0;
     transition: opacity {{ section.settings.transition_speed }}s ease-in-out;
-  } */
+  }
 
   .health-slider-slide-{{ custom_health_slider }}.active {
     opacity: 1;
     z-index: 1;
   }
 
- //* .health-slider-image-{{ custom_health_slider }} {
+  .health-slider-image-{{ custom_health_slider }} {
     position: absolute;
     top: 0;
     left: 0;
@@ -49,7 +49,7 @@
     height: 100%;
     object-fit: cover;
     object-position: {{ section.settings.image_position }};
-  } *//
+  }
 
   /* Mobile image - hidden on desktop */
   .health-slider-mobile-image-{{ custom_health_slider }} {
