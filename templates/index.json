@@ -517,12 +517,12 @@
             "category_url": ""
           }
         },
-        "category_item_PCq3bX": {
+        "category_item_nVRcqY": {
           "type": "category_item",
           "settings": {
-            "category_image": "shopify://shop_images/WhatsApp_Image_2026-03-26_at_5.15.13_PM_2.jpg",
-            "category_title": "Okra Crop",
-            "category_url": "shopify://pages/okra"
+            "category_image": "shopify://shop_images/category_icon_2_9702fd44-69f7-4ec2-ad46-ba1b7cc930af.png",
+            "category_title": "Tomato Crop",
+            "category_url": ""
           }
         },
         "category_item_zAqdRV": {
@@ -531,13 +531,22 @@
             "category_title": "Category Name",
             "category_url": ""
           }
+        },
+        "category_item_PCq3bX": {
+          "type": "category_item",
+          "settings": {
+            "category_image": "shopify://shop_images/WhatsApp_Image_2026-03-26_at_5.15.13_PM_2.jpg",
+            "category_title": "Okra Crop",
+            "category_url": "shopify://pages/okra"
+          }
         }
       },
       "block_order": [
         "category_item_fCbfiF",
         "category_item_MPBiFD",
-        "category_item_PCq3bX",
-        "category_item_zAqdRV"
+        "category_item_nVRcqY",
+        "category_item_zAqdRV",
+        "category_item_PCq3bX"
       ],
       "name": "Shop by categories",
       "settings": {
