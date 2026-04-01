@@ -11,6 +11,34 @@
   "sections": {
     "custom_agri_slidder_UPBpVU": {
       "type": "custom-agri-slidder",
+      "blocks": {
+        "slide_myrchD": {
+          "type": "slide",
+          "settings": {
+            "image": "shopify://shop_images/2000_x_860_px.png",
+            "heading": "",
+            "subheading": "",
+            "description": "",
+            "button_text": "",
+            "button_link": ""
+          }
+        },
+        "slide_hqTtrp": {
+          "type": "slide",
+          "settings": {
+            "image": "shopify://shop_images/1774950846926.png",
+            "heading": "",
+            "subheading": "",
+            "description": "",
+            "button_text": "",
+            "button_link": ""
+          }
+        }
+      },
+      "block_order": [
+        "slide_myrchD",
+        "slide_hqTtrp"
+      ],
       "name": "Agriculture slider",
       "settings": {
         "desktop_width_percent": 100,
@@ -24,13 +52,10 @@
         "nav_button_size": 45,
         "nav_offset": 20,
         "nav_icon_color": "#ffffff",
-        "nav_opacity": 0.8,
         "dot_size": 10,
         "dots_spacing": 8,
-        "dots_offset": 20,
         "dot_color": "#ffffff",
         "dot_active_color": "#7cb342",
-        "dot_opacity": 0.5,
         "overlay_style": "left_fade",
         "overlay_opacity": 1,
         "text_area_width": 50,
@@ -51,38 +76,7 @@
         "button_text_color": "#ffffff",
         "button_hover_bg_color": "#558b2f",
         "button_hover_text_color": "#ffffff",
-        "button_border_radius": 8,
-        "slide_1_image": "shopify://shop_images/Rectangle_3_1.png",
-        "slide_1_mobile_image": "shopify://shop_images/kisan-mobile-banner.png",
-        "slide_1_heading": "",
-        "slide_1_subheading": "",
-        "slide_1_description": "",
-        "slide_1_button_text": "",
-        "slide_1_button_link": "",
-        "slide_2_image": "shopify://shop_images/2-1_1.png",
-        "slide_2_mobile_image": "shopify://shop_images/kisan-mobile-banner-2.png",
-        "slide_2_heading": "",
-        "slide_2_subheading": "",
-        "slide_2_description": "",
-        "slide_2_button_text": "",
-        "slide_2_button_link": "",
-        "slide_3_image": "shopify://shop_images/1774950846926.png",
-        "slide_3_heading": "",
-        "slide_3_subheading": "",
-        "slide_3_description": "",
-        "slide_3_button_text": "",
-        "slide_3_button_link": "",
-        "slide_4_image": "shopify://shop_images/2000_x_860_px.png",
-        "slide_4_heading": "",
-        "slide_4_subheading": "",
-        "slide_4_description": "",
-        "slide_4_button_text": "",
-        "slide_4_button_link": "",
-        "slide_5_heading": "",
-        "slide_5_subheading": "",
-        "slide_5_description": "",
-        "slide_5_button_text": "",
-        "slide_5_button_link": ""
+        "button_border_radius": 8
       }
     },
     "shop_by_catagory_MNBUwx": {
