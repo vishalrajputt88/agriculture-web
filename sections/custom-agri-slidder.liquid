@@ -1,7 +1,8 @@
-{% assign custom_agri_slider = section.id | replace: '_', '' | downcase %}
+{% assign custom_health_slider = section.id | replace: '_', '' | downcase %}
 
 {% style %}
-  .agri-slider-{{ custom_agri_slider }} {
+.health-slider-nav-{{ custom_health_slider }} svg { width: 34px; height: 34px; }
+  .health-slider-{{ custom_health_slider }} {
     position: relative;
     width: {{ section.settings.desktop_width_percent }}%;
     max-width: 100%;
@@ -11,20 +12,21 @@
   }
 
   /* ===== DESKTOP WRAPPER ===== */
-  .agri-slider-wrapper-{{ custom_agri_slider }} {
+  .health-slider-wrapper-{{ custom_health_slider }} {
     position: relative;
     width: 100%;
-    aspect-ratio: 16 / 7;
+    max-height: 500px;
+    aspect-ratio: 20 / 7;
   }
 
-  .agri-slider-track-{{ custom_agri_slider }} {
+  .health-slider-track-{{ custom_health_slider }} {
     display: flex;
     width: 100%;
     height: 100%;
     position: relative;
   }
 
-  .agri-slider-slide-{{ custom_agri_slider }} {
+  .health-slider-slide-{{ custom_health_slider }} {
     position: absolute;
     top: 0;
     left: 0;
@@ -32,16 +34,14 @@
     height: 100%;
     opacity: 0;
     transition: opacity {{ section.settings.transition_speed }}s ease-in-out;
-    display: flex;
-    align-items: center;
   }
 
-  .agri-slider-slide-{{ custom_agri_slider }}.active {
+  .health-slider-slide-{{ custom_health_slider }}.active {
     opacity: 1;
     z-index: 1;
   }
 
-  .agri-slider-image-{{ custom_agri_slider }} {
+  .health-slider-image-{{ custom_health_slider }} {
     position: absolute;
     top: 0;
     left: 0;
@@ -52,7 +52,7 @@
   }
 
   /* Mobile image - hidden on desktop */
-  .agri-slider-mobile-image-{{ custom_agri_slider }} {
+  .health-slider-mobile-image-{{ custom_health_slider }} {
     display: none;
     position: absolute;
     top: 0;
@@ -63,7 +63,7 @@
     object-position: center;
   }
 
-  .agri-slider-placeholder-{{ custom_agri_slider }} {
+  .health-slider-placeholder-{{ custom_health_slider }} {
     position: absolute;
     top: 0;
     left: 0;
@@ -75,45 +75,45 @@
     justify-content: center;
   }
 
-  .agri-slider-placeholder-{{ custom_agri_slider }} svg {
+  .health-slider-placeholder-{{ custom_health_slider }} svg {
     width: 100%;
     height: 100%;
     opacity: 0.15;
   }
 
   /* {% if section.settings.overlay_style == 'left_fade' %}
-    .agri-slider-overlay-{{ custom_agri_slider }} {
+    .health-slider-overlay-{{ custom_health_slider }} {
       position: absolute;
       top: 0; left: 0; width: 100%; height: 100%;
       background: linear-gradient(to right, rgba(0, 0, 0, 0.6) 0%, rgba(0, 0, 0, 0) 60%);
     }
   {% elsif section.settings.overlay_style == 'right_fade' %}
-    .agri-slider-overlay-{{ custom_agri_slider }} {
+    .health-slider-overlay-{{ custom_health_slider }} {
       position: absolute;
       top: 0; left: 0; width: 100%; height: 100%;
       background: linear-gradient(to left, rgba(0, 0, 0, 0.6) 0%, rgba(0, 0, 0, 0) 60%);
     }
   {% elsif section.settings.overlay_style == 'top_fade' %}
-    .agri-slider-overlay-{{ custom_agri_slider }} {
+    .health-slider-overlay-{{ custom_health_slider }} {
       position: absolute;
       top: 0; left: 0; width: 100%; height: 100%;
       background: linear-gradient(to bottom, rgba(0, 0, 0, 0.4) 0%, rgba(0, 0, 0, 0) 50%);
     }
   {% elsif section.settings.overlay_style == 'solid' %}
-    .agri-slider-overlay-{{ custom_agri_slider }} {
+    .health-slider-overlay-{{ custom_health_slider }} {
       position: absolute;
       top: 0; left: 0; width: 100%; height: 100%;
       background: rgba(0, 0, 0, 0.3);
     }
   {% else %}
-    .agri-slider-overlay-{{ custom_agri_slider }} {
+    .health-slider-overlay-{{ custom_health_slider }} {
       position: absolute;
       top: 0; left: 0; width: 100%; height: 100%;
       background: none;
     }
   {% endif %} */
 
-  .agri-slider-content-{{ custom_agri_slider }} {
+  .health-slider-content-{{ custom_health_slider }} {
     position: relative;
     z-index: 2;
     width: 100%;
@@ -125,14 +125,14 @@
     justify-content: flex-start;
   }
 
-  .agri-slider-text-area-{{ custom_agri_slider }} {
+  .health-slider-text-area-{{ custom_health_slider }} {
     max-width: {{ section.settings.text_area_width }}%;
     display: flex;
     flex-direction: column;
     gap: {{ section.settings.content_spacing }}px;
   }
 
-  .agri-slider-heading-{{ custom_agri_slider }} {
+  .health-slider-heading-{{ custom_health_slider }} {
     font-size: {{ section.settings.heading_size }}px;
     font-weight: 700;
     color: {{ section.settings.heading_color }};
@@ -140,58 +140,41 @@
     margin: 0;
   }
 
-  {% if section.settings.text_shadow == 'subtle' %}
-    .agri-slider-heading-{{ custom_agri_slider }},
-    .agri-slider-subheading-{{ custom_agri_slider }},
-    .agri-slider-description-{{ custom_agri_slider }} {
-      text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
-    }
-  {% elsif section.settings.text_shadow == 'medium' %}
-    .agri-slider-heading-{{ custom_agri_slider }},
-    .agri-slider-subheading-{{ custom_agri_slider }},
-    .agri-slider-description-{{ custom_agri_slider }} {
-      text-shadow: 0 2px 6px rgba(0, 0, 0, 0.5);
-    }
-  {% elsif section.settings.text_shadow == 'strong' %}
-    .agri-slider-heading-{{ custom_agri_slider }},
-    .agri-slider-subheading-{{ custom_agri_slider }},
-    .agri-slider-description-{{ custom_agri_slider }} {
-      text-shadow: 0 3px 10px rgba(0, 0, 0, 0.7);
-    }
-  {% endif %}
-
-  .agri-slider-subheading-{{ custom_agri_slider }} {
+  
+  .health-slider-subheading-{{ custom_health_slider }} {
     font-size: {{ section.settings.subheading_size }}px;
     color: {{ section.settings.text_color }};
     line-height: 1.5;
     margin: 0;
   }
 
-  .agri-slider-description-{{ custom_agri_slider }} {
+  .health-slider-description-{{ custom_health_slider }} {
     font-size: {{ section.settings.description_size }}px;
     color: {{ section.settings.text_color }};
     line-height: 1.6;
     margin: 0;
   }
 
-  .agri-slider-cta-{{ custom_agri_slider }} {
+  .health-slider-cta-{{ custom_health_slider }} {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    padding: {{ section.settings.button_padding_vertical }}px {{ section.settings.button_padding_horizontal }}px;
+    padding: 9px {{ section.settings.button_padding_horizontal }}px;
     background-color: {{ section.settings.button_bg_color }};
     color: {{ section.settings.button_text_color }};
-    font-size: {{ section.settings.button_font_size }}px;
+    font-size: 24px;
     font-weight: 600;
     text-decoration: none;
     border-radius: {{ section.settings.button_border_radius }}px;
     transition: all 0.3s ease;
     border: none;
     cursor: pointer;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    max-width: 250px;
+    border-radius: 50px;
+    min-width: 250px;
   }
 
-  .agri-slider-cta-{{ custom_agri_slider }}:hover {
+  .health-slider-cta-{{ custom_health_slider }}:hover {
     background-color: {{ section.settings.button_hover_bg_color }};
     color: {{ section.settings.button_hover_text_color }};
     transform: translateY(-2px);
@@ -199,7 +182,7 @@
   }
 
   /* Nav Arrows */
-  .agri-slider-nav-{{ custom_agri_slider }} {
+  .health-slider-nav-{{ custom_health_slider }} {
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
@@ -215,46 +198,54 @@
     justify-content: center;
     cursor: pointer;
     transition: all 0.3s ease;
-    opacity: {{ section.settings.nav_opacity }};
   }
 
-  .agri-slider-nav-{{ custom_agri_slider }}:hover {
+  .health-slider-nav-{{ custom_health_slider }}:hover {
     opacity: 1;
     transform: translateY(-50%) scale(1.1);
   }
 
-  .agri-slider-nav-prev-{{ custom_agri_slider }} { left: {{ section.settings.nav_offset }}px; }
-  .agri-slider-nav-next-{{ custom_agri_slider }} { right: {{ section.settings.nav_offset }}px; }
+  .health-slider-nav-prev-{{ custom_health_slider }} { left: {{ section.settings.nav_offset }}px; }
+  .health-slider-nav-next-{{ custom_health_slider }} { right: {{ section.settings.nav_offset }}px; }
 
   /* Dots */
-  .agri-slider-dots-{{ custom_agri_slider }} {
+  .health-slider-dots-{{ custom_health_slider }} {
     position: absolute;
-    bottom: {{ section.settings.dots_offset }}px;
-    left: 50%;
+    bottom: 17px;
+    left: 6%;
     transform: translateX(-50%);
     z-index: 3;
     display: flex;
     gap: {{ section.settings.dots_spacing }}px;
   }
 
-  .agri-slider-dot-{{ custom_agri_slider }} {
-    width: {{ section.settings.dot_size }}px;
-    height: {{ section.settings.dot_size }}px;
-    border-radius: 100%;
-    background-color: {{ section.settings.dot_color }};
-    border: none;
+  .health-slider-dot-{{ custom_health_slider }} {
+   
+    
     cursor: pointer;
     transition: all 0.3s ease;
-    opacity: {{ section.settings.dot_opacity }};
+
+    width: {{ section.settings.dot_size }}px;
+  height: {{ section.settings.dot_size }}px;
+  min-width: {{ section.settings.dot_size }}px;
+  min-height: {{ section.settings.dot_size }}px;
+
+  padding: 0;
+  border-radius: 50%;
+  Border: 1px solid {{ section.settings.dot_color }};
+  background: transparent;
+  display: inline-block;
+  line-height: 0;
+  font-size: 0;
+  appearance: none;
+  -webkit-appearance: none;
   }
 
-  .agri-slider-dot-{{ custom_agri_slider }}.active {
+  .health-slider-dot-{{ custom_health_slider }}.active {
     background-color: {{ section.settings.dot_active_color }};
-    opacity: 1;
-    transform: scale(1.2);
   }
 
-  .agri-slider-empty-state-{{ custom_agri_slider }} {
+  .health-slider-empty-state-{{ custom_health_slider }} {
     position: absolute;
     bottom: 20px;
     left: 50%;
@@ -273,152 +264,162 @@
      MOBILE STYLES — 100vh height + mobile image
      ============================================= */
   @media screen and (max-width: 768px) {
+      .health-slider-nav-{{ custom_health_slider }} {
+
+    background-color: transparent; }
+   
+     .health-slider-dots-{{ custom_health_slider }} {
+  
+    left: 50%;
+   
+  }
+
+
+     .health-slider-cta-{{ custom_health_slider }} {
+   min-width: auto;
+    font-size: 16px; max-width: 200px; }
 
     /* Override desktop aspect-ratio → full viewport height */
-    .agri-slider-wrapper-{{ custom_agri_slider }} {
+    .health-slider-wrapper-{{ custom_health_slider }} {
       aspect-ratio: unset !important;
-      height: 70vh;
+      height: 62vh;
+    max-height: 517px;
+
     }
 
     /* Show mobile image, hide desktop image (when mobile image exists) */
-    .agri-slider-slide-{{ custom_agri_slider }}.has-mobile-image
-      .agri-slider-image-{{ custom_agri_slider }} {
+    .health-slider-slide-{{ custom_health_slider }}.has-mobile-image
+      .health-slider-image-{{ custom_health_slider }} {
       display: none;
     }
 
-    .agri-slider-slide-{{ custom_agri_slider }}.has-mobile-image
-      .agri-slider-mobile-image-{{ custom_agri_slider }} {
+    .health-slider-slide-{{ custom_health_slider }}.has-mobile-image
+      .health-slider-mobile-image-{{ custom_health_slider }} {
       display: block;
     }
 
     /* Content adjustments */
-    .agri-slider-content-{{ custom_agri_slider }} {
+    .health-slider-content-{{ custom_health_slider }} {
       padding: 30px 20px;
       align-items: flex-end;
       padding-bottom: 60px;
     }
 
-    .agri-slider-text-area-{{ custom_agri_slider }} {
+    .health-slider-text-area-{{ custom_health_slider }} {
       max-width: 100%;
     }
 
-    .agri-slider-heading-{{ custom_agri_slider }} {
+    .health-slider-heading-{{ custom_health_slider }} {
       font-size: {{ section.settings.heading_size | times: 0.55 }}px;
     }
 
-    .agri-slider-subheading-{{ custom_agri_slider }} {
+    .health-slider-subheading-{{ custom_health_slider }} {
       font-size: {{ section.settings.subheading_size | times: 0.8 }}px;
     }
 
-    .agri-slider-description-{{ custom_agri_slider }} {
+    .health-slider-description-{{ custom_health_slider }} {
       font-size: {{ section.settings.description_size | times: 0.9 }}px;
     }
 
-    .agri-slider-nav-{{ custom_agri_slider }} {
-      width: {{ section.settings.nav_button_size | times: 0.8 }}px;
-      height: {{ section.settings.nav_button_size | times: 0.8 }}px;
+    .health-slider-nav-{{ custom_health_slider }} {
+      width: {{ section.settings.nav_button_size }}px;
+      height: {{ section.settings.nav_button_size }}px;
     }
 
-    .agri-slider-nav-prev-{{ custom_agri_slider }} { left: 10px; }
-    .agri-slider-nav-next-{{ custom_agri_slider }} { right: 10px; }
+    .health-slider-nav-prev-{{ custom_health_slider }} { left: 10px; }
+    .health-slider-nav-next-{{ custom_health_slider }} { right: 10px; }
   }
 {% endstyle %}
 
-<agri-slider-hero-{{ custom_agri_slider }}
-  class="agri-slider-{{ custom_agri_slider }}"
+<health-slider-hero-{{ custom_health_slider }}
+  class="health-slider-{{ custom_health_slider }}"
   data-autoplay="{{ section.settings.autoplay }}"
   data-autoplay-speed="{{ section.settings.autoplay_speed }}"
   {{ section.shopify_attributes }}
 >
-  <div class="agri-slider-wrapper-{{ custom_agri_slider }}">
-    <div class="agri-slider-track-{{ custom_agri_slider }}">
+  <div class="health-slider-wrapper-{{ custom_health_slider }}">
+    <div class="health-slider-track-{{ custom_health_slider }}">
 
       {% assign has_slides = false %}
+{% for block in section.blocks %}
 
-      {% for i in (1..5) %}
-        {% liquid
-          assign image_key         = 'slide_' | append: i | append: '_image'
-          assign mobile_image_key  = 'slide_' | append: i | append: '_mobile_image'
-          assign heading_key       = 'slide_' | append: i | append: '_heading'
-          assign subheading_key    = 'slide_' | append: i | append: '_subheading'
-          assign description_key   = 'slide_' | append: i | append: '_description'
-          assign button_text_key   = 'slide_' | append: i | append: '_button_text'
-          assign button_link_key   = 'slide_' | append: i | append: '_button_link'
+  {% assign slide_image        = block.settings.image %}
+  {% assign slide_mobile_image = block.settings.mobile_image %}
+  {% assign slide_heading      = block.settings.heading %}
+  {% assign slide_subheading   = block.settings.subheading %}
+  {% assign slide_description  = block.settings.description %}
+  {% assign slide_button_text  = block.settings.button_text %}
+  {% assign slide_button_link  = block.settings.button_link %}
 
-          assign slide_image        = section.settings[image_key]
-          assign slide_mobile_image = section.settings[mobile_image_key]
-          assign slide_heading      = section.settings[heading_key]
-          assign slide_subheading   = section.settings[subheading_key]
-          assign slide_description  = section.settings[description_key]
-          assign slide_button_text  = section.settings[button_text_key]
-          assign slide_button_link  = section.settings[button_link_key]
-        %}
+  {% if slide_image != blank %}
+    {% assign has_slides = true %}
 
-        {% if slide_image != blank %}
-          {% assign has_slides = true %}
+    {% assign mobile_class = '' %}
+    {% if slide_mobile_image != blank %}
+      {% assign mobile_class = ' has-mobile-image' %}
+    {% endif %}
 
-          {% comment %} Add 'has-mobile-image' class when a separate mobile image exists {% endcomment %}
-          {% assign mobile_class = '' %}
-          {% if slide_mobile_image != blank %}
-            {% assign mobile_class = ' has-mobile-image' %}
+    <div class="health-slider-slide-{{ custom_health_slider }}{{ mobile_class }} {% if forloop.first %}active{% endif %}"
+         data-slide="{{ forloop.index0 }}"
+         {{ block.shopify_attributes }}>
+
+      <img
+        src="{{ slide_image | image_url: width: 2000 }}"
+        alt="{{ slide_image.alt | escape }}"
+        loading="lazy"
+        width="{{ slide_image.width }}"
+        height="{{ slide_image.height }}"
+        class="health-slider-image-{{ custom_health_slider }}"
+      >
+
+      {% if slide_mobile_image != blank %}
+        <img
+          src="{{ slide_mobile_image | image_url: width: 1200 }}"
+          alt="{{ slide_mobile_image.alt | default: slide_image.alt | escape }}"
+          loading="lazy"
+          width="{{ slide_mobile_image.width }}"
+          height="{{ slide_mobile_image.height }}"
+          class="health-slider-mobile-image-{{ custom_health_slider }}"
+        >
+      {% endif %}
+
+      <div class="health-slider-overlay-{{ custom_health_slider }}"></div>
+
+      <div class="health-slider-content-{{ custom_health_slider }}">
+        <div class="health-slider-text-area-{{ custom_health_slider }}">
+
+          {% if slide_heading != blank %}
+            <h2 class="health-slider-heading-{{ custom_health_slider }}">{{ slide_heading }}</h2>
           {% endif %}
 
-          <div class="agri-slider-slide-{{ custom_agri_slider }}{{ mobile_class }} {% if forloop.first %}active{% endif %}"
-               data-slide="{{ forloop.index0 }}">
+          {% if slide_subheading != blank %}
+            <div class="health-slider-subheading-{{ custom_health_slider }}">{{ slide_subheading }}</div>
+          {% endif %}
 
-            {{- '<!-- Desktop image -->' }}
-            <img
-              src="{{ slide_image | image_url: width: 2000 }}"
-              alt="{{ slide_image.alt | escape }}"
-              loading="lazy"
-              width="{{ slide_image.width }}"
-              height="{{ slide_image.height }}"
-              class="agri-slider-image-{{ custom_agri_slider }}"
-            >
+          {% if slide_description != blank %}
+            <div class="health-slider-description-{{ custom_health_slider }}">{{ slide_description }}</div>
+          {% endif %}
 
-            {% if slide_mobile_image != blank %}
-              {{- '<!-- Mobile image (shown only on ≤768px) -->' }}
-              <img
-                src="{{ slide_mobile_image | image_url: width: 1200 }}"
-                alt="{{ slide_mobile_image.alt | default: slide_image.alt | escape }}"
-                loading="lazy"
-                width="{{ slide_mobile_image.width }}"
-                height="{{ slide_mobile_image.height }}"
-                class="agri-slider-mobile-image-{{ custom_agri_slider }}"
-              >
-            {% endif %}
+          {% if slide_button_text != blank %}
+            <a href="{{ slide_button_link }}" class="health-slider-cta-{{ custom_health_slider }}">
+              {{ slide_button_text }}
+            </a>
+          {% endif %}
 
-            <div class="agri-slider-overlay-{{ custom_agri_slider }}"></div>
+        </div>
+      </div>
 
-            <div class="agri-slider-content-{{ custom_agri_slider }}">
-              <div class="agri-slider-text-area-{{ custom_agri_slider }}">
-                {% if slide_heading != blank %}
-                  <h2 class="agri-slider-heading-{{ custom_agri_slider }}">{{ slide_heading }}</h2>
-                {% endif %}
-                {% if slide_subheading != blank %}
-                  <div class="agri-slider-subheading-{{ custom_agri_slider }}">{{ slide_subheading }}</div>
-                {% endif %}
-                {% if slide_description != blank %}
-                  <div class="agri-slider-description-{{ custom_agri_slider }}">{{ slide_description }}</div>
-                {% endif %}
-                {% if slide_button_text != blank %}
-                  <a href="{{ slide_button_link }}" class="agri-slider-cta-{{ custom_agri_slider }}">
-                    {{ slide_button_text }}
-                  </a>
-                {% endif %}
-              </div>
-            </div>
+    </div>
+  {% endif %}
 
-          </div>
-        {% endif %}
-      {% endfor %}
+{% endfor %}
 
       {% unless has_slides %}
-        <div class="agri-slider-slide-{{ custom_agri_slider }} active" data-slide="0">
-          <div class="agri-slider-placeholder-{{ custom_agri_slider }}">
+        <div class="health-slider-slide-{{ custom_health_slider }} active" data-slide="0">
+          <div class="health-slider-placeholder-{{ custom_health_slider }}">
             {{ 'hero-apparel-1' | placeholder_svg_tag }}
           </div>
-          <div class="agri-slider-empty-state-{{ custom_agri_slider }}">
+          <div class="health-slider-empty-state-{{ custom_health_slider }}">
             Add images to your slides to get started
           </div>
         </div>
@@ -426,36 +427,24 @@
     </div>
 
     {% if has_slides and section.settings.show_navigation %}
-      <button
-        class="agri-slider-nav-{{ custom_agri_slider }} agri-slider-nav-prev-{{ custom_agri_slider }}"
-        aria-label="Previous slide"
-        data-direction="prev"
-      >
-        <svg width="24" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <polyline points="15 18 9 12 15 6"></polyline>
-        </svg>
+      <button class="health-slider-nav-{{ custom_health_slider }} health-slider-nav-prev-{{ custom_health_slider }}" aria-label="Previous slide">
+        {{  'icon-chevron-left.svg' | inline_asset_content }}
       </button>
-      <button
-        class="agri-slider-nav-{{ custom_agri_slider }} agri-slider-nav-next-{{ custom_agri_slider }}"
-        aria-label="Next slide"
-        data-direction="next"
-      >
-        <svg width="24" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <polyline points="9 18 15 12 9 6"></polyline>
-        </svg>
+      <button class="health-slider-nav-{{ custom_health_slider }} health-slider-nav-next-{{ custom_health_slider }}" aria-label="Next slide">
+        {{  'icon-chevron-right.svg' | inline_asset_content }}
       </button>
     {% endif %}
 
     {% if has_slides and section.settings.show_dots %}
-      <div class="agri-slider-dots-{{ custom_agri_slider }}"></div>
+      <div class="health-slider-dots-{{ custom_health_slider }}"></div>
     {% endif %}
 
   </div>
-</agri-slider-hero-{{ custom_agri_slider }}>
+</health-slider-hero-{{ custom_health_slider }}>
 
 <script>
   (function() {
-    class AgriSliderHero extends HTMLElement {
+    class healthSliderHero extends HTMLElement {
       constructor() {
         super();
         this.currentSlide = 0;
@@ -464,7 +453,7 @@
 
       connectedCallback() {
         this.style.display = 'block';
-        this.slides = this.querySelectorAll('.agri-slider-slide-{{ custom_agri_slider }}');
+        this.slides = this.querySelectorAll('.health-slider-slide-{{ custom_health_slider }}');
         this.totalSlides = this.slides.length;
 
         if (this.totalSlides <= 1) return;
@@ -479,23 +468,23 @@
       }
 
       setupNavigation() {
-        const prevBtn = this.querySelector('.agri-slider-nav-prev-{{ custom_agri_slider }}');
-        const nextBtn = this.querySelector('.agri-slider-nav-next-{{ custom_agri_slider }}');
+        const prevBtn = this.querySelector('.health-slider-nav-prev-{{ custom_health_slider }}');
+        const nextBtn = this.querySelector('.health-slider-nav-next-{{ custom_health_slider }}');
         if (prevBtn) prevBtn.addEventListener('click', () => this.goToSlide(this.currentSlide - 1));
         if (nextBtn) nextBtn.addEventListener('click', () => this.goToSlide(this.currentSlide + 1));
       }
 
       setupDots() {
-        const dotsContainer = this.querySelector('.agri-slider-dots-{{ custom_agri_slider }}');
+        const dotsContainer = this.querySelector('.health-slider-dots-{{ custom_health_slider }}');
         if (!dotsContainer) return;
         for (let i = 0; i < this.totalSlides; i++) {
           const dot = document.createElement('button');
-          dot.className = 'agri-slider-dot-{{ custom_agri_slider }}' + (i === 0 ? ' active' : '');
+          dot.className = 'health-slider-dot-{{ custom_health_slider }}' + (i === 0 ? ' active' : '');
           dot.setAttribute('aria-label', 'Go to slide ' + (i + 1));
           dot.addEventListener('click', () => this.goToSlide(i));
           dotsContainer.appendChild(dot);
         }
-        this.dots = dotsContainer.querySelectorAll('.agri-slider-dot-{{ custom_agri_slider }}');
+        this.dots = dotsContainer.querySelectorAll('.health-slider-dot-{{ custom_health_slider }}');
       }
 
       setupAutoplay() {
@@ -524,13 +513,13 @@
       }
     }
 
-    customElements.define('agri-slider-hero-{{ custom_agri_slider }}', AgriSliderHero);
+    customElements.define('health-slider-hero-{{ custom_health_slider }}', healthSliderHero);
   })();
 </script>
 
 {% schema %}
 {
-  "name": "Agriculture slider",
+  "name": "Health Hero Slider",
   "settings": [
     {
       "type": "header",
@@ -641,15 +630,7 @@
       "label": "Icon color",
       "default": "#000000"
     },
-    {
-      "type": "range",
-      "id": "nav_opacity",
-      "label": "Opacity",
-      "min": 0.3,
-      "max": 1,
-      "step": 0.1,
-      "default": 0.8
-    },
+   
     {
       "type": "header",
       "content": "Dots style"
@@ -674,16 +655,7 @@
       "unit": "px",
       "default": 8
     },
-    {
-      "type": "range",
-      "id": "dots_offset",
-      "label": "Bottom offset",
-      "min": 10,
-      "max": 50,
-      "step": 5,
-      "unit": "px",
-      "default": 20
-    },
+   
     {
       "type": "color",
       "id": "dot_color",
@@ -696,15 +668,7 @@
       "label": "Active dot color",
       "default": "#7cb342"
     },
-    {
-      "type": "range",
-      "id": "dot_opacity",
-      "label": "Inactive opacity",
-      "min": 0.3,
-      "max": 0.8,
-      "step": 0.1,
-      "default": 0.5
-    },
+    
     {
       "type": "header",
       "content": "Overlay"
@@ -796,9 +760,9 @@
       "label": "Heading size",
       "min": 24,
       "max": 72,
-      "step": 4,
+      "step": 2,
       "unit": "px",
-      "default": 56
+      "default": 50
     },
     {
       "type": "color",
@@ -911,215 +875,26 @@
       "step": 2,
       "unit": "px",
       "default": 8
-    },
-    {
-      "type": "header",
-      "content": "━━━ Slide 1 ━━━"
-    },
-    {
-      "type": "image_picker",
-      "id": "slide_1_image",
-      "label": "Desktop Image"
-    },
-    {
-      "type": "image_picker",
-      "id": "slide_1_mobile_image",
-      "label": "Mobile Image (optional)",
-      "info": "Portrait image recommended (e.g. 750×1334px). If empty, desktop image will be used on mobile too."
-    },
-    {
-      "type": "inline_richtext",
-      "id": "slide_1_heading",
-      "label": "Heading",
-      "default": "Fresh from the Fields"
-    },
-    {
-      "type": "inline_richtext",
-      "id": "slide_1_subheading",
-      "label": "Subheading",
-      "default": "Premium quality products"
-    },
-    {
-      "type": "richtext",
-      "id": "slide_1_description",
-      "label": "Description",
-      "default": "<p>Discover farm-fresh produce</p>"
-    },
-    {
-      "type": "text",
-      "id": "slide_1_button_text",
-      "label": "Button text",
-      "default": "Explore Products"
-    },
-    {
-      "type": "url",
-      "id": "slide_1_button_link",
-      "label": "Button link"
-    },
-    {
-      "type": "header",
-      "content": "━━━ Slide 2 ━━━"
-    },
-    {
-      "type": "image_picker",
-      "id": "slide_2_image",
-      "label": "Desktop Image"
-    },
-    {
-      "type": "image_picker",
-      "id": "slide_2_mobile_image",
-      "label": "Mobile Image (optional)",
-      "info": "Portrait image recommended. If empty, desktop image used on mobile."
-    },
-    {
-      "type": "inline_richtext",
-      "id": "slide_2_heading",
-      "label": "Heading"
-    },
-    {
-      "type": "inline_richtext",
-      "id": "slide_2_subheading",
-      "label": "Subheading"
-    },
-    {
-      "type": "richtext",
-      "id": "slide_2_description",
-      "label": "Description"
-    },
-    {
-      "type": "text",
-      "id": "slide_2_button_text",
-      "label": "Button text"
-    },
-    {
-      "type": "url",
-      "id": "slide_2_button_link",
-      "label": "Button link"
-    },
-    {
-      "type": "header",
-      "content": "━━━ Slide 3 ━━━"
-    },
-    {
-      "type": "image_picker",
-      "id": "slide_3_image",
-      "label": "Desktop Image"
-    },
-    {
-      "type": "image_picker",
-      "id": "slide_3_mobile_image",
-      "label": "Mobile Image (optional)",
-      "info": "Portrait image recommended. If empty, desktop image used on mobile."
-    },
-    {
-      "type": "inline_richtext",
-      "id": "slide_3_heading",
-      "label": "Heading"
-    },
-    {
-      "type": "inline_richtext",
-      "id": "slide_3_subheading",
-      "label": "Subheading"
-    },
-    {
-      "type": "richtext",
-      "id": "slide_3_description",
-      "label": "Description"
-    },
-    {
-      "type": "text",
-      "id": "slide_3_button_text",
-      "label": "Button text"
-    },
-    {
-      "type": "url",
-      "id": "slide_3_button_link",
-      "label": "Button link"
-    },
-    {
-      "type": "header",
-      "content": "━━━ Slide 4 ━━━"
-    },
-    {
-      "type": "image_picker",
-      "id": "slide_4_image",
-      "label": "Desktop Image"
-    },
-    {
-      "type": "image_picker",
-      "id": "slide_4_mobile_image",
-      "label": "Mobile Image (optional)",
-      "info": "Portrait image recommended. If empty, desktop image used on mobile."
-    },
-    {
-      "type": "inline_richtext",
-      "id": "slide_4_heading",
-      "label": "Heading"
-    },
-    {
-      "type": "inline_richtext",
-      "id": "slide_4_subheading",
-      "label": "Subheading"
-    },
-    {
-      "type": "richtext",
-      "id": "slide_4_description",
-      "label": "Description"
-    },
-    {
-      "type": "text",
-      "id": "slide_4_button_text",
-      "label": "Button text"
-    },
-    {
-      "type": "url",
-      "id": "slide_4_button_link",
-      "label": "Button link"
-    },
-    {
-      "type": "header",
-      "content": "━━━ Slide 5 ━━━"
-    },
-    {
-      "type": "image_picker",
-      "id": "slide_5_image",
-      "label": "Desktop Image"
-    },
-    {
-      "type": "image_picker",
-      "id": "slide_5_mobile_image",
-      "label": "Mobile Image (optional)",
-      "info": "Portrait image recommended. If empty, desktop image used on mobile."
-    },
-    {
-      "type": "inline_richtext",
-      "id": "slide_5_heading",
-      "label": "Heading"
-    },
-    {
-      "type": "inline_richtext",
-      "id": "slide_5_subheading",
-      "label": "Subheading"
-    },
-    {
-      "type": "richtext",
-      "id": "slide_5_description",
-      "label": "Description"
-    },
-    {
-      "type": "text",
-      "id": "slide_5_button_text",
-      "label": "Button text"
-    },
-    {
-      "type": "url",
-      "id": "slide_5_button_link",
-      "label": "Button link"
     }
   ],
+  "blocks": [
+  {
+    "type": "slide",
+    "name": "Slide",
+    "settings": [
+      { "type": "image_picker", "id": "image", "label": "Desktop Image" },
+      { "type": "image_picker", "id": "mobile_image", "label": "Mobile Image" },
+      { "type": "inline_richtext", "id": "heading", "label": "Heading" },
+      { "type": "inline_richtext", "id": "subheading", "label": "Subheading" },
+      { "type": "richtext", "id": "description", "label": "Description" },
+      { "type": "text", "id": "button_text", "label": "Button text" },
+      { "type": "url", "id": "button_link", "label": "Button link" }
+    ]
+  }
+],
   "presets": [
     {
-      "name": "Agriculture slider"
+      "name": "Health Hero Slider"
     }
   ]
 }
