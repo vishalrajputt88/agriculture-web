@@ -26,7 +26,7 @@
         "nav_icon_ATMy88": {
           "type": "nav_icon",
           "settings": {
-            "nav_collection": "bio-insecticides",
+            "nav_collection": "best-fertilisers-for-okra-crop",
             "icon_image": "shopify://shop_images/category_icon_4.png",
             "icon_label": "Okra Crop",
             "icon_bg": "#e8f5e9",
@@ -37,9 +37,9 @@
         "sub_collection_card_PCpEBB": {
           "type": "sub_collection_card",
           "settings": {
-            "parent_handle": "bio-insecticides",
-            "sub_collection": "ash-gouurd",
-            "card_image": "shopify://shop_images/category_icon_7.png",
+            "parent_handle": "best-fertilisers-for-okra-crop",
+            "sub_collection": "best-fertilisers-for-okra-crop",
+            "card_image": "shopify://shop_images/okra-crop-image-gen.png",
             "card_label": "",
             "card_desc": ""
           }
