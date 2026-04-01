@@ -15,7 +15,8 @@
         "slide_myrchD": {
           "type": "slide",
           "settings": {
-            "image": "shopify://shop_images/2000_x_860_px.png",
+            "image": "shopify://shop_images/Rectangle_3_1.png",
+            "mobile_image": "shopify://shop_images/kisan-mobile-banner.png",
             "heading": "",
             "subheading": "",
             "description": "",
@@ -26,7 +27,8 @@
         "slide_hqTtrp": {
           "type": "slide",
           "settings": {
-            "image": "shopify://shop_images/1774950846926.png",
+            "image": "shopify://shop_images/ChatGPT_Image_Feb_25_2026_06_31_35_PM.png",
+            "mobile_image": "shopify://shop_images/ChatGPT_Image_Feb_25_2026_06_36_13_PM.png",
             "heading": "",
             "subheading": "",
             "description": "",
