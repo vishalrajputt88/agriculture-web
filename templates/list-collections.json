@@ -12,6 +12,17 @@
     "collection_list_Wfgh3m": {
       "type": "main-collection-list",
       "blocks": {
+        "product_row_tM3Pdp": {
+          "type": "product_row",
+          "settings": {
+            "row_collection": "ash-gouurd",
+            "row_heading": "Top Selling Seeds",
+            "row_subheading": "High germination rate, field-tested varieties.",
+            "badge_certified": true,
+            "badge_organic": true,
+            "badge_quality": true
+          }
+        },
         "nav_icon_ATMy88": {
           "type": "nav_icon",
           "settings": {
@@ -35,6 +46,7 @@
         }
       },
       "block_order": [
+        "product_row_tM3Pdp",
         "nav_icon_ATMy88",
         "sub_collection_card_PCpEBB"
       ],
