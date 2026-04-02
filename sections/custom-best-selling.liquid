@@ -517,13 +517,26 @@
                   {% endif %}
 
                   <!-- Add to Cart -->
+                  {% comment %} <div class="product-card-form-{{ custom_best_selling }}">
+                    {% if product.available %}
+                      <button
+                        type="button"
+                        class="product-card-button-{{ custom_best_selling }} js-atc-btn"
+                        data-variant-id="{{ first_available.id }}"
+                      >{{ section.settings.button_text }}</button>
+                    {% else %}
+                      <button type="button" class="product-card-button-{{ custom_best_selling }}" disabled>Sold Out</button>
+                    {% endif %}
+                  </div>
+                  <div class="product-card-bulk-text-{{ custom_best_selling }}">Discount on Bulk Purchase</div> {% endcomment %}
+
                   <div class="product-card-form-{{ custom_best_selling }}">
                   {% if first_available.available %}
                   <button
                   type="button"
                   class="product-card-button-{{ custom_best_selling }} js-atc-btn"
                   data-variant-id="{{ first_available.id }}"
-                  >{{ section.settings.button_text }}</button>
+                  >{{ section.settings.button_text }} </button>
                   {% else %}
                   <button type="button" class="product-card-button-{{ custom_best_selling }}" disabled>Sold Out</button>
                   {% endif %}
@@ -562,169 +575,221 @@
 <script>
 (function () {
   var KEY = '{{ custom_best_selling }}';
-  var TAG = 'product-grid-' + KEY;
 
-  if (customElements.get(TAG)) return;
-
-  customElements.define(TAG, class extends HTMLElement {
+  class ProductGrid extends HTMLElement {
     connectedCallback() {
-      var k = KEY;
-      var self = this;
-      self._k = k;
-      self._setupDropdowns(k);
-      self._setupAjaxCart(k);
-      self._setupSlider(k);
+      this.setupDropdowns();
+      this.setupAjaxCart();
+      this.setupSlider();
     }
 
-    _setupDropdowns(k) {
-      var self = this;
-      self.querySelectorAll('.variant-dropdown-wrap-' + k).forEach(function(wrap) {
-        var btn     = wrap.querySelector('.variant-dropdown-btn-' + k);
-        var menu    = wrap.querySelector('.variant-dropdown-menu-' + k);
-        var label   = wrap.querySelector('.vd-label-' + k);
-        var card    = wrap.closest('.product-card-' + k);
-        var atcBtn  = card && card.querySelector('.js-atc-btn');
-        var priceEl = card && card.querySelector('[data-price-display]');
-        var cmpEl   = card && card.querySelector('[data-compare-display]');
+    /* ── Modern Variant Dropdown ──────────────────── */
+    setupDropdowns() {
+      this.querySelectorAll('.variant-dropdown-wrap-' + KEY).forEach(wrap => {
+        const btn     = wrap.querySelector('.variant-dropdown-btn-' + KEY);
+        const menu    = wrap.querySelector('.variant-dropdown-menu-' + KEY);
+        const label   = wrap.querySelector('.vd-label-' + KEY);
+        const card    = wrap.closest('.product-card-' + KEY);
+        const atcBtn  = card && card.querySelector('.js-atc-btn');
+        const priceEl = card && card.querySelector('[data-price-display]');
+        const cmpEl   = card && card.querySelector('[data-compare-display]');
+
         if (!btn || !menu) return;
 
-        btn.addEventListener('click', function(e) {
+        // Toggle open/close
+        btn.addEventListener('click', (e) => {
           e.stopPropagation();
-          var isOpen = menu.classList.contains('open-' + k);
-          self.querySelectorAll('.variant-dropdown-menu-' + k).forEach(function(m) { m.classList.remove('open-' + k); });
-          self.querySelectorAll('.variant-dropdown-btn-' + k).forEach(function(b) { b.classList.remove('open-' + k); });
+          const isOpen = menu.classList.contains('open-' + KEY);
+          // Close all other dropdowns first
+          document.querySelectorAll('.variant-dropdown-menu-' + KEY).forEach(m => {
+            m.classList.remove('open-' + KEY);
+            m.previousElementSibling && m.previousElementSibling.classList && m.previousElementSibling.classList.remove('open-' + KEY);
+          });
+          document.querySelectorAll('.variant-dropdown-btn-' + KEY).forEach(b => b.classList.remove('open-' + KEY));
           if (!isOpen) {
-            menu.classList.add('open-' + k);
-            btn.classList.add('open-' + k);
+            menu.classList.add('open-' + KEY);
+            btn.classList.add('open-' + KEY);
           }
         });
 
-        menu.querySelectorAll('.variant-dropdown-option-' + k).forEach(function(opt) {
-          opt.addEventListener('click', function() {
+        // Option click
+        menu.querySelectorAll('.variant-dropdown-option-' + KEY).forEach(opt => {
+          opt.addEventListener('click', () => {
             if (opt.dataset.available === 'false') return;
-            menu.querySelectorAll('.variant-dropdown-option-' + k).forEach(function(o) { o.classList.remove('active-opt-' + k); });
-            opt.classList.add('active-opt-' + k);
+
+            // Update active state
+            menu.querySelectorAll('.variant-dropdown-option-' + KEY).forEach(o => o.classList.remove('active-opt-' + KEY));
+            opt.classList.add('active-opt-' + KEY);
+
+            // Update label
             label.textContent = opt.dataset.title;
-            menu.classList.remove('open-' + k);
-            btn.classList.remove('open-' + k);
+
+            // Close menu
+            menu.classList.remove('open-' + KEY);
+            btn.classList.remove('open-' + KEY);
+
+            // Update ATC button
             if (atcBtn) atcBtn.dataset.variantId = opt.dataset.variantId;
-            var price   = parseInt(opt.dataset.price, 10);
-            var compare = parseInt(opt.dataset.compare, 10);
-            var fmt = new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 });
+
+            // Update price
+            const price   = parseInt(opt.dataset.price, 10);
+            const compare = parseInt(opt.dataset.compare, 10);
+            const fmt = new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 });
             if (priceEl) priceEl.textContent = fmt.format(price / 100);
             if (cmpEl) {
-              if (compare > price) { cmpEl.textContent = fmt.format(compare / 100); cmpEl.style.display = ''; }
-              else { cmpEl.textContent = ''; cmpEl.style.display = 'none'; }
+              if (compare > price) {
+                cmpEl.textContent   = fmt.format(compare / 100);
+                cmpEl.style.display = '';
+              } else {
+                cmpEl.textContent   = '';
+                cmpEl.style.display = 'none';
+              }
             }
           });
         });
       });
 
-      document.addEventListener('click', function() {
-        self.querySelectorAll('.variant-dropdown-menu-' + k).forEach(function(m) { m.classList.remove('open-' + k); });
-        self.querySelectorAll('.variant-dropdown-btn-' + k).forEach(function(b) { b.classList.remove('open-' + k); });
+      // Click outside = close all
+      document.addEventListener('click', () => {
+        this.querySelectorAll('.variant-dropdown-menu-' + KEY).forEach(m => m.classList.remove('open-' + KEY));
+        this.querySelectorAll('.variant-dropdown-btn-' + KEY).forEach(b => b.classList.remove('open-' + KEY));
       });
     }
 
-    _setupAjaxCart(k) {
-      var self = this;
-      self.querySelectorAll('.js-atc-btn').forEach(function(button) {
-        button.addEventListener('click', function() {
-          var variantId = button.dataset.variantId;
+    /* ── Ajax Add to Cart ──────────────────────────── */
+    setupAjaxCart() {
+      this.querySelectorAll('.js-atc-btn').forEach(button => {
+        button.addEventListener('click', () => {
+          const variantId = button.dataset.variantId;
           if (!variantId || button.disabled) return;
-          var originalText = button.textContent.trim();
+
+          const originalText = button.textContent.trim();
           button.disabled = true;
           button.textContent = 'Adding...';
-          var sectionIds = Array.from(
+
+          // Find all cart-items-component section IDs so drawer updates
+          const sectionIds = Array.from(
             document.querySelectorAll('cart-items-component[data-section-id]')
-          ).map(function(el) { return el.dataset.sectionId; }).filter(Boolean);
-          var payload = { id: parseInt(variantId, 10), quantity: 1 };
-          if (sectionIds.length > 0) payload.sections = sectionIds.join(',');
+          ).map(el => el.dataset.sectionId).filter(Boolean);
+
+          const payload = { id: parseInt(variantId, 10), quantity: 1 };
+          if (sectionIds.length > 0) {
+            payload.sections = sectionIds.join(',');
+          }
+
           fetch('/cart/add.js', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
             body: JSON.stringify(payload)
           })
-          .then(function(r) { return r.json(); })
-          .then(function(data) {
+          .then(r => r.json())
+          .then(data => {
             if (data.status) {
               button.textContent = data.description || 'Error!';
-              setTimeout(function() { button.disabled = false; button.textContent = originalText; }, 2000);
+              setTimeout(() => { button.disabled = false; button.textContent = originalText; }, 2000);
               return;
             }
-            button.textContent = 'Added \u2713';
-            fetch('/cart.js')
-              .then(function(r) { return r.json(); })
-              .then(function(cart) {
-                document.dispatchEvent(new CustomEvent('cart:update', {
-                  bubbles: true,
-                  detail: { data: { itemCount: cart.item_count, source: 'product-form-component', sections: data.sections || {} } }
-                }));
-                self._updateCartBubble(cart.item_count, data.sections);
-                setTimeout(function() { button.disabled = false; button.textContent = originalText; }, 1500);
-              });
+
+            button.textContent = 'Added ✓';
+
+            // Fire theme's native CartAddEvent so cart-drawer + cart-icon both update instantly
+            const cartAddEvent = new CustomEvent('cart:update', {
+              bubbles: true,
+              detail: {
+                data: {
+                  source: 'product-form-component',
+                  itemCount: 1,
+                  sections: data.sections || {}
+                }
+              }
+            });
+            document.dispatchEvent(cartAddEvent);
+
+            // Also fire cart:update for cart-icon count
+            fetch('/cart.js').then(r => r.json()).then(cart => {
+              document.dispatchEvent(new CustomEvent('cart:update', {
+                bubbles: true,
+                detail: { data: { itemCount: cart.item_count, source: 'product-form-component' } }
+              }));
+              this.updateCartBubble(cart.item_count, data.sections);
+              setTimeout(() => { button.disabled = false; button.textContent = originalText; }, 1500);
+            });
           })
-          .catch(function() { button.disabled = false; button.textContent = originalText; });
+          .catch(() => { button.disabled = false; button.textContent = originalText; });
         });
       });
     }
 
-    _setupSlider(k) {
-      var self    = this;
-      var track   = self.querySelector('#slider-track-' + k);
-      var prevBtn = self.querySelector('.slider-arrow-prev-' + k);
-      var nextBtn = self.querySelector('.slider-arrow-next-' + k);
+    /* ── Slider (desktop only) ─────────────────────── */
+    setupSlider() {
+      const track    = this.querySelector('#slider-track-' + KEY);
+      const prevBtn  = this.querySelector('.slider-arrow-prev-' + KEY);
+      const nextBtn  = this.querySelector('.slider-arrow-next-' + KEY);
       if (!track || !prevBtn || !nextBtn) return;
 
-      function updateArrows() {
-        prevBtn.classList.toggle('hidden', track.scrollLeft <= 4);
-        nextBtn.classList.toggle('hidden', track.scrollLeft + track.clientWidth >= track.scrollWidth - 4);
-      }
-      function doScroll(dir) {
-        var card = track.querySelector('.product-card-' + k);
-        track.scrollBy({ left: dir * ((card ? card.offsetWidth : 260) + 16), behavior: 'smooth' });
-      }
+      const updateArrows = () => {
+        const atStart = track.scrollLeft <= 4;
+        const atEnd   = track.scrollLeft + track.clientWidth >= track.scrollWidth - 4;
+        prevBtn.classList.toggle('hidden', atStart);
+        nextBtn.classList.toggle('hidden', atEnd);
+      };
 
-      prevBtn.addEventListener('click', function() { doScroll(-1); });
-      nextBtn.addEventListener('click', function() { doScroll(1); });
+      const scrollBy = (dir) => {
+        const cardWidth = track.querySelector('.product-card-' + KEY);
+        const scrollAmt = cardWidth ? cardWidth.offsetWidth + 24 : 260;
+        track.scrollBy({ left: dir * scrollAmt, behavior: 'smooth' });
+      };
+
+      prevBtn.addEventListener('click', () => scrollBy(-1));
+      nextBtn.addEventListener('click', () => scrollBy(1));
       track.addEventListener('scroll', updateArrows, { passive: true });
       window.addEventListener('resize', updateArrows);
 
-      var isDown = false, startX = 0, scrollStart = 0;
-      track.addEventListener('mousedown', function(e) {
-        isDown = true; startX = e.pageX; scrollStart = track.scrollLeft;
-        track.style.userSelect = 'none';
-      });
-      window.addEventListener('mouseup', function() { isDown = false; track.style.userSelect = ''; });
-      track.addEventListener('mousemove', function(e) {
-        if (!isDown) return;
-        track.scrollLeft = scrollStart - (e.pageX - startX);
-      });
+      // Mouse drag scroll
+      let isDown = false, startX = 0, scrollStart = 0;
+      track.addEventListener('mousedown', (e) => { isDown = true; startX = e.pageX; scrollStart = track.scrollLeft; track.style.userSelect = 'none'; });
+      window.addEventListener('mouseup',  () => { isDown = false; track.style.userSelect = ''; });
+      track.addEventListener('mousemove', (e) => { if (!isDown) return; track.scrollLeft = scrollStart - (e.pageX - startX); });
 
+      // Init arrows after render
       setTimeout(updateArrows, 100);
     }
 
-    _updateCartBubble(count, sections) {
+    /* ── Cart Bubble ───────────────────────────────── */
+    updateCartBubble(count, sections) {
+      // Update visible count elements
       document.querySelectorAll('.cart-bubble__text-count, [data-testid="cart-bubble"], .cart-count, #CartCount, [ref="cartBubbleCount"]')
-        .forEach(function(el) { el.textContent = count > 99 ? '99+' : count; el.classList.remove('hidden'); });
-      var bubble = document.querySelector('.cart-bubble');
+        .forEach(el => { el.textContent = count > 99 ? '99+' : count; el.classList.remove('hidden'); });
+      const bubble = document.querySelector('.cart-bubble');
       if (bubble) bubble.classList.remove('visually-hidden');
+
+      // If sections HTML returned, morph cart-items-component (drawer updates without refresh)
       if (sections && typeof sections === 'object') {
-        Object.keys(sections).forEach(function(sectionId) {
-          var cartItemsEl = document.querySelector('cart-items-component[data-section-id="' + sectionId + '"]');
+        Object.keys(sections).forEach(sectionId => {
+          const cartItemsEl = document.querySelector('cart-items-component[data-section-id="' + sectionId + '"]');
           if (!cartItemsEl) return;
-          var tmp = document.createElement('div');
+          const tmp = document.createElement('div');
           tmp.innerHTML = sections[sectionId];
-          var newContent = tmp.querySelector('cart-items-component') || tmp.firstElementChild;
-          if (!newContent) return;
-          if (typeof window.__morphSection === 'function') window.__morphSection(sectionId, sections[sectionId]);
-          else cartItemsEl.innerHTML = newContent.innerHTML;
+          const newContent = tmp.querySelector('cart-items-component') || tmp.firstElementChild;
+          if (newContent && typeof window.__morphSection === 'function') {
+            window.__morphSection(sectionId, sections[sectionId]);
+          } else if (newContent) {
+            cartItemsEl.innerHTML = newContent.innerHTML;
+          }
         });
       }
-      var cartDrawer = document.querySelector('cart-drawer-component');
-      if (cartDrawer && typeof cartDrawer.open === 'function') cartDrawer.open();
+
+      // Open cart drawer if available
+      const cartDrawer = document.querySelector('cart-drawer-component');
+      if (cartDrawer && typeof cartDrawer.open === 'function') {
+        cartDrawer.open();
+      }
     }
-  });
+  }
+
+  if (!customElements.get('product-grid-' + KEY)) {
+    customElements.define('product-grid-' + KEY, ProductGrid);
+  }
 })();
 </script>
 
