@@ -1,25 +1,17 @@
 <script type="application/ld+json">
 {
-  "@context": "https://schema.org/",
+  "@context": "http://schema.org/",
   "@type": "Product",
-  "name": "{{ product.title | escape }}",
-  "image": [
-    {% for image in product.images %}
-      "{{ image | image_url: width: 800 }}"{% unless forloop.last %},{% endunless %}
-    {% endfor %}
-  ],
-  "description": "{{ product.description | strip_html | escape }}",
-  "sku": "{{ product.selected_or_first_available_variant.sku }}",
-  "brand": {
-    "@type": "Brand",
-    "name": "{{ product.vendor }}"
-  },
+  "name": "{{ product.title }}",
+  "url": "{{ shop.url }}{{ product.url }}",
+  "image": "{{ shop.url }}{{ product.featured_image }}",
+  "description": "{{ page_description }}",
   "offers": {
     "@type": "Offer",
-    "url": "{{ shop.url }}{{ product.url }}",
     "priceCurrency": "{{ shop.currency }}",
-    "price": "{{ product.selected_or_first_available_variant.price | money_without_currency }}",
-    "availability": "https://schema.org/{% if product.available %}InStock{% else %}OutOfStock{% endif %}"
+    "price": "{{ product.price | money_without_currency }}",
+    "itemCondition": "http://schema.org/NewCondition",
+    "availability": "http://schema.org/InStock"
   }
 }
 </script>
