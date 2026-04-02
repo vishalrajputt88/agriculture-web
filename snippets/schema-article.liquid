@@ -2,8 +2,9 @@
 {
   "@context": "https://schema.org",
   "@type": "Article",
-  "headline": "{{ article.title | escape }}",
-  "image": "{{ article.image | image_url: width: 1200 }}",
+  "headline": "{{ article.title }}",
+  "description": "{{ article.excerpt | strip_html | escape }}",
+  "image": "{{ article.image | img_url: 'master' | prepend: 'https:' }}",
   "author": {
     "@type": "Person",
     "name": "{{ article.author }}"
@@ -13,11 +14,14 @@
     "name": "{{ shop.name }}",
     "logo": {
       "@type": "ImageObject",
-      "url": "{{ shop.brand.logo | image_url }}"
+      "url": "{{ settings.logo | img_url: 'master' | prepend: 'https:' }}"
     }
   },
-  "datePublished": "{{ article.published_at | date: "%Y-%m-%d" }}",
-  "dateModified": "{{ article.updated_at | date: "%Y-%m-%d" }}",
-  "description": "{{ article.excerpt | strip_html | escape }}"
+  "datePublished": "{{ article.published_at | date: '%Y-%m-%d' }}",
+  "dateModified": "{{ article.updated_at | date: '%Y-%m-%d' }}",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "{{ shop.url }}{{ article.url }}"
+  }
 }
 </script>
