@@ -27,7 +27,7 @@
     overflow: hidden;
   }
 
-  /* Slider track */
+  /* Slider track — flexbox on BOTH desktop & mobile */
   .product-grid-items-{{ custom_best_selling }} {
     display: flex;
     flex-wrap: nowrap;
@@ -55,7 +55,7 @@
   @media screen and (max-width: 749px) {
     .product-grid-items-{{ custom_best_selling }} {
       gap: 12px;
-      margin-bottom: 0;
+      margin-bottom:0;
     }
     .product-card-{{ custom_best_selling }} {
       {% if section.settings.products_per_row_mobile == '1' %}
@@ -71,7 +71,7 @@
   /* ── SLIDER ARROWS ── */
   .slider-arrow-{{ custom_best_selling }} {
     position: absolute;
-    top: 40%;
+    top: 50%;
     transform: translateY(-50%);
     width: 40px;
     height: 40px;
@@ -99,10 +99,7 @@
   }
   .slider-arrow-prev-{{ custom_best_selling }} { left: 4px; }
   .slider-arrow-next-{{ custom_best_selling }} { right: 4px; }
-  .slider-arrow-{{ custom_best_selling }}.hidden {
-    opacity: 0;
-    pointer-events: none;
-  }
+  .slider-arrow-{{ custom_best_selling }}.hidden { opacity: 0; pointer-events: none; }
 
   @media screen and (max-width: 749px) {
     .slider-arrow-{{ custom_best_selling }} { width: 32px; height: 32px; }
@@ -213,7 +210,7 @@
     text-decoration: line-through;
   }
 
-  /* ── VARIANT DROPDOWN ── */
+  /* ── MODERN VARIANT DROPDOWN ── */
   .variant-dropdown-wrap-{{ custom_best_selling }} {
     position: relative;
     margin: 8px 0 4px;
@@ -238,11 +235,11 @@
   }
 
   .variant-dropdown-btn-{{ custom_best_selling }}:hover,
-  .variant-dropdown-btn-{{ custom_best_selling }}.open-vd {
+  .variant-dropdown-btn-{{ custom_best_selling }}.open-{{ custom_best_selling }} {
     border-color: #00963F;
   }
 
-  .variant-dropdown-btn-{{ custom_best_selling }} .vd-label {
+  .variant-dropdown-btn-{{ custom_best_selling }} .vd-label-{{ custom_best_selling }} {
     flex: 1;
     text-align: left;
     white-space: nowrap;
@@ -250,7 +247,7 @@
     text-overflow: ellipsis;
   }
 
-  .variant-dropdown-btn-{{ custom_best_selling }} .vd-arrow {
+  .variant-dropdown-btn-{{ custom_best_selling }} .vd-arrow-{{ custom_best_selling }} {
     flex-shrink: 0;
     width: 14px;
     height: 14px;
@@ -259,7 +256,7 @@
     align-items: center;
   }
 
-  .variant-dropdown-btn-{{ custom_best_selling }}.open-vd .vd-arrow {
+  .variant-dropdown-btn-{{ custom_best_selling }}.open-{{ custom_best_selling }} .vd-arrow-{{ custom_best_selling }} {
     transform: rotate(180deg);
   }
 
@@ -280,12 +277,12 @@
     scrollbar-width: thin;
   }
 
-  .variant-dropdown-menu-{{ custom_best_selling }}.open-vd {
+  .variant-dropdown-menu-{{ custom_best_selling }}.open-{{ custom_best_selling }} {
     display: block;
-    animation: vd-fade 0.15s ease;
+    animation: vd-fade-{{ custom_best_selling }} 0.15s ease;
   }
 
-  @keyframes vd-fade {
+  @keyframes vd-fade-{{ custom_best_selling }} {
     from { opacity: 0; transform: translateY(4px); }
     to   { opacity: 1; transform: translateY(0); }
   }
@@ -303,30 +300,30 @@
     gap: 8px;
   }
 
-  .variant-dropdown-option-{{ custom_best_selling }}:hover:not(.sold-out-opt) {
+  .variant-dropdown-option-{{ custom_best_selling }}:hover:not(.sold-out-opt-{{ custom_best_selling }}) {
     background: #f0faf4;
     color: #00963F;
   }
 
-  .variant-dropdown-option-{{ custom_best_selling }}.active-opt {
+  .variant-dropdown-option-{{ custom_best_selling }}.active-opt-{{ custom_best_selling }} {
     background: #00963F;
     color: #fff;
     font-weight: 700;
   }
 
-  .variant-dropdown-option-{{ custom_best_selling }}.sold-out-opt {
+  .variant-dropdown-option-{{ custom_best_selling }}.sold-out-opt-{{ custom_best_selling }} {
     opacity: 0.38;
     cursor: not-allowed;
     text-decoration: line-through;
   }
 
-  .vd-opt-price {
+  .vd-opt-price-{{ custom_best_selling }} {
     font-size: 10px;
     color: #888;
     white-space: nowrap;
   }
 
-  .variant-dropdown-option-{{ custom_best_selling }}.active-opt .vd-opt-price {
+  .variant-dropdown-option-{{ custom_best_selling }}.active-opt-{{ custom_best_selling }} .vd-opt-price-{{ custom_best_selling }} {
     color: rgba(255,255,255,0.8);
   }
 
@@ -345,7 +342,7 @@
     color: #333333;
     font-weight: 500;
     cursor: pointer;
-    transition: background-color 0.3s ease, color 0.3s ease;
+    transition: background-color 0.3s ease;
     display: block;
     appearance: button;
   }
@@ -359,6 +356,14 @@
     background-color: #cccccc;
     cursor: not-allowed;
     border-color: #cccccc;
+  }
+
+  .product-card-bulk-text-{{ custom_best_selling }} {
+    font-size: 10px;
+    color: #E3010F;
+    font-weight: 600;
+    text-align: center;
+    margin-top: 0px;
   }
 
   .product-grid-view-all-{{ custom_best_selling }} {
@@ -393,13 +398,8 @@
     .product-grid-view-all-button-{{ custom_best_selling }} { font-size: 14px; }
   }
 {% endstyle %}
-
-<product-grid-section class="product-grid-{{ custom_best_selling }}" data-section-key="{{ custom_best_selling }}" {{ section.shopify_attributes }}>
+<product-grid-{{ custom_best_selling }} class="product-grid-{{ custom_best_selling }}" {{ section.shopify_attributes }}>
   <div class="product-grid-container-{{ custom_best_selling }}">
-
-    {% if section.settings.heading != blank %}
-      <h2 class="product-grid-heading-{{ custom_best_selling }}">{{ section.settings.heading }}</h2>
-    {% endif %}
 
     {% if section.settings.collection != blank %}
       {% assign collection = section.settings.collection %}
@@ -412,7 +412,7 @@
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M15 18l-6-6 6-6" stroke="#333" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
           </button>
 
-          <div class="product-grid-items-{{ custom_best_selling }}" data-slider-track>
+          <div class="product-grid-items-{{ custom_best_selling }}" id="slider-track-{{ custom_best_selling }}">
             {% for product in collection.products limit: 12 %}
 
               {%- assign first_available = nil -%}
@@ -483,21 +483,23 @@
                     </span>
                   </div>
 
-                  <!-- VARIANT DROPDOWN -->
+                  <!-- MODERN VARIANT DROPDOWN -->
                   {% if product.variants.size > 1 %}
                     <div class="variant-dropdown-wrap-{{ custom_best_selling }}">
+                      <!-- Trigger Button -->
                       <button type="button" class="variant-dropdown-btn-{{ custom_best_selling }}" aria-haspopup="listbox">
-                        <span class="vd-label">{{ first_available.title }}</span>
-                        <span class="vd-arrow">
+                        <span class="vd-label-{{ custom_best_selling }}">{{ first_available.title }}</span>
+                        <span class="vd-arrow-{{ custom_best_selling }}">
                           <svg width="12" height="12" viewBox="0 0 24 24" fill="none">
                             <path d="M6 9l6 6 6-6" stroke="#555" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
                           </svg>
                         </span>
                       </button>
+                      <!-- Dropdown Menu -->
                       <div class="variant-dropdown-menu-{{ custom_best_selling }}" role="listbox">
                         {% for variant in product.variants %}
                           <div
-                            class="variant-dropdown-option-{{ custom_best_selling }}{% if variant.id == first_available.id %} active-opt{% endif %}{% unless variant.available %} sold-out-opt{% endunless %}"
+                            class="variant-dropdown-option-{{ custom_best_selling }}{% if variant.id == first_available.id %} active-opt-{{ custom_best_selling }}{% endif %}{% unless variant.available %} sold-out-opt-{{ custom_best_selling }}{% endunless %}"
                             role="option"
                             data-variant-id="{{ variant.id }}"
                             data-price="{{ variant.price }}"
@@ -506,7 +508,7 @@
                             data-title="{{ variant.title | escape }}"
                           >
                             <span>{{ variant.title }}</span>
-                            <span class="vd-opt-price">{{ variant.price | money }}</span>
+                            <span class="vd-opt-price-{{ custom_best_selling }}">{{ variant.price | money }}</span>
                           </div>
                         {% endfor %}
                       </div>
@@ -514,8 +516,8 @@
                   {% endif %}
 
                   <!-- Add to Cart -->
-                  <div class="product-card-form-{{ custom_best_selling }}">
-                    {% if first_available.available %}
+                  {% comment %} <div class="product-card-form-{{ custom_best_selling }}">
+                    {% if product.available %}
                       <button
                         type="button"
                         class="product-card-button-{{ custom_best_selling }} js-atc-btn"
@@ -524,6 +526,19 @@
                     {% else %}
                       <button type="button" class="product-card-button-{{ custom_best_selling }}" disabled>Sold Out</button>
                     {% endif %}
+                  </div>
+                  <div class="product-card-bulk-text-{{ custom_best_selling }}">Discount on Bulk Purchase</div> {% endcomment %}
+
+                  <div class="product-card-form-{{ custom_best_selling }}">
+                  {% if first_available.available %}
+                  <button
+                  type="button"
+                  class="product-card-button-{{ custom_best_selling }} js-atc-btn"
+                  data-variant-id="{{ first_available.id }}"
+                  >{{ section.settings.button_text }} </button>
+                  {% else %}
+                  <button type="button" class="product-card-button-{{ custom_best_selling }}" disabled>Sold Out</button>
+                  {% endif %}
                   </div>
 
                 </div>
@@ -554,84 +569,71 @@
     {% endif %}
 
   </div>
-</product-grid-section>
+</product-grid-{{ custom_best_selling }}>
 
 <script>
 (function () {
-  'use strict';
-
   var KEY = '{{ custom_best_selling }}';
-  var TAG = 'product-grid-section-' + KEY;
 
-  /* Prevent re-registration on theme editor re-renders */
-  if (customElements.get(TAG)) return;
-
-  class ProductGridSection extends HTMLElement {
-
+  class ProductGrid extends HTMLElement {
     connectedCallback() {
-      /* Small defer so DOM is fully painted before we measure widths */
-      requestAnimationFrame(() => {
-        this._setupDropdowns();
-        this._setupAjaxCart();
-        this._setupSlider();
-      });
+      this.setupDropdowns();
+      this.setupAjaxCart();
+      this.setupSlider();
     }
 
-    /* ── Variant Dropdown ───────────────────────────── */
-    _setupDropdowns() {
-      var self = this;
-
-      self.querySelectorAll('.variant-dropdown-wrap-' + KEY).forEach(function(wrap) {
-        var btn     = wrap.querySelector('.variant-dropdown-btn-' + KEY);
-        var menu    = wrap.querySelector('.variant-dropdown-menu-' + KEY);
-        var label   = wrap.querySelector('.vd-label');
-        var card    = wrap.closest('.product-card-' + KEY);
-        var atcBtn  = card ? card.querySelector('.js-atc-btn') : null;
-        var priceEl = card ? card.querySelector('[data-price-display]') : null;
-        var cmpEl   = card ? card.querySelector('[data-compare-display]') : null;
+    /* ── Modern Variant Dropdown ──────────────────── */
+    setupDropdowns() {
+      this.querySelectorAll('.variant-dropdown-wrap-' + KEY).forEach(wrap => {
+        const btn     = wrap.querySelector('.variant-dropdown-btn-' + KEY);
+        const menu    = wrap.querySelector('.variant-dropdown-menu-' + KEY);
+        const label   = wrap.querySelector('.vd-label-' + KEY);
+        const card    = wrap.closest('.product-card-' + KEY);
+        const atcBtn  = card && card.querySelector('.js-atc-btn');
+        const priceEl = card && card.querySelector('[data-price-display]');
+        const cmpEl   = card && card.querySelector('[data-compare-display]');
 
         if (!btn || !menu) return;
 
-        btn.addEventListener('click', function(e) {
+        // Toggle open/close
+        btn.addEventListener('click', (e) => {
           e.stopPropagation();
-          var isOpen = menu.classList.contains('open-vd');
-
-          /* Close ALL dropdowns across ALL instances on page */
-          document.querySelectorAll('.variant-dropdown-menu-' + KEY).forEach(function(m) {
-            m.classList.remove('open-vd');
+          const isOpen = menu.classList.contains('open-' + KEY);
+          // Close all other dropdowns first
+          document.querySelectorAll('.variant-dropdown-menu-' + KEY).forEach(m => {
+            m.classList.remove('open-' + KEY);
+            m.previousElementSibling && m.previousElementSibling.classList && m.previousElementSibling.classList.remove('open-' + KEY);
           });
-          document.querySelectorAll('.variant-dropdown-btn-' + KEY).forEach(function(b) {
-            b.classList.remove('open-vd');
-          });
-
+          document.querySelectorAll('.variant-dropdown-btn-' + KEY).forEach(b => b.classList.remove('open-' + KEY));
           if (!isOpen) {
-            menu.classList.add('open-vd');
-            btn.classList.add('open-vd');
+            menu.classList.add('open-' + KEY);
+            btn.classList.add('open-' + KEY);
           }
         });
 
-        menu.querySelectorAll('.variant-dropdown-option-' + KEY).forEach(function(opt) {
-          opt.addEventListener('click', function() {
+        // Option click
+        menu.querySelectorAll('.variant-dropdown-option-' + KEY).forEach(opt => {
+          opt.addEventListener('click', () => {
             if (opt.dataset.available === 'false') return;
 
-            menu.querySelectorAll('.variant-dropdown-option-' + KEY).forEach(function(o) {
-              o.classList.remove('active-opt');
-            });
-            opt.classList.add('active-opt');
+            // Update active state
+            menu.querySelectorAll('.variant-dropdown-option-' + KEY).forEach(o => o.classList.remove('active-opt-' + KEY));
+            opt.classList.add('active-opt-' + KEY);
 
-            if (label) label.textContent = opt.dataset.title;
+            // Update label
+            label.textContent = opt.dataset.title;
 
-            menu.classList.remove('open-vd');
-            btn.classList.remove('open-vd');
+            // Close menu
+            menu.classList.remove('open-' + KEY);
+            btn.classList.remove('open-' + KEY);
 
+            // Update ATC button
             if (atcBtn) atcBtn.dataset.variantId = opt.dataset.variantId;
 
-            /* Update prices */
-            var price   = parseInt(opt.dataset.price, 10) || 0;
-            var compare = parseInt(opt.dataset.compare, 10) || 0;
-            var fmt = new Intl.NumberFormat('en-IN', {
-              style: 'currency', currency: 'INR', maximumFractionDigits: 0
-            });
+            // Update price
+            const price   = parseInt(opt.dataset.price, 10);
+            const compare = parseInt(opt.dataset.compare, 10);
+            const fmt = new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 });
             if (priceEl) priceEl.textContent = fmt.format(price / 100);
             if (cmpEl) {
               if (compare > price) {
@@ -646,172 +648,147 @@
         });
       });
 
-      /* Click outside = close dropdowns WITHIN this instance only */
-      document.addEventListener('click', function() {
-        self.querySelectorAll('.variant-dropdown-menu-' + KEY).forEach(function(m) {
-          m.classList.remove('open-vd');
-        });
-        self.querySelectorAll('.variant-dropdown-btn-' + KEY).forEach(function(b) {
-          b.classList.remove('open-vd');
-        });
+      // Click outside = close all
+      document.addEventListener('click', () => {
+        this.querySelectorAll('.variant-dropdown-menu-' + KEY).forEach(m => m.classList.remove('open-' + KEY));
+        this.querySelectorAll('.variant-dropdown-btn-' + KEY).forEach(b => b.classList.remove('open-' + KEY));
       });
     }
 
     /* ── Ajax Add to Cart ──────────────────────────── */
-    _setupAjaxCart() {
-      var self = this;
-
-      self.querySelectorAll('.js-atc-btn').forEach(function(button) {
-        button.addEventListener('click', function() {
-          var variantId = button.dataset.variantId;
+    setupAjaxCart() {
+      this.querySelectorAll('.js-atc-btn').forEach(button => {
+        button.addEventListener('click', () => {
+          const variantId = button.dataset.variantId;
           if (!variantId || button.disabled) return;
 
-          var originalText = button.textContent.trim();
-          button.disabled    = true;
+          const originalText = button.textContent.trim();
+          button.disabled = true;
           button.textContent = 'Adding...';
 
-          var sectionIds = Array.from(
+          // Find all cart-items-component section IDs so drawer updates
+          const sectionIds = Array.from(
             document.querySelectorAll('cart-items-component[data-section-id]')
-          ).map(function(el) { return el.dataset.sectionId; }).filter(Boolean);
+          ).map(el => el.dataset.sectionId).filter(Boolean);
 
-          var payload = { id: parseInt(variantId, 10), quantity: 1 };
-          if (sectionIds.length > 0) payload.sections = sectionIds.join(',');
+          const payload = { id: parseInt(variantId, 10), quantity: 1 };
+          if (sectionIds.length > 0) {
+            payload.sections = sectionIds.join(',');
+          }
 
           fetch('/cart/add.js', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
             body: JSON.stringify(payload)
           })
-          .then(function(r) { return r.json(); })
-          .then(function(data) {
+          .then(r => r.json())
+          .then(data => {
             if (data.status) {
               button.textContent = data.description || 'Error!';
-              setTimeout(function() {
-                button.disabled    = false;
-                button.textContent = originalText;
-              }, 2000);
+              setTimeout(() => { button.disabled = false; button.textContent = originalText; }, 2000);
               return;
             }
 
             button.textContent = 'Added ✓';
 
-            fetch('/cart.js')
-              .then(function(r) { return r.json(); })
-              .then(function(cart) {
-                self._updateCartBubble(cart.item_count, data.sections);
-                document.dispatchEvent(new CustomEvent('cart:update', {
-                  bubbles: true,
-                  detail: {
-                    data: {
-                      source: 'product-form-component',
-                      itemCount: cart.item_count,
-                      sections: data.sections || {}
-                    }
-                  }
-                }));
-                setTimeout(function() {
-                  button.disabled    = false;
-                  button.textContent = originalText;
-                }, 1500);
-              });
+            // Fire theme's native CartAddEvent so cart-drawer + cart-icon both update instantly
+            const cartAddEvent = new CustomEvent('cart:update', {
+              bubbles: true,
+              detail: {
+                data: {
+                  source: 'product-form-component',
+                  itemCount: 1,
+                  sections: data.sections || {}
+                }
+              }
+            });
+            document.dispatchEvent(cartAddEvent);
+
+            // Also fire cart:update for cart-icon count
+            fetch('/cart.js').then(r => r.json()).then(cart => {
+              document.dispatchEvent(new CustomEvent('cart:update', {
+                bubbles: true,
+                detail: { data: { itemCount: cart.item_count, source: 'product-form-component' } }
+              }));
+              this.updateCartBubble(cart.item_count, data.sections);
+              setTimeout(() => { button.disabled = false; button.textContent = originalText; }, 1500);
+            });
           })
-          .catch(function(err) {
-            console.warn('[ProductGrid] Cart error:', err);
-            button.disabled    = false;
-            button.textContent = originalText;
-          });
+          .catch(() => { button.disabled = false; button.textContent = originalText; });
         });
       });
     }
 
-    /* ── Slider ─────────────────────────────────────── */
-    _setupSlider() {
-      var self   = this;
-      var track  = self.querySelector('[data-slider-track]');
-      var prevBtn = self.querySelector('.slider-arrow-prev-' + KEY);
-      var nextBtn = self.querySelector('.slider-arrow-next-' + KEY);
-
+    /* ── Slider (desktop only) ─────────────────────── */
+    setupSlider() {
+      const track    = this.querySelector('#slider-track-' + KEY);
+      const prevBtn  = this.querySelector('.slider-arrow-prev-' + KEY);
+      const nextBtn  = this.querySelector('.slider-arrow-next-' + KEY);
       if (!track || !prevBtn || !nextBtn) return;
 
-      function updateArrows() {
-        var atStart = track.scrollLeft <= 4;
-        var atEnd   = track.scrollLeft + track.clientWidth >= track.scrollWidth - 4;
+      const updateArrows = () => {
+        const atStart = track.scrollLeft <= 4;
+        const atEnd   = track.scrollLeft + track.clientWidth >= track.scrollWidth - 4;
         prevBtn.classList.toggle('hidden', atStart);
         nextBtn.classList.toggle('hidden', atEnd);
-      }
+      };
 
-      function doScroll(dir) {
-        var card      = track.querySelector('.product-card-' + KEY);
-        var scrollAmt = card ? (card.offsetWidth + 16) : 260;
+      const scrollBy = (dir) => {
+        const cardWidth = track.querySelector('.product-card-' + KEY);
+        const scrollAmt = cardWidth ? cardWidth.offsetWidth + 24 : 260;
         track.scrollBy({ left: dir * scrollAmt, behavior: 'smooth' });
-      }
+      };
 
-      prevBtn.addEventListener('click', function() { doScroll(-1); });
-      nextBtn.addEventListener('click', function() { doScroll(1); });
+      prevBtn.addEventListener('click', () => scrollBy(-1));
+      nextBtn.addEventListener('click', () => scrollBy(1));
       track.addEventListener('scroll', updateArrows, { passive: true });
       window.addEventListener('resize', updateArrows);
 
-      /* Mouse drag */
-      var isDown = false, startX = 0, scrollStart = 0;
-      track.addEventListener('mousedown', function(e) {
-        isDown      = true;
-        startX      = e.pageX;
-        scrollStart = track.scrollLeft;
-        track.style.userSelect = 'none';
-      });
-      window.addEventListener('mouseup', function() {
-        isDown = false;
-        track.style.userSelect = '';
-      });
-      track.addEventListener('mousemove', function(e) {
-        if (!isDown) return;
-        track.scrollLeft = scrollStart - (e.pageX - startX);
-      });
+      // Mouse drag scroll
+      let isDown = false, startX = 0, scrollStart = 0;
+      track.addEventListener('mousedown', (e) => { isDown = true; startX = e.pageX; scrollStart = track.scrollLeft; track.style.userSelect = 'none'; });
+      window.addEventListener('mouseup',  () => { isDown = false; track.style.userSelect = ''; });
+      track.addEventListener('mousemove', (e) => { if (!isDown) return; track.scrollLeft = scrollStart - (e.pageX - startX); });
 
-      /* Init */
-      setTimeout(updateArrows, 150);
+      // Init arrows after render
+      setTimeout(updateArrows, 100);
     }
 
-    /* ── Cart Bubble ────────────────────────────────── */
-    _updateCartBubble(count, sections) {
-      document.querySelectorAll(
-        '.cart-bubble__text-count, [data-testid="cart-bubble"], .cart-count, #CartCount, [ref="cartBubbleCount"]'
-      ).forEach(function(el) {
-        el.textContent = count > 99 ? '99+' : count;
-        el.classList.remove('hidden');
-      });
-
-      var bubble = document.querySelector('.cart-bubble');
+    /* ── Cart Bubble ───────────────────────────────── */
+    updateCartBubble(count, sections) {
+      // Update visible count elements
+      document.querySelectorAll('.cart-bubble__text-count, [data-testid="cart-bubble"], .cart-count, #CartCount, [ref="cartBubbleCount"]')
+        .forEach(el => { el.textContent = count > 99 ? '99+' : count; el.classList.remove('hidden'); });
+      const bubble = document.querySelector('.cart-bubble');
       if (bubble) bubble.classList.remove('visually-hidden');
 
+      // If sections HTML returned, morph cart-items-component (drawer updates without refresh)
       if (sections && typeof sections === 'object') {
-        Object.keys(sections).forEach(function(sectionId) {
-          var cartItemsEl = document.querySelector(
-            'cart-items-component[data-section-id="' + sectionId + '"]'
-          );
+        Object.keys(sections).forEach(sectionId => {
+          const cartItemsEl = document.querySelector('cart-items-component[data-section-id="' + sectionId + '"]');
           if (!cartItemsEl) return;
-          var tmp        = document.createElement('div');
-          tmp.innerHTML  = sections[sectionId];
-          var newContent = tmp.querySelector('cart-items-component') || tmp.firstElementChild;
-          if (newContent) {
-            if (typeof window.__morphSection === 'function') {
-              window.__morphSection(sectionId, sections[sectionId]);
-            } else {
-              cartItemsEl.innerHTML = newContent.innerHTML;
-            }
+          const tmp = document.createElement('div');
+          tmp.innerHTML = sections[sectionId];
+          const newContent = tmp.querySelector('cart-items-component') || tmp.firstElementChild;
+          if (newContent && typeof window.__morphSection === 'function') {
+            window.__morphSection(sectionId, sections[sectionId]);
+          } else if (newContent) {
+            cartItemsEl.innerHTML = newContent.innerHTML;
           }
         });
       }
 
-      var cartDrawer = document.querySelector('cart-drawer-component');
+      // Open cart drawer if available
+      const cartDrawer = document.querySelector('cart-drawer-component');
       if (cartDrawer && typeof cartDrawer.open === 'function') {
         cartDrawer.open();
       }
     }
   }
 
-  customElements.define(TAG, ProductGridSection);
-
+  if (!customElements.get('product-grid-' + KEY)) {
+    customElements.define('product-grid-' + KEY, ProductGrid);
+  }
 })();
 </script>
 
@@ -820,20 +797,18 @@
   "name": "Best selling products",
   "tag": "section",
   "settings": [
-    { "type": "text",       "id": "heading",                 "label": "Heading",                        "default": "Best Selling Products" },
-    { "type": "collection", "id": "collection",              "label": "Collection" },
-    { "type": "range",      "id": "products_per_row_desktop","label": "Products per row (desktop)",     "min": 2, "max": 5, "step": 1, "default": 4 },
-    { "type": "select",     "id": "products_per_row_mobile", "label": "Products per row (mobile)",
-      "options": [{ "value": "1", "label": "1" }, { "value": "2", "label": "2" }], "default": "2" },
-    { "type": "checkbox",   "id": "show_rating",             "label": "Show rating stars",              "default": true },
-    { "type": "text",       "id": "button_text",             "label": "Button text",                    "default": "Add to Cart" },
-    { "type": "header",     "content": "Custom metafield" },
-    { "type": "checkbox",   "id": "show_metafield",          "label": "Show metafield",                 "default": false },
-    { "type": "text",       "id": "metafield_reference",     "label": "Metafield reference",
-      "info": "Connect using dynamic source picker to select product metafield" },
-    { "type": "header",     "content": "View all button" },
-    { "type": "checkbox",   "id": "show_view_all",           "label": "Show view all button",           "default": true },
-    { "type": "text",       "id": "view_all_text",           "label": "Button text",                    "default": "VIEW ALL BEST SELLING PRODUCTS" }
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Best Selling Products" },
+    { "type": "collection", "id": "collection", "label": "Collection" },
+    { "type": "range", "id": "products_per_row_desktop", "label": "Products per row (desktop)", "min": 2, "max": 5, "step": 1, "default": 4 },
+    { "type": "select", "id": "products_per_row_mobile", "label": "Products per row (mobile)", "options": [{ "value": "1", "label": "1" }, { "value": "2", "label": "2" }], "default": "2" },
+    { "type": "checkbox", "id": "show_rating", "label": "Show rating stars", "default": true },
+    { "type": "text", "id": "button_text", "label": "Button text", "default": "Add to Cart" },
+    { "type": "header", "content": "Custom metafield" },
+    { "type": "checkbox", "id": "show_metafield", "label": "Show metafield", "default": false },
+    { "type": "text", "id": "metafield_reference", "label": "Metafield reference", "info": "Connect using dynamic source picker to select product metafield" },
+    { "type": "header", "content": "View all button" },
+    { "type": "checkbox", "id": "show_view_all", "label": "Show view all button", "default": true },
+    { "type": "text", "id": "view_all_text", "label": "Button text", "default": "VIEW ALL BEST SELLING PRODUCTS" }
   ],
   "presets": [{ "name": "Best selling products" }]
 }
