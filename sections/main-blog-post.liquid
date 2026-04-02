@@ -17,16 +17,11 @@
 {% endcomment %}
 
 
-{
-  "@context": "https://schema.org",
-  "@type": "Article",
-  "headline": "My Blog Title",
-  "author": {
-    "@type": "Person",
-    "name": "Vishal"
-  },
-  "datePublished": "2026-04-02"
-}
+{% if article.metafields.custom.schema != blank %}
+  <script type="application/ld+json">
+    {{ article.metafields.custom.schema }}
+  </script>
+{% endif %}
 
 {%- assign toc_on      = article.metafields.custom.toc_enabled.value -%}
 {%- assign hbox        = article.metafields.custom.highlight_box.value -%}
