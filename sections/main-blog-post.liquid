@@ -22,7 +22,7 @@
 {%- assign rel_list    = article.metafields.custom.related_articles.value -%}
 {%- assign faq_list    = article.metafields.custom.blog_faq.value -%}
 
-
+{% render 'schema-article' %}
 <style>
 /* ── Scoped entirely to #rs-blog — zero theme conflict ── */
 #rs-blog { all: initial; display: block; }
