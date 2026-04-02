@@ -499,81 +499,81 @@
         "banner_link": ""
       }
     },
-    "shop_by_catagory_eB4UKe": {
+    "shop_by_catagory_MDU4Mn": {
       "type": "shop-by-catagory",
       "blocks": {
-        "category_item_fCbfiF": {
+        "category_item_VWhemh": {
           "type": "category_item",
           "settings": {
             "category_image": "shopify://shop_images/category_icon_fe2c398d-f3d3-48ce-a864-ecbe8305a7cf.png",
-            "category_title": "Moong crop",
-            "category_url": ""
+            "category_title": "Moong Crop",
+            "category_url": "shopify://collections/plantgrowthpromoters"
           }
         },
-        "category_item_MPBiFD": {
+        "category_item_6LyDRa": {
           "type": "category_item",
           "settings": {
             "category_image": "shopify://shop_images/category_icon_1_46b957eb-6138-44d4-8046-6cb9a5ebd032.png",
             "category_title": "Chilli Crop",
-            "category_url": ""
+            "category_url": "shopify://collections/flower-boosters"
           }
         },
-        "category_item_nVRcqY": {
+        "category_item_hW9znd": {
           "type": "category_item",
           "settings": {
             "category_image": "shopify://shop_images/category_icon_2_9702fd44-69f7-4ec2-ad46-ba1b7cc930af.png",
             "category_title": "Tomato Crop",
-            "category_url": ""
+            "category_url": "shopify://collections/bio-fertilizers"
           }
         },
-        "category_item_PCq3bX": {
+        "category_item_Vxr4Nz": {
           "type": "category_item",
           "settings": {
             "category_image": "shopify://shop_images/category_icon_3_d6b68435-87c2-40a3-9f43-d0455b67f7a1.png",
             "category_title": "Okra Crop",
-            "category_url": "shopify://pages/okra"
+            "category_url": "shopify://collections/water-soluble-fertilizers"
           }
         },
-        "category_item_zAqdRV": {
+        "category_item_LrFJi8": {
           "type": "category_item",
           "settings": {
             "category_image": "shopify://shop_images/category_icon_4_818b675c-f03a-498e-82a0-c6de8205c1d9.png",
             "category_title": "Brinjal Crop",
-            "category_url": ""
+            "category_url": "shopify://collections/micronutrients"
           }
         },
-        "category_item_erMx7e": {
+        "category_item_tnM96U": {
           "type": "category_item",
           "settings": {
             "category_image": "shopify://shop_images/category_icon_5_a7b94a42-aac9-473d-8511-fdd5f928170e.png",
             "category_title": "Watermelon Crop",
-            "category_url": ""
+            "category_url": "shopify://collections/insecticides"
           }
         }
       },
       "block_order": [
-        "category_item_fCbfiF",
-        "category_item_MPBiFD",
-        "category_item_nVRcqY",
-        "category_item_PCq3bX",
-        "category_item_zAqdRV",
-        "category_item_erMx7e"
+        "category_item_VWhemh",
+        "category_item_6LyDRa",
+        "category_item_hW9znd",
+        "category_item_Vxr4Nz",
+        "category_item_LrFJi8",
+        "category_item_tnM96U"
       ],
       "name": "Shop by categories",
       "settings": {
-        "heading": "",
-        "heading_font": "assistant_n4",
+        "heading": "Shop by Categories",
+        "heading_font": "poppins_n4",
         "heading_font_weight": "700",
-        "heading_size": 20,
-        "heading_text_transform": "uppercase",
+        "heading_size": 40,
+        "heading_text_transform": "none",
         "heading_letter_spacing": 0,
         "heading_color": "#000000",
         "heading_spacing": 48,
-        "background_color": "#f5f5f5",
-        "padding_top": 48,
+        "background_color": "#ffffff",
+        "padding_top": 60,
         "padding_bottom": 60,
         "item_spacing": 30,
-        "circle_size": 110,
+        "circle_size": 180,
         "enable_hover_effect": true,
         "title_font": "assistant_n4",
         "title_font_weight": "600",
@@ -826,7 +826,7 @@
     "common_banner_for_section_zNWatq",
     "custom_best_selling_fnEVzz",
     "common_banner_for_section_VeeBfy",
-    "shop_by_catagory_eB4UKe",
+    "shop_by_catagory_MDU4Mn",
     "custom_featured_product_WQpjk9",
     "custom_feature_blogs_Q7dgmr",
     "featured_counter_bGXRHr",
