@@ -17,11 +17,7 @@
 {% endcomment %}
 
 
-{% if article.metafields.custom.schema != blank %}
-  <script type="application/ld+json">
-    {{ article.metafields.custom.schema }}
-  </script>
-{% endif %}
+
 
 {%- assign toc_on      = article.metafields.custom.toc_enabled.value -%}
 {%- assign hbox        = article.metafields.custom.highlight_box.value -%}
