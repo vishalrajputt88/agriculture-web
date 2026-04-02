@@ -16,6 +16,18 @@
   ============================================================
 {% endcomment %}
 
+
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "My Blog Title",
+  "author": {
+    "@type": "Person",
+    "name": "Vishal"
+  },
+  "datePublished": "2026-04-02"
+}
+
 {%- assign toc_on      = article.metafields.custom.toc_enabled.value -%}
 {%- assign hbox        = article.metafields.custom.highlight_box.value -%}
 {%- assign conc_title  = article.metafields.custom.conclusion_title.value -%}
