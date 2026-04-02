@@ -218,6 +218,15 @@ product-form-component [class*="swym"] {
 {% render 'language-selector' %}
 
 
+{% if template contains 'product' %}
+  {% render 'schema-product' %}
+{% endif %}
+
+{% if template contains 'article' %}
+  {% render 'schema-article' %}
+{% endif %}
+
+
   </body>
 
 
