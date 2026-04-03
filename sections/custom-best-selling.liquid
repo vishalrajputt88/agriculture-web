@@ -1,4 +1,4 @@
-{%- assign custom_best_selling = section.id | replace: '-', '' | replace: '_', '' | downcase -%}
+{% assign custom_best_selling = section.id | replace: '_', '' | downcase %}
 
 {% style %}
   .product-grid-{{ custom_best_selling }} {
