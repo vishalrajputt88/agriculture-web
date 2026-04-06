@@ -274,7 +274,7 @@
       "type": "custom-best-selling",
       "name": "Best selling products",
       "settings": {
-        "heading": "Best Selling Products",
+        "heading": "",
         "collection": "best-seller",
         "products_per_row_desktop": 4,
         "products_per_row_mobile": "2",
@@ -379,7 +379,7 @@
       "type": "custom-best-selling",
       "name": "Plant Growth Promoters",
       "settings": {
-        "heading": "Best Selling Products",
+        "heading": "",
         "collection": "plantgrowthpromoters",
         "products_per_row_desktop": 4,
         "products_per_row_mobile": "2",
@@ -410,7 +410,7 @@
       "type": "custom-best-selling",
       "name": "Insecticides/Pesticides",
       "settings": {
-        "heading": "Best Selling Products",
+        "heading": "",
         "collection": "insecticides",
         "products_per_row_desktop": 4,
         "products_per_row_mobile": "2",
@@ -441,7 +441,7 @@
       "type": "custom-best-selling",
       "name": "Funficide",
       "settings": {
-        "heading": "Best Selling Products",
+        "heading": "",
         "collection": "fungicides",
         "products_per_row_desktop": 4,
         "products_per_row_mobile": "2",
@@ -472,7 +472,7 @@
       "type": "custom-best-selling",
       "name": "Combo Kit",
       "settings": {
-        "heading": "Best Selling Products",
+        "heading": "",
         "collection": "micronutrients",
         "products_per_row_desktop": 4,
         "products_per_row_mobile": "2",
@@ -570,7 +570,7 @@
         "heading_color": "#000000",
         "heading_spacing": 48,
         "background_color": "#ffffff",
-        "padding_top": 60,
+        "padding_top": 12,
         "padding_bottom": 60,
         "item_spacing": 30,
         "circle_size": 180,
