@@ -37,6 +37,20 @@
         "padding-block-end": 40
       }
     },
+    "divider_LgL8pB": {
+      "type": "divider",
+      "name": "t:names.divider_section",
+      "settings": {
+        "color_scheme": "",
+        "section_width": "full-width",
+        "thickness": 1,
+        "corner_radius": "square",
+        "width_percent": 100,
+        "alignment_horizontal": "center",
+        "padding-block-start": 16,
+        "padding-block-end": 16
+      }
+    },
     "about_faq_JTmwpG": {
       "type": "about-faq",
       "blocks": {
@@ -88,6 +102,7 @@
   },
   "order": [
     "main",
+    "divider_LgL8pB",
     "about_faq_JTmwpG"
   ]
 }
