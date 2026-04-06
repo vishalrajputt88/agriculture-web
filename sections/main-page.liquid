@@ -1,6 +1,5 @@
-
-
 <div class="section-background color-{{ section.settings.color_scheme }}"></div>
+
 <div class="section page-width-content color-{{ section.settings.color_scheme }}">
   <div
     class="
@@ -9,6 +8,7 @@
       layout-panel-flex--column
       section-content-wrapper
       mobile-column
+      auto-design
     "
     style="
       {% render 'layout-panel-style', settings: section.settings %}
@@ -18,85 +18,155 @@
     {% content_for 'blocks' %}
   </div>
 </div>
+
 <style>
-  .elementor-image-box-title{
+
+/* MAIN CONTAINER */
+.auto-design {
+  max-width: 900px;
+  margin: auto;
+}
+
+/* HEADINGS AUTO STYLE */
+.auto-design h1,
+.auto-design h2 {
+  font-size: 32px;
+  font-weight: 700;
+  margin-bottom: 15px;
+}
+
+.auto-design h3 {
+  font-size: 22px;
+  font-weight: 600;
+  margin-top: 25px;
+  margin-bottom: 10px;
+}
+
+/* TEXT AUTO CLEAN */
+.auto-design p {
+  font-size: 16px;
+  line-height: 1.7;
+  margin-bottom: 15px;
+}
+
+/* LIST → AUTO CARDS */
+.auto-design ul {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 15px;
+  padding: 0;
+  margin-top: 20px;
+}
+
+.auto-design ul li {
+  list-style: none;
+  background: #ffffff;
+  padding: 18px;
+  border-radius: 10px;
+  box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+  font-size: 15px;
+}
+
+/* STRONG TEXT HIGHLIGHT */
+.auto-design strong {
+  color: #2e7d32;
+}
+
+/* SPACING BETWEEN BLOCKS */
+.auto-design > * {
+  margin-bottom: 20px;
+}
+
+/* MOBILE */
+@media (max-width: 600px) {
+  .auto-design h1,
+  .auto-design h2 {
     font-size: 26px;
+  }
 }
-.elementor-icon-box-title {
-    font-size: 22px;
-}
+
 </style>
 {% schema %}
 {
-  "name": "t:names.page",
+  "name": "Dynamic Content Section",
   "class": "section-wrapper",
+  "max_blocks": 20,
   "blocks": [
     {
-      "type": "@theme"
+      "type": "text",
+      "name": "Text Block",
+      "settings": [
+        {
+          "type": "richtext",
+          "id": "content",
+          "label": "Content"
+        }
+      ]
     },
     {
-      "type": "@app"
+      "type": "heading",
+      "name": "Heading",
+      "settings": [
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "Heading"
+        }
+      ]
     },
     {
-      "type": "_divider"
+      "type": "list",
+      "name": "List (Auto Cards)",
+      "settings": [
+        {
+          "type": "textarea",
+          "id": "list_items",
+          "label": "Add items (one per line)"
+        }
+      ]
     }
   ],
-  "disabled_on": {
-    "groups": ["header"]
-  },
   "settings": [
     {
-      "type": "select",
-      "id": "content_direction",
-      "label": "t:settings.direction",
-      "options": [
-        {
-          "value": "column",
-          "label": "t:options.vertical"
-        }
-      ],
-      "default": "column",
-      "visible_if": "{{ section.settings.gap < 0 }}"
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Color Scheme",
+      "default": "scheme-1"
     },
     {
       "type": "range",
       "id": "gap",
-      "label": "t:settings.gap",
+      "label": "Spacing Between Blocks",
       "min": 0,
-      "max": 100,
-      "step": 1,
+      "max": 60,
+      "step": 5,
       "unit": "px",
-      "default": 12
-    },
-    {
-      "type": "color_scheme",
-      "id": "color_scheme",
-      "label": "t:settings.color_scheme",
-      "default": "scheme-1"
-    },
-    {
-      "type": "header",
-      "content": "t:content.padding"
+      "default": 20
     },
     {
       "type": "range",
       "id": "padding-block-start",
-      "label": "t:settings.top",
+      "label": "Top Padding",
       "min": 0,
       "max": 100,
-      "step": 1,
+      "step": 5,
       "unit": "px",
-      "default": 0
+      "default": 20
     },
     {
       "type": "range",
       "id": "padding-block-end",
-      "label": "t:settings.bottom",
+      "label": "Bottom Padding",
       "min": 0,
       "max": 100,
-      "step": 1,
+      "step": 5,
       "unit": "px",
-      "default": 0
+      "default": 20
+    }
+  ],
+  "presets": [
+    {
+      "name": "Dynamic Auto Content"
     }
   ]
 }
