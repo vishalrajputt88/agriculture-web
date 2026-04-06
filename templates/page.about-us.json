@@ -12,12 +12,6 @@
     "main": {
       "type": "main-page",
       "blocks": {
-        "list_UDGhqq": {
-          "type": "list",
-          "settings": {
-            "list_items": "<ul>\n<li>100% Result-Driven Products</li>\n<li>High Quality with special nutrient</li>\n<li>Effectiveness in diverse conditions</li>\n<li>Tested and Trusted product</li>\n</ul>"
-          }
-        },
         "heading": {
           "type": "text",
           "name": "Title",
@@ -34,7 +28,6 @@
         }
       },
       "block_order": [
-        "list_UDGhqq",
         "heading",
         "text_zhbbfN"
       ],
