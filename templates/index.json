@@ -570,7 +570,7 @@
         "heading_color": "#000000",
         "heading_spacing": 48,
         "background_color": "#ffffff",
-        "padding_top": 12,
+        "padding_top": 0,
         "padding_bottom": 60,
         "item_spacing": 30,
         "circle_size": 180,
