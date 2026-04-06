@@ -12,6 +12,23 @@
     "main": {
       "type": "main-page",
       "blocks": {
+        "custom_product_title_6nUpfw": {
+          "type": "custom-product-title",
+          "name": "Product title",
+          "settings": {
+            "font_weight": 700,
+            "font_size_desktop": 32,
+            "font_size_tablet": 26,
+            "font_size_mobile": 22,
+            "line_height": 1.2,
+            "enable_tight_spacing": true,
+            "text_color": "#1a1a1a",
+            "text_align": "left",
+            "margin_bottom": 12,
+            "desktop_width_percent": 100
+          },
+          "blocks": {}
+        },
         "heading": {
           "type": "text",
           "name": "Title",
@@ -66,6 +83,7 @@
         }
       },
       "block_order": [
+        "custom_product_title_6nUpfw",
         "heading",
         "text_zhbbfN"
       ],
