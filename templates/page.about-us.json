@@ -38,13 +38,13 @@
           },
           "blocks": {}
         },
-        "product_description_3jQ8rX": {
-          "type": "product-description",
-          "name": "t:names.product_description",
+        "text_zhbbfN": {
+          "type": "text",
+          "name": "t:names.text",
           "settings": {
             "text": "{{ closest.page.content }}",
             "width": "100%",
-            "max_width": "none",
+            "max_width": "normal",
             "alignment": "left",
             "type_preset": "custom",
             "font": "var(--font-body--family)",
@@ -67,7 +67,7 @@
       },
       "block_order": [
         "heading",
-        "product_description_3jQ8rX"
+        "text_zhbbfN"
       ],
       "settings": {
         "content_direction": "column",
