@@ -1,95 +1,137 @@
+<div class="section page-width color-{{ section.settings.color_scheme }}">
+  <div class="bhumi-wrapper">
 
+    {% if section.settings.heading != blank %}
+      <h2 class="bhumi-heading">{{ section.settings.heading }}</h2>
+    {% endif %}
 
-<div class="section-background color-{{ section.settings.color_scheme }}"></div>
-<div class="section page-width-content color-{{ section.settings.color_scheme }}">
-  <div
-    class="
-      spacing-style
-      layout-panel-flex
-      layout-panel-flex--column
-      section-content-wrapper
-      mobile-column
-    "
-    style="
-      {% render 'layout-panel-style', settings: section.settings %}
-      {% render 'spacing-style', settings: section.settings %}
-    "
-  >
-    {% content_for 'blocks' %}
+    {% if section.settings.description != blank %}
+      <p class="bhumi-description">{{ section.settings.description }}</p>
+    {% endif %}
+
+    {% if section.settings.mission != blank %}
+      <div class="bhumi-mission">
+        <h3>Mission</h3>
+        <p>{{ section.settings.mission }}</p>
+      </div>
+    {% endif %}
+
+    <div class="bhumi-features">
+      {% for block in section.blocks %}
+        <div class="feature-card">
+          {% if block.settings.title != blank %}
+            <h4>{{ block.settings.title }}</h4>
+          {% endif %}
+          {% if block.settings.text != blank %}
+            <p>{{ block.settings.text }}</p>
+          {% endif %}
+        </div>
+      {% endfor %}
+    </div>
+
   </div>
 </div>
 
+<style>
+.bhumi-wrapper {
+  text-align: center;
+  max-width: 900px;
+  margin: auto;
+}
+
+.bhumi-heading {
+  font-size: 32px;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.bhumi-description {
+  font-size: 16px;
+  margin-bottom: 20px;
+}
+
+.bhumi-mission {
+  background: #f5f5f5;
+  padding: 20px;
+  border-radius: 10px;
+  margin-bottom: 30px;
+}
+
+.bhumi-features {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 20px;
+}
+
+.feature-card {
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+  transition: 0.3s;
+}
+
+.feature-card:hover {
+  transform: translateY(-5px);
+}
+</style>
+
 {% schema %}
 {
-  "name": "t:names.page",
-  "class": "section-wrapper",
-  "blocks": [
-    {
-      "type": "@theme"
-    },
-    {
-      "type": "@app"
-    },
-    {
-      "type": "_divider"
-    }
-  ],
-  "disabled_on": {
-    "groups": ["header"]
-  },
+  "name": "Bhumi Agro Section",
   "settings": [
     {
-      "type": "select",
-      "id": "content_direction",
-      "label": "t:settings.direction",
-      "options": [
-        {
-          "value": "column",
-          "label": "t:options.vertical"
-        }
-      ],
-      "default": "column",
-      "visible_if": "{{ section.settings.gap < 0 }}"
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Bhumi Agro"
     },
     {
-      "type": "range",
-      "id": "gap",
-      "label": "t:settings.gap",
-      "min": 0,
-      "max": 100,
-      "step": 1,
-      "unit": "px",
-      "default": 12
+      "type": "textarea",
+      "id": "description",
+      "label": "Description",
+      "default": "Bhumi Agro aims to be a global leader in specialised, sustainable, & cost-effective agricultural inputs."
+    },
+    {
+      "type": "textarea",
+      "id": "mission",
+      "label": "Mission",
+      "default": "To reduce production cost for small land holder farmers by providing nutrients at best price and training them."
     },
     {
       "type": "color_scheme",
       "id": "color_scheme",
-      "label": "t:settings.color_scheme",
+      "label": "Color Scheme",
       "default": "scheme-1"
-    },
+    }
+  ],
+  "blocks": [
     {
-      "type": "header",
-      "content": "t:content.padding"
-    },
+      "type": "feature",
+      "name": "Feature",
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Feature Title"
+        },
+        {
+          "type": "textarea",
+          "id": "text",
+          "label": "Feature Text"
+        }
+      ]
+    }
+  ],
+  "presets": [
     {
-      "type": "range",
-      "id": "padding-block-start",
-      "label": "t:settings.top",
-      "min": 0,
-      "max": 100,
-      "step": 1,
-      "unit": "px",
-      "default": 0
-    },
-    {
-      "type": "range",
-      "id": "padding-block-end",
-      "label": "t:settings.bottom",
-      "min": 0,
-      "max": 100,
-      "step": 1,
-      "unit": "px",
-      "default": 0
+      "name": "Bhumi Agro Section",
+      "blocks": [
+        { "type": "feature", "settings": { "title": "100% Result-Driven Products" } },
+        { "type": "feature", "settings": { "title": "High Quality Nutrients" } },
+        { "type": "feature", "settings": { "title": "Works in All Conditions" } },
+        { "type": "feature", "settings": { "title": "Tested & Trusted" } }
+      ]
     }
   ]
 }
