@@ -757,7 +757,7 @@
     2. Single: GET /widget/product-reviews/summary?shop=X&product_id=A
     3. Single fallback: GET /products/reviews/summary?shop=X&product_id=A
   */
-  var API = 'https://rapi.trustoo.io';
+  {% comment %} var API = 'https://rapi.trustoo.io'; {% endcomment %}
 
   function parseAndApply(pid, data) {
     var r = parseFloat(data.average_rating || data.averageRating || (data.summary && data.summary.average_rating) || (data.data && data.data.average_rating) || 0);
