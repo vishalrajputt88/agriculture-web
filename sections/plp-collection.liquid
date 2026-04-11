@@ -257,7 +257,7 @@
   box-shadow: var(--sh); transform: translateY(-4px); border-color: var(--gr-lt);
 }
 
-/* Badges */
+/* ── SALE / NEW BADGES (top-left) ── */
 #plp-{{ sid }} .badge-sale,
 #plp-{{ sid }} .badge-new {
   position: absolute; top: 11px; left: 11px;
@@ -267,6 +267,56 @@
 }
 #plp-{{ sid }} .badge-sale { background: var(--rd); color: #fff; }
 #plp-{{ sid }} .badge-new  { background: var(--gld); color: var(--dk); }
+
+/* ── AVAILABILITY BADGE (top-right) ── */
+#plp-{{ sid }} .badge-avail {
+  position: absolute; top: 11px; right: 11px;
+  font-size: 9.5px; font-weight: 700; font-family: var(--fh);
+  padding: 4px 9px; border-radius: 20px; z-index: 3;
+  pointer-events: none; letter-spacing: .4px;
+  display: flex; align-items: center; gap: 4px;
+  backdrop-filter: blur(4px);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.10);
+  border: 1px solid transparent;
+  line-height: 1;
+}
+#plp-{{ sid }} .badge-avail.in-stock {
+  background: rgba(232,245,233,0.95);
+  color: #1b5e20;
+  border-color: #a5d6a7;
+}
+#plp-{{ sid }} .badge-avail.in-stock::before {
+  content: '';
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: #43a047;
+  display: inline-block;
+  box-shadow: 0 0 0 2px rgba(67,160,71,0.25);
+  animation: pulse-green 2s infinite;
+}
+#plp-{{ sid }} .badge-avail.low-stock {
+  background: rgba(255,248,225,0.95);
+  color: #e65100;
+  border-color: #ffcc80;
+}
+#plp-{{ sid }} .badge-avail.low-stock::before {
+  content: '⚡';
+  font-size: 9px;
+}
+#plp-{{ sid }} .badge-avail.out-stock {
+  background: rgba(253,235,234,0.95);
+  color: #b71c1c;
+  border-color: #ef9a9a;
+}
+#plp-{{ sid }} .badge-avail.out-stock::before {
+  content: '✕';
+  font-size: 9px; font-weight: 900;
+}
+
+@keyframes pulse-green {
+  0%, 100% { box-shadow: 0 0 0 2px rgba(67,160,71,0.25); }
+  50%       { box-shadow: 0 0 0 5px rgba(67,160,71,0.08); }
+}
 
 /* Image */
 #plp-{{ sid }} .pc-img {
@@ -307,6 +357,23 @@
   text-decoration: none;
 }
 #plp-{{ sid }} .pc-title:hover { color: var(--gr); }
+
+/* ── STAR RATING WRAPPER ── */
+#plp-{{ sid }} .pc-rating-wrap {
+  display: block;
+  min-height: 20px;
+  margin: 2px 0 6px;
+  line-height: 1;
+}
+/* Force Trustoo widget visible */
+#plp-{{ sid }} .pc-rating-wrap .tt-widget-v2,
+#plp-{{ sid }} .pc-rating-wrap [class*="seal-star"],
+#plp-{{ sid }} .pc-rating-wrap > div {
+  display: flex !important;
+  align-items: center !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
 
 /* Price */
 #plp-{{ sid }} .pc-price {
@@ -411,13 +478,13 @@
   #plp-{{ sid }} .pgrid { grid-template-columns: repeat(2,1fr) !important; gap: 12px; }
   #plp-{{ sid }} .plp-h1 { font-size: 26px; }
   #plp-{{ sid }} .plp-inner { padding: 14px 14px 40px; }
-  /* Mobile list-view: horizontal card with smaller image */
   #plp-{{ sid }} .pgrid.list-view { grid-template-columns: 1fr !important; }
   #plp-{{ sid }} .pgrid.list-view .pcard { flex-direction: row; min-height: 130px; }
   #plp-{{ sid }} .pgrid.list-view .pc-img { width: 120px !important; flex-shrink: 0; aspect-ratio: 1/1; }
   #plp-{{ sid }} .pgrid.list-view .pc-body { flex: 1; padding: 10px 12px 6px; }
   #plp-{{ sid }} .pgrid.list-view .pc-foot { padding: 0 12px 10px; position: relative; right: auto; bottom: auto; }
   #plp-{{ sid }} .vpill { font-size: 9px; padding: 3px 7px; }
+  #plp-{{ sid }} .badge-avail { font-size: 8.5px; padding: 3px 7px; }
 }
 @media (max-width: 420px) {
   #plp-{{ sid }} .pgrid { grid-template-columns: 1fr !important; }
@@ -485,14 +552,6 @@
             </div>
           {% endif %}
 
-          {%- comment -%}
-            FILTER FIX:
-            Har filter value ke liye hum directly Shopify ka url_to_add / url_to_remove
-            use karte hain. Checkbox change pe form submit nahi karte — seedha
-            val.url_to_add pe navigate karte hain. Yeh 100% correct URL hai jo
-            Shopify khud generate karta hai, isme existing active filters bhi hote hain.
-          {%- endcomment -%}
-
           <div id="filter-form-{{ sid }}">
             {% for filter in collection.filters %}
               <div class="fg open" data-filter-group="{{ filter.label | handleize }}">
@@ -523,7 +582,6 @@
 
                     {% when 'price_range' %}
                       <form action="{{ collection.url }}" method="get" id="price-form-{{ sid }}-{{ forloop.index }}">
-                        {%- comment -%} Existing active list/boolean filters preserve karo {%- endcomment -%}
                         {% for f2 in collection.filters %}
                           {% if f2.type != 'price_range' %}
                             {% for val in f2.active_values %}
@@ -532,7 +590,6 @@
                           {% endif %}
                         {% endfor %}
                         <input type="hidden" name="sort_by" value="{{ sort_by }}">
-
                         <div class="pr-row">
                           <div class="pr-field">
                             <span class="pr-sym">₹</span>
@@ -640,12 +697,45 @@
                 {%- endfor -%}
                 {%- if fv == nil -%}{%- assign fv = product.variants.first -%}{%- endif -%}
 
+                {%- comment -%}
+                  AVAILABILITY — Shopify default inventory tracking use karo.
+                  inventory_quantity sirf tab available hota hai jab
+                  inventory_management = "shopify" ho.
+                  Agar tracking off hai toh product.available use karo.
+                {%- endcomment -%}
+                {%- assign total_inv = 0 -%}
+                {%- assign tracking_on = false -%}
+                {%- for v in product.variants -%}
+                  {%- if v.inventory_management == 'shopify' -%}
+                    {%- assign tracking_on = true -%}
+                    {%- if v.inventory_quantity > 0 -%}
+                      {%- assign total_inv = total_inv | plus: v.inventory_quantity -%}
+                    {%- endif -%}
+                  {%- endif -%}
+                {%- endfor -%}
+
                 <article class="pcard" itemscope itemtype="https://schema.org/Product">
 
+                  {% comment %} TOP-LEFT: Sale / New badge {% endcomment %}
                   {% if has_disc %}
                     <span class="badge-sale">SALE</span>
                   {% elsif is_new %}
                     <span class="badge-new">NEW</span>
+                  {% endif %}
+
+                  {% comment %} TOP-RIGHT: Availability badge {% endcomment %}
+                  {% if product.available %}
+                    {% if tracking_on %}
+                      {% if total_inv <= 10 and total_inv > 0 %}
+                        <span class="badge-avail low-stock">Only {{ total_inv }} Left</span>
+                      {% else %}
+                        <span class="badge-avail in-stock">In Stock</span>
+                      {% endif %}
+                    {% else %}
+                      <span class="badge-avail in-stock">Available</span>
+                    {% endif %}
+                  {% else %}
+                    <span class="badge-avail out-stock">Out of Stock</span>
                   {% endif %}
 
                   <a href="{{ product.url | within: collection }}" class="pc-img" aria-label="{{ product.title }}">
@@ -667,19 +757,27 @@
 
                   <div class="pc-body">
                     <div class="pc-type">{{ product.product_type | default: product.tags.first }}</div>
+
                     <a href="{{ product.url | within: collection }}" class="pc-title" itemprop="name">
                       {{ product.title }}
                     </a>
-                    {% if product %}
-<div id="seal-star-rating-widget" 
-     data-app="trustoo" 
-     style="justify-content:left;margin: 0px 0 0px;" 
-     data-text-color="#eaaa06" 
-     data-star-size="20" 
-     data-font-size="16"
-     data-product-id="{{ product.id }}">
-</div>
-{% endif %}
+
+                    {% comment %}
+                      TRUSTOO STAR RATING
+                      - id ki jagah class use karo (same id multiple cards pe duplicate hota hai)
+                      - Trustoo app class "seal-star-rating-widget" bhi support karta hai
+                      - data-product-id zaroori hai taaki sahi rating aaye
+                    {% endcomment %}
+                    <div class="pc-rating-wrap">
+                      <div class="seal-star-rating-widget"
+                           data-app="trustoo"
+                           style="justify-content:left;margin:0;"
+                           data-text-color="#eaaa06"
+                           data-star-size="16"
+                           data-font-size="12"
+                           data-product-id="{{ product.id }}">
+                      </div>
+                    </div>
 
                     <div class="pc-price" itemprop="offers" itemscope itemtype="https://schema.org/Offer">
                       <meta itemprop="priceCurrency" content="{{ cart.currency.iso_code }}">
@@ -696,7 +794,6 @@
                       {% endif %}
                     </div>
 
-                    {%- comment -%} VARIANT PILLS — sirf agar variants > 1 {%- endcomment -%}
                     {% if product.variants.size > 1 %}
                       <div class="pc-variants">
                         {% for variant in product.variants %}
@@ -869,40 +966,26 @@
     });
   });
 
-  /* 6. AJAX ADD TO CART - Cart refresh for Horizon theme */
+  /* 6. AJAX ADD TO CART */
   function refreshCartCount(addedQty, cartData) {
     var totalCount = cartData ? cartData.item_count : addedQty;
-
-    // Horizon cart-icon listens for 'cart:update' event with this exact shape
-    // source: 'product-form-component' makes Horizon do += (add to existing count)
     document.dispatchEvent(new CustomEvent('cart:update', {
       bubbles: true,
       detail: {
         resource: cartData || null,
         sourceId: 'plp-atc',
-        data: {
-          itemCount: addedQty,
-          source: 'product-form-component',
-          sections: {}
-        }
+        data: { itemCount: addedQty, source: 'product-form-component', sections: {} }
       }
     }));
-
-    // Force-update cart bubble count directly as fallback
     var countEls = document.querySelectorAll(
-      '[ref="cartBubbleCount"], .cart-bubble__count, ' +
-      '.cart-count-bubble, [data-cart-count], .cart-count'
+      '[ref="cartBubbleCount"], .cart-bubble__count, .cart-count-bubble, [data-cart-count], .cart-count'
     );
     countEls.forEach(function(el) {
       el.textContent = totalCount > 99 ? '99+' : String(totalCount);
       el.classList.remove('hidden');
     });
-
-    // Show bubble if hidden
     var bubble = document.querySelector('[ref="cartBubble"], .cart-bubble');
-    if (bubble) {
-      bubble.classList.remove('visually-hidden', 'hidden');
-    }
+    if (bubble) bubble.classList.remove('visually-hidden', 'hidden');
   }
 
   ROOT.querySelectorAll('.btn-atc').forEach(function (btn) {
@@ -924,7 +1007,7 @@
         if (!res.ok) return res.json().then(function (e) { throw new Error(e.description || 'Error'); });
         return res.json();
       })
-      .then(function (addedItem) {
+      .then(function () {
         self.innerHTML = '<span>✓ Added!</span>';
         return fetch('/cart.js', { headers: { Accept: 'application/json' } });
       })
@@ -939,6 +1022,28 @@
       });
     });
   });
+
+  /* 7. TRUSTOO — re-init rating widgets after page load
+     Agar Trustoo app ne apna script pehle load kar liya ho,
+     toh manually reinitialize karo taaki saare cards pe stars dikhe */
+  function initTrustooRatings() {
+    if (window.trustoo && typeof window.trustoo.init === 'function') {
+      window.trustoo.init();
+    } else if (window.TrustooApp && typeof window.TrustooApp.renderStars === 'function') {
+      window.TrustooApp.renderStars();
+    } else if (window.Trustoo && typeof window.Trustoo.refresh === 'function') {
+      window.Trustoo.refresh();
+    }
+  }
+
+  // DOM ready ke baad try karo
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', function() {
+      setTimeout(initTrustooRatings, 800);
+    });
+  } else {
+    setTimeout(initTrustooRatings, 800);
+  }
 
 })();
 </script>
@@ -985,7 +1090,6 @@
         { "type": "trust_item", "settings": { "icon": "🏆", "text": "ISO Certified Products" } },
         { "type": "trust_item", "settings": { "icon": "🚚", "text": "Free Shipping on ₹999+" } },
         { "type": "trust_item", "settings": { "icon": "🔬", "text": "Lab Tested Quality" } },
-        { "type": "trust_item", "settings": { "icon": "📞", "text": "Expert Agri Advisor Support" } }
       ]
     }
   ]
