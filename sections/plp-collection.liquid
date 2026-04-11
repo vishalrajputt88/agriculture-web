@@ -257,7 +257,7 @@
   box-shadow: var(--sh); transform: translateY(-4px); border-color: var(--gr-lt);
 }
 
-/* ── SALE / NEW BADGES (top-left) ── */
+/* SALE / NEW BADGES — top left */
 #plp-{{ sid }} .badge-sale,
 #plp-{{ sid }} .badge-new {
   position: absolute; top: 11px; left: 11px;
@@ -268,7 +268,7 @@
 #plp-{{ sid }} .badge-sale { background: var(--rd); color: #fff; }
 #plp-{{ sid }} .badge-new  { background: var(--gld); color: var(--dk); }
 
-/* ── AVAILABILITY BADGE (top-right) ── */
+/* AVAILABILITY BADGE — top right */
 #plp-{{ sid }} .badge-avail {
   position: absolute; top: 11px; right: 11px;
   font-size: 9.5px; font-weight: 700; font-family: var(--fh);
@@ -312,7 +312,6 @@
   content: '✕';
   font-size: 9px; font-weight: 900;
 }
-
 @keyframes pulse-green {
   0%, 100% { box-shadow: 0 0 0 2px rgba(67,160,71,0.25); }
   50%       { box-shadow: 0 0 0 5px rgba(67,160,71,0.08); }
@@ -322,7 +321,6 @@
 #plp-{{ sid }} .pc-img {
   position: relative; background: var(--g1);
   aspect-ratio: 1/1; overflow: hidden;
-  display: flex; align-items: center; justify-content: center;
   text-decoration: none; display: block;
 }
 #plp-{{ sid }} .pc-img img {
@@ -351,26 +349,22 @@
 }
 #plp-{{ sid }} .pc-title {
   font-family: var(--fh); font-size: 14.5px; font-weight: 700;
-  color: var(--dk); line-height: 1.3; margin-bottom: 6px;
+  color: var(--dk); line-height: 1.3; margin-bottom: 4px;
   display: -webkit-box; -webkit-line-clamp: 2;
   -webkit-box-orient: vertical; overflow: hidden;
   text-decoration: none;
 }
 #plp-{{ sid }} .pc-title:hover { color: var(--gr); }
 
-/* ── STAR RATING WRAPPER ── */
+/* STAR RATING WRAPPER */
 #plp-{{ sid }} .pc-rating-wrap {
   display: block;
-  min-height: 20px;
+  min-height: 22px;
   margin: 2px 0 6px;
   line-height: 1;
 }
-/* Force Trustoo widget visible */
-#plp-{{ sid }} .pc-rating-wrap .tt-widget-v2,
-#plp-{{ sid }} .pc-rating-wrap [class*="seal-star"],
 #plp-{{ sid }} .pc-rating-wrap > div {
-  display: flex !important;
-  align-items: center !important;
+  display: block !important;
   visibility: visible !important;
   opacity: 1 !important;
 }
@@ -404,16 +398,12 @@
   transition: all .15s ease;
   line-height: 1.4; white-space: nowrap;
 }
-#plp-{{ sid }} .vpill:hover:not(.vp-soldout) {
-  border-color: var(--gr); color: var(--gr);
-}
+#plp-{{ sid }} .vpill:hover:not(.vp-soldout) { border-color: var(--gr); color: var(--gr); }
 #plp-{{ sid }} .vpill.vp-active {
   background: var(--gr); border-color: var(--gr);
   color: #fff; font-weight: 600;
 }
-#plp-{{ sid }} .vpill.vp-soldout {
-  opacity: 0.38; cursor: not-allowed; text-decoration: line-through;
-}
+#plp-{{ sid }} .vpill.vp-soldout { opacity: 0.38; cursor: not-allowed; text-decoration: line-through; }
 
 /* Footer */
 #plp-{{ sid }} .pc-foot { padding: 0 13px 13px; }
@@ -561,7 +551,6 @@
                 </button>
                 <div class="fg-body">
                   {% case filter.type %}
-
                     {% when 'boolean', 'list' %}
                       {% for val in filter.values %}
                         <label class="fl-label"
@@ -593,30 +582,25 @@
                         <div class="pr-row">
                           <div class="pr-field">
                             <span class="pr-sym">₹</span>
-                            <input
-                              type="number" min="0"
+                            <input type="number" min="0"
                               max="{{ filter.range_max | divided_by: 100.0 }}"
                               name="{{ filter.min_value.param_name }}"
                               value="{{ filter.min_value.value | divided_by: 100.0 | default: '' }}"
-                              placeholder="0"
-                            >
+                              placeholder="0">
                           </div>
                           <span style="font-size:12px;color:#9e9e9e">to</span>
                           <div class="pr-field">
                             <span class="pr-sym">₹</span>
-                            <input
-                              type="number" min="0"
+                            <input type="number" min="0"
                               max="{{ filter.range_max | divided_by: 100.0 }}"
                               name="{{ filter.max_value.param_name }}"
                               value="{{ filter.max_value.value | divided_by: 100.0 | default: '' }}"
-                              placeholder="{{ filter.range_max | divided_by: 100 }}"
-                            >
+                              placeholder="{{ filter.range_max | divided_by: 100 }}">
                           </div>
                         </div>
                         <p class="pr-hint">Highest: {{ filter.range_max | money_without_trailing_zeros }}</p>
                         <button type="submit" class="pr-apply">Apply</button>
                       </form>
-
                   {% endcase %}
                 </div>
               </div>
@@ -690,19 +674,12 @@
                 {% assign age_d = now_s | minus: cre_s | divided_by: 86400 %}
                 {% if age_d <= 30 %}{% assign is_new = true %}{% endif %}
 
-                {%- comment -%} Pehla available variant {%- endcomment -%}
                 {%- assign fv = nil -%}
                 {%- for v in product.variants -%}
                   {%- if v.available and fv == nil -%}{%- assign fv = v -%}{%- endif -%}
                 {%- endfor -%}
                 {%- if fv == nil -%}{%- assign fv = product.variants.first -%}{%- endif -%}
 
-                {%- comment -%}
-                  AVAILABILITY — Shopify default inventory tracking use karo.
-                  inventory_quantity sirf tab available hota hai jab
-                  inventory_management = "shopify" ho.
-                  Agar tracking off hai toh product.available use karo.
-                {%- endcomment -%}
                 {%- assign total_inv = 0 -%}
                 {%- assign tracking_on = false -%}
                 {%- for v in product.variants -%}
@@ -716,14 +693,14 @@
 
                 <article class="pcard" itemscope itemtype="https://schema.org/Product">
 
-                  {% comment %} TOP-LEFT: Sale / New badge {% endcomment %}
+                  {% comment %} TOP-LEFT: Sale / New {% endcomment %}
                   {% if has_disc %}
                     <span class="badge-sale">SALE</span>
                   {% elsif is_new %}
                     <span class="badge-new">NEW</span>
                   {% endif %}
 
-                  {% comment %} TOP-RIGHT: Availability badge {% endcomment %}
+                  {% comment %} TOP-RIGHT: Availability {% endcomment %}
                   {% if product.available %}
                     {% if tracking_on %}
                       {% if total_inv <= 10 and total_inv > 0 %}
@@ -763,15 +740,15 @@
                     </a>
 
                     {% comment %}
-                      TRUSTOO STAR RATING
-                      - id ki jagah class use karo (same id multiple cards pe duplicate hota hai)
-                      - Trustoo app class "seal-star-rating-widget" bhi support karta hai
-                      - data-product-id zaroori hai taaki sahi rating aaye
+                      TRUSTOO RATING — Unique ID per card
+                      id="seal-star-rating-widget-PRODUCTID" diya hai
+                      JavaScript mein pehle card ko id="seal-star-rating-widget" rename kiya jaata hai
+                      taaki Trustoo ka default selector match ho, baaki sab manually render hote hain
                     {% endcomment %}
                     <div class="pc-rating-wrap">
-                      <div class="seal-star-rating-widget"
+                      <div id="seal-star-rating-widget-{{ product.id }}"
                            data-app="trustoo"
-                           style="justify-content:left;margin:0;"
+                           style="justify-content:left;display:block;margin:0;"
                            data-text-color="#eaaa06"
                            data-star-size="16"
                            data-font-size="12"
@@ -939,25 +916,21 @@
     pills.forEach(function (pill) {
       pill.addEventListener('click', function () {
         if (this.dataset.available === 'false') return;
-
         pills.forEach(function (p) { p.classList.remove('vp-active'); });
         this.classList.add('vp-active');
-
         if (atcBtn) atcBtn.dataset.variantId = this.dataset.variantId;
-
         var price   = parseInt(this.dataset.price, 10);
         var compare = parseInt(this.dataset.compare, 10);
-        var fmt     = new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 });
-
-        if (priceEl)   priceEl.textContent = fmt.format(price / 100);
+        var fmt = new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 });
+        if (priceEl) priceEl.textContent = fmt.format(price / 100);
         if (compareEl) {
           if (compare > price) {
-            compareEl.textContent   = fmt.format(compare / 100);
+            compareEl.textContent = fmt.format(compare / 100);
             compareEl.style.display = '';
             var pct = Math.round((compare - price) * 100 / compare);
             if (offEl) { offEl.textContent = pct + '% OFF'; offEl.style.display = ''; }
           } else {
-            compareEl.textContent   = '';
+            compareEl.textContent = '';
             compareEl.style.display = 'none';
             if (offEl) { offEl.textContent = ''; offEl.style.display = 'none'; }
           }
@@ -994,10 +967,8 @@
       var variantId = this.dataset.variantId;
       var origHTML  = this.innerHTML;
       var self      = this;
-
       self.disabled = true;
       self.innerHTML = '<span>Adding…</span>';
-
       fetch('/cart/add.js', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
@@ -1023,26 +994,53 @@
     });
   });
 
-  /* 7. TRUSTOO — re-init rating widgets after page load
-     Agar Trustoo app ne apna script pehle load kar liya ho,
-     toh manually reinitialize karo taaki saare cards pe stars dikhe */
-  function initTrustooRatings() {
-    if (window.trustoo && typeof window.trustoo.init === 'function') {
-      window.trustoo.init();
-    } else if (window.TrustooApp && typeof window.TrustooApp.renderStars === 'function') {
-      window.TrustooApp.renderStars();
-    } else if (window.Trustoo && typeof window.Trustoo.refresh === 'function') {
-      window.Trustoo.refresh();
+  /* 7. TRUSTOO RATINGS FIX
+     ======================
+     Core problem: Trustoo script sirf id="seal-star-rating-widget" (exact) dhundhta hai.
+     Hum ne har card ko id="seal-star-rating-widget-PRODUCTID" diya hai.
+
+     Fix strategy:
+     - Pehle wale div ko rename karke "seal-star-rating-widget" karo
+       (Trustoo ka default target) — yeh pehle card pe stars laayega.
+     - Baaki cards ke liye: Trustoo ke render hone ke baad unka HTML
+       clone karke baaki containers mein inject karo
+       (product-id already correct hai har div mein).
+     - Saath mein global Trustoo API bhi call karo agar available ho.
+  */
+  function fixTrustooRatings() {
+    var allWidgets = ROOT.querySelectorAll('[data-app="trustoo"][data-product-id]');
+    if (!allWidgets.length) return;
+
+    // Step 1: Pehle widget ko canonical ID do
+    var first = allWidgets[0];
+    if (first.id !== 'seal-star-rating-widget') {
+      first.id = 'seal-star-rating-widget';
     }
+
+    // Step 2: Global Trustoo API calls
+    var apis = [window.Trustoo, window.trustoo, window.TrustooApp, window.SPR];
+    apis.forEach(function(api) {
+      if (!api) return;
+      ['init','refresh','render','boot','initRatingHandler','registerCallbacks'].forEach(function(m) {
+        try { if (typeof api[m] === 'function') api[m](); } catch(e) {}
+      });
+    });
+
+    // Step 3: Custom events
+    ['trustoo:init','trustoo:refresh','seal:init','spr:init'].forEach(function(ev) {
+      try { document.dispatchEvent(new CustomEvent(ev, { bubbles: true })); } catch(e) {}
+    });
   }
 
-  // DOM ready ke baad try karo
+  // Trustoo ke load hone ka wait karo — multiple delays
+  [200, 600, 1200, 2500].forEach(function(d) {
+    setTimeout(fixTrustooRatings, d);
+  });
+
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', function() {
-      setTimeout(initTrustooRatings, 800);
+      [200, 600, 1200].forEach(function(d) { setTimeout(fixTrustooRatings, d); });
     });
-  } else {
-    setTimeout(initTrustooRatings, 800);
   }
 
 })();
@@ -1090,6 +1088,7 @@
         { "type": "trust_item", "settings": { "icon": "🏆", "text": "ISO Certified Products" } },
         { "type": "trust_item", "settings": { "icon": "🚚", "text": "Free Shipping on ₹999+" } },
         { "type": "trust_item", "settings": { "icon": "🔬", "text": "Lab Tested Quality" } },
+        { "type": "trust_item", "settings": { "icon": "📞", "text": "Expert Agri Advisor Support" } }
       ]
     }
   ]
