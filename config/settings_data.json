@@ -104,16 +104,6 @@
         "disabled": false,
         "settings": {}
       },
-      "6603664506335945664": {
-        "type": "shopify://apps/transtore/blocks/switcher_embed_block/afeffe82-e563-4f78-90f4-f1e3d96286c3",
-        "disabled": true,
-        "settings": {}
-      },
-      "1219337400145039034": {
-        "type": "shopify://apps/kwikpass/blocks/kp_login/603e209b-d585-47ff-8592-837a4faa325b",
-        "disabled": true,
-        "settings": {}
-      },
       "13768625480086291342": {
         "type": "shopify://apps/forms/blocks/forms/8744a304-fcb1-4347-b211-bb6b4759a76a",
         "disabled": false,
@@ -121,6 +111,11 @@
       },
       "1143683040400472741": {
         "type": "shopify://apps/trustwill-trustoo/blocks/trustoo-review-switch/c8f15077-6475-4e86-ad06-b66038d5ba2c",
+        "disabled": false,
+        "settings": {}
+      },
+      "1219337400145039034": {
+        "type": "shopify://apps/kwikpass/blocks/kp_login/603e209b-d585-47ff-8592-837a4faa325b",
         "disabled": false,
         "settings": {}
       }
