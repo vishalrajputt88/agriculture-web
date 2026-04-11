@@ -1007,35 +1007,48 @@
        (product-id already correct hai har div mein).
      - Saath mein global Trustoo API bhi call karo agar available ho.
   */
-  function fixTrustooRatings() {
-    var allWidgets = ROOT.querySelectorAll('[data-app="trustoo"][data-product-id]');
-    if (!allWidgets.length) return;
+  /* 7. TRUSTOO RATINGS FIX — Clone-based approach */
+function fixTrustooRatings() {
+  var allWidgets = ROOT.querySelectorAll('[data-app="trustoo"][data-product-id]');
+  if (!allWidgets.length) return;
 
-    // Step 1: Pehle widget ko canonical ID do
-    var first = allWidgets[0];
-    if (first.id !== 'seal-star-rating-widget') {
-      first.id = 'seal-star-rating-widget';
-    }
-
-    // Step 2: Global Trustoo API calls
-    var apis = [window.Trustoo, window.trustoo, window.TrustooApp, window.SPR];
-    apis.forEach(function(api) {
-      if (!api) return;
-      ['init','refresh','render','boot','initRatingHandler','registerCallbacks'].forEach(function(m) {
-        try { if (typeof api[m] === 'function') api[m](); } catch(e) {}
-      });
-    });
-
-    // Step 3: Custom events
-    ['trustoo:init','trustoo:refresh','seal:init','spr:init'].forEach(function(ev) {
-      try { document.dispatchEvent(new CustomEvent(ev, { bubbles: true })); } catch(e) {}
-    });
+  // Rename first to canonical ID so Trustoo renders it
+  var first = allWidgets[0];
+  if (first.id !== 'seal-star-rating-widget') {
+    first.id = 'seal-star-rating-widget';
   }
 
-  // Trustoo ke load hone ka wait karo — multiple delays
-  [200, 600, 1200, 2500].forEach(function(d) {
-    setTimeout(fixTrustooRatings, d);
-  });
+  // Try calling TrustooReviews if available
+  try {
+    if (window.TrustooReviews && typeof window.TrustooReviews.init === 'function') {
+      window.TrustooReviews.init();
+    }
+  } catch(e) {}
+
+  // After Trustoo renders, clone stars into other cards
+  setTimeout(function() {
+    // Find any rendered star HTML (Trustoo injects SVGs or spans inside)
+    allWidgets.forEach(function(widget) {
+      var pid = widget.getAttribute('data-product-id');
+      // Look for already-rendered widget with same product id (different id attr)
+      var rendered = document.querySelector(
+        '[data-product-id="' + pid + '"] svg, ' +
+        '[data-product-id="' + pid + '"] .spr-badge, ' +
+        '[data-product-id="' + pid + '"] .trustoo-star'
+      );
+      if (rendered && widget.children.length === 0) {
+        var source = rendered.closest('[data-product-id]');
+        if (source && source !== widget) {
+          widget.innerHTML = source.innerHTML;
+        }
+      }
+    });
+  }, 3000);
+}
+
+[300, 800, 1500, 3000, 5000].forEach(function(d) {
+  setTimeout(fixTrustooRatings, d);
+});
 
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', function() {
