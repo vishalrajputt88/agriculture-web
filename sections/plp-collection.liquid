@@ -257,7 +257,7 @@
   box-shadow: var(--sh); transform: translateY(-4px); border-color: var(--gr-lt);
 }
 
-/* SALE / NEW BADGES — top left */
+/* SALE / NEW BADGES */
 #plp-{{ sid }} .badge-sale,
 #plp-{{ sid }} .badge-new {
   position: absolute; top: 11px; left: 11px;
@@ -268,7 +268,7 @@
 #plp-{{ sid }} .badge-sale { background: var(--rd); color: #fff; }
 #plp-{{ sid }} .badge-new  { background: var(--gld); color: var(--dk); }
 
-/* AVAILABILITY BADGE — top right */
+/* AVAILABILITY BADGE */
 #plp-{{ sid }} .badge-avail {
   position: absolute; top: 11px; right: 11px;
   font-size: 9.5px; font-weight: 700; font-family: var(--fh);
@@ -281,37 +281,22 @@
   line-height: 1;
 }
 #plp-{{ sid }} .badge-avail.in-stock {
-  background: rgba(232,245,233,0.95);
-  color: #1b5e20;
-  border-color: #a5d6a7;
+  background: rgba(232,245,233,0.95); color: #1b5e20; border-color: #a5d6a7;
 }
 #plp-{{ sid }} .badge-avail.in-stock::before {
-  content: '';
-  width: 6px; height: 6px;
-  border-radius: 50%;
-  background: #43a047;
-  display: inline-block;
+  content: ''; width: 6px; height: 6px; border-radius: 50%;
+  background: #43a047; display: inline-block;
   box-shadow: 0 0 0 2px rgba(67,160,71,0.25);
   animation: pulse-green 2s infinite;
 }
 #plp-{{ sid }} .badge-avail.low-stock {
-  background: rgba(255,248,225,0.95);
-  color: #e65100;
-  border-color: #ffcc80;
+  background: rgba(255,248,225,0.95); color: #e65100; border-color: #ffcc80;
 }
-#plp-{{ sid }} .badge-avail.low-stock::before {
-  content: '⚡';
-  font-size: 9px;
-}
+#plp-{{ sid }} .badge-avail.low-stock::before { content: '⚡'; font-size: 9px; }
 #plp-{{ sid }} .badge-avail.out-stock {
-  background: rgba(253,235,234,0.95);
-  color: #b71c1c;
-  border-color: #ef9a9a;
+  background: rgba(253,235,234,0.95); color: #b71c1c; border-color: #ef9a9a;
 }
-#plp-{{ sid }} .badge-avail.out-stock::before {
-  content: '✕';
-  font-size: 9px; font-weight: 900;
-}
+#plp-{{ sid }} .badge-avail.out-stock::before { content: '✕'; font-size: 9px; font-weight: 900; }
 @keyframes pulse-green {
   0%, 100% { box-shadow: 0 0 0 2px rgba(67,160,71,0.25); }
   50%       { box-shadow: 0 0 0 5px rgba(67,160,71,0.08); }
@@ -368,6 +353,11 @@
   visibility: visible !important;
   opacity: 1 !important;
 }
+/* Make sure Trustoo injected content is visible */
+#plp-{{ sid }} .pc-rating-wrap * {
+  visibility: visible !important;
+  opacity: 1 !important;
+}
 
 /* Price */
 #plp-{{ sid }} .pc-price {
@@ -389,20 +379,12 @@
   margin: 7px 0 4px;
 }
 #plp-{{ sid }} .vpill {
-  padding: 3px 9px;
-  border: 1px solid #c5c5c5;
-  border-radius: 4px;
-  font-size: 10px; font-weight: 500;
-  color: #333; background: #fff;
-  cursor: pointer;
-  transition: all .15s ease;
-  line-height: 1.4; white-space: nowrap;
+  padding: 3px 9px; border: 1px solid #c5c5c5; border-radius: 4px;
+  font-size: 10px; font-weight: 500; color: #333; background: #fff;
+  cursor: pointer; transition: all .15s ease; line-height: 1.4; white-space: nowrap;
 }
 #plp-{{ sid }} .vpill:hover:not(.vp-soldout) { border-color: var(--gr); color: var(--gr); }
-#plp-{{ sid }} .vpill.vp-active {
-  background: var(--gr); border-color: var(--gr);
-  color: #fff; font-weight: 600;
-}
+#plp-{{ sid }} .vpill.vp-active { background: var(--gr); border-color: var(--gr); color: #fff; font-weight: 600; }
 #plp-{{ sid }} .vpill.vp-soldout { opacity: 0.38; cursor: not-allowed; text-decoration: line-through; }
 
 /* Footer */
@@ -410,8 +392,7 @@
 #plp-{{ sid }} .btn-atc {
   width: 100%; padding: 9px 14px;
   background: #F4FCF8; color: #000;
-  border: 1px solid #00963F;
-  font-size: 13px; font-weight: 400;
+  border: 1px solid #00963F; font-size: 13px; font-weight: 400;
   border-radius: 0px; cursor: pointer;
   display: flex; align-items: center; justify-content: center;
   gap: 6px; transition: background .2s, transform .15s;
@@ -693,14 +674,12 @@
 
                 <article class="pcard" itemscope itemtype="https://schema.org/Product">
 
-                  {% comment %} TOP-LEFT: Sale / New {% endcomment %}
                   {% if has_disc %}
                     <span class="badge-sale">SALE</span>
                   {% elsif is_new %}
                     <span class="badge-new">NEW</span>
                   {% endif %}
 
-                  {% comment %} TOP-RIGHT: Availability {% endcomment %}
                   {% if product.available %}
                     {% if tracking_on %}
                       {% if total_inv <= 10 and total_inv > 0 %}
@@ -740,20 +719,31 @@
                     </a>
 
                     {% comment %}
-                      TRUSTOO RATING — Unique ID per card
-                      id="seal-star-rating-widget-PRODUCTID" diya hai
-                      JavaScript mein pehle card ko id="seal-star-rating-widget" rename kiya jaata hai
-                      taaki Trustoo ka default selector match ho, baaki sab manually render hote hain
+                      TRUSTOO RATING
+                      - Pehle product ka div: id="seal-star-rating-widget" (Trustoo ka canonical target)
+                      - Baaki products: id="seal-star-rating-widget-PRODUCTID"
+                      - JS mein MutationObserver se pehle card ke render hone ke baad baaki clone kiye jaate hain
                     {% endcomment %}
                     <div class="pc-rating-wrap">
-                      <div id="seal-star-rating-widget-{{ product.id }}"
-                           data-app="trustoo"
-                           style="justify-content:left;display:block;margin:0;"
-                           data-text-color="#eaaa06"
-                           data-star-size="16"
-                           data-font-size="12"
-                           data-product-id="{{ product.id }}">
-                      </div>
+                      {% if forloop.first %}
+                        <div id="seal-star-rating-widget"
+                             data-app="trustoo"
+                             style="justify-content:left;display:block;margin:0;"
+                             data-text-color="#eaaa06"
+                             data-star-size="16"
+                             data-font-size="12"
+                             data-product-id="{{ product.id }}">
+                        </div>
+                      {% else %}
+                        <div id="seal-star-rating-widget-{{ product.id }}"
+                             data-app="trustoo"
+                             style="justify-content:left;display:block;margin:0;"
+                             data-text-color="#eaaa06"
+                             data-star-size="16"
+                             data-font-size="12"
+                             data-product-id="{{ product.id }}">
+                        </div>
+                      {% endif %}
                     </div>
 
                     <div class="pc-price" itemprop="offers" itemscope itemtype="https://schema.org/Offer">
@@ -994,67 +984,179 @@
     });
   });
 
-  /* 7. TRUSTOO RATINGS FIX
-     ======================
-     Core problem: Trustoo script sirf id="seal-star-rating-widget" (exact) dhundhta hai.
-     Hum ne har card ko id="seal-star-rating-widget-PRODUCTID" diya hai.
+  /* ============================================================
+     7. TRUSTOO RATINGS — MutationObserver + Multi-strategy Fix
+     ============================================================
+     
+     Trustoo ka actual behaviour (aapke window globals se confirm):
+     - window.TrustooReviews  → object hai (functions unknown)
+     - window.isTrustooReviewsExecuted → true/false
+     - window.trustoo_ins_inserted_status → insertion status
+     
+     Trustoo ONLY renders id="seal-star-rating-widget" (first card).
+     Baaki cards ke liye hum:
+     1. MutationObserver se pehle card ka render detect karte hain
+     2. Phir Trustoo ke API se har card ko individually render karaate hain
+     3. Fallback: rendered HTML clone karke inject karte hain
+  ============================================================ */
 
-     Fix strategy:
-     - Pehle wale div ko rename karke "seal-star-rating-widget" karo
-       (Trustoo ka default target) — yeh pehle card pe stars laayega.
-     - Baaki cards ke liye: Trustoo ke render hone ke baad unka HTML
-       clone karke baaki containers mein inject karo
-       (product-id already correct hai har div mein).
-     - Saath mein global Trustoo API bhi call karo agar available ho.
-  */
-  /* 7. TRUSTOO RATINGS FIX — Clone-based approach */
-function fixTrustooRatings() {
-  var allWidgets = ROOT.querySelectorAll('[data-app="trustoo"][data-product-id]');
-  if (!allWidgets.length) return;
+  var firstWidget = document.getElementById('seal-star-rating-widget');
+  var allWidgets  = ROOT.querySelectorAll('[data-app="trustoo"][data-product-id]');
 
-  // Rename first to canonical ID so Trustoo renders it
-  var first = allWidgets[0];
-  if (first.id !== 'seal-star-rating-widget') {
-    first.id = 'seal-star-rating-widget';
-  }
+  // ── Strategy A: Trustoo ke internal render function dhundho ──
+  function tryTrustooAPI() {
+    var TR = window.TrustooReviews;
+    if (!TR) return false;
 
-  // Try calling TrustooReviews if available
-  try {
-    if (window.TrustooReviews && typeof window.TrustooReviews.init === 'function') {
-      window.TrustooReviews.init();
-    }
-  } catch(e) {}
+    // Log available methods (debug ke liye — production mein hata sakte ho)
+    // console.log('[Trustoo] Available methods:', Object.keys(TR));
 
-  // After Trustoo renders, clone stars into other cards
-  setTimeout(function() {
-    // Find any rendered star HTML (Trustoo injects SVGs or spans inside)
-    allWidgets.forEach(function(widget) {
-      var pid = widget.getAttribute('data-product-id');
-      // Look for already-rendered widget with same product id (different id attr)
-      var rendered = document.querySelector(
-        '[data-product-id="' + pid + '"] svg, ' +
-        '[data-product-id="' + pid + '"] .spr-badge, ' +
-        '[data-product-id="' + pid + '"] .trustoo-star'
-      );
-      if (rendered && widget.children.length === 0) {
-        var source = rendered.closest('[data-product-id]');
-        if (source && source !== widget) {
-          widget.innerHTML = source.innerHTML;
-        }
+    // Known Trustoo methods — sab try karo
+    var methods = [
+      'init', 'render', 'refresh', 'renderRatingWidget',
+      'renderProductRating', 'insertRatingWidget', 'boot',
+      'initProductRating', 'reInit', 'update'
+    ];
+
+    var called = false;
+    methods.forEach(function(m) {
+      if (typeof TR[m] === 'function') {
+        try {
+          TR[m]();
+          called = true;
+        } catch(e) {}
       }
     });
-  }, 3000);
-}
 
-[300, 800, 1500, 3000, 5000].forEach(function(d) {
-  setTimeout(fixTrustooRatings, d);
-});
+    // Har widget ke liye product-specific render call try karo
+    allWidgets.forEach(function(widget) {
+      var pid = widget.getAttribute('data-product-id');
+      ['renderProduct', 'renderForProduct', 'initProduct'].forEach(function(m) {
+        if (typeof TR[m] === 'function') {
+          try { TR[m](pid); called = true; } catch(e) {}
+        }
+      });
+    });
 
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', function() {
-      [200, 600, 1200].forEach(function(d) { setTimeout(fixTrustooRatings, d); });
+    return called;
+  }
+
+  // ── Strategy B: Clone from first rendered widget ──
+  function cloneFromRendered() {
+    if (!firstWidget || firstWidget.children.length === 0) return false;
+
+    var cloned = 0;
+    allWidgets.forEach(function(widget) {
+      if (widget === firstWidget) return;
+      if (widget.children.length > 0) return; // already rendered
+
+      var pid = widget.getAttribute('data-product-id');
+      var firstPid = firstWidget.getAttribute('data-product-id');
+
+      if (pid === firstPid) {
+        // Same product — direct clone
+        widget.innerHTML = firstWidget.innerHTML;
+        cloned++;
+      } else {
+        // Different product — clone structure, update product-id references
+        var html = firstWidget.innerHTML;
+        // Replace product ID references inside cloned HTML
+        html = html.replace(new RegExp(firstPid, 'g'), pid);
+        widget.innerHTML = html;
+        cloned++;
+      }
+    });
+
+    return cloned > 0;
+  }
+
+  // ── Strategy C: Trustoo ke custom events fire karo ──
+  function fireEvents() {
+    var events = [
+      'trustoo:init', 'trustoo:refresh', 'trustoo:render',
+      'seal:init', 'seal:refresh',
+      'spr:init', 'spr:refresh'
+    ];
+    events.forEach(function(ev) {
+      try {
+        document.dispatchEvent(new CustomEvent(ev, { bubbles: true, detail: { productId: null } }));
+      } catch(e) {}
     });
   }
+
+  // ── Strategy D: MutationObserver — pehle card render hone ka wait karo ──
+  function watchFirstWidget() {
+    if (!firstWidget) return;
+
+    var observer = new MutationObserver(function(mutations) {
+      var hasContent = mutations.some(function(m) {
+        return m.addedNodes.length > 0;
+      });
+
+      if (hasContent && firstWidget.children.length > 0) {
+        observer.disconnect();
+        // Thoda wait karo, phir clone/API try karo
+        setTimeout(function() {
+          if (!cloneFromRendered()) {
+            tryTrustooAPI();
+          }
+        }, 200);
+      }
+    });
+
+    observer.observe(firstWidget, { childList: true, subtree: true });
+
+    // 8 second timeout ke baad observer band karo
+    setTimeout(function() { observer.disconnect(); }, 8000);
+  }
+
+  // ── Main execution ──
+  function initTrustoo() {
+    fireEvents();
+    tryTrustooAPI();
+    watchFirstWidget();
+  }
+
+  // Multiple timing attempts
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', function() {
+      [100, 500, 1000, 2000].forEach(function(d) {
+        setTimeout(initTrustoo, d);
+      });
+    });
+  } else {
+    [100, 500, 1000, 2000, 4000].forEach(function(d) {
+      setTimeout(initTrustoo, d);
+    });
+  }
+
+  // ── Polling fallback: Trustoo ke execute hone ka wait karo ──
+  var pollCount = 0;
+  var pollMax   = 20; // 10 seconds max
+  var pollTimer = setInterval(function() {
+    pollCount++;
+    if (pollCount >= pollMax) {
+      clearInterval(pollTimer);
+      return;
+    }
+
+    // Check karo agar Trustoo execute ho gaya
+    if (window.isTrustooReviewsExecuted === true) {
+      clearInterval(pollTimer);
+      setTimeout(function() {
+        if (!cloneFromRendered()) {
+          tryTrustooAPI();
+        }
+      }, 300);
+      return;
+    }
+
+    // Agar pehle card pe stars aa gaye toh clone karo
+    if (firstWidget && firstWidget.children.length > 0) {
+      clearInterval(pollTimer);
+      setTimeout(function() { cloneFromRendered(); }, 200);
+    }
+  }, 500);
 
 })();
 </script>
