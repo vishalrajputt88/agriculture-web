@@ -482,15 +482,6 @@
             "fallback_content": "<p>No additional information available.</p>"
           }
         },
-        "video_zeHDRw": {
-          "type": "video",
-          "settings": {
-            "tab_label": "How to Use Video",
-            "video_metafield_namespace": "",
-            "video_metafield_key": "",
-            "video_content": ""
-          }
-        },
         "faq_ipzMMi": {
           "type": "faq",
           "settings": {
@@ -509,7 +500,6 @@
       },
       "block_order": [
         "additional_info_AegdRG",
-        "video_zeHDRw",
         "faq_ipzMMi",
         "richtext_CPGxFc"
       ],
