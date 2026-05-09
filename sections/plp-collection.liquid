@@ -517,7 +517,13 @@
                   </a>
 
                   <div class="pc-body">
-                    <div class="pc-type">Silicon Based Spreader</div>
+                    <div class="pc-type">
+{% if product.title contains 'Bhumi Fixit' %}
+  Silicon Based Spreader
+{% else %}
+  {{ product.product_type }}
+{% endif %}
+</div>
                     <a href="{{ product.url | within: collection }}" class="pc-title" itemprop="name">{{ product.title }}</a>
 
                     {{- '' -}}
