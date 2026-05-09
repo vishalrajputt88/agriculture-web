@@ -521,7 +521,7 @@
 {% if product.title contains 'Bhumi Fixit' %}
   Silicon Based Spreader
 {% else %}
-  {{ product.product_type }}
+  {{ product.product_type | default: product.tags.first }}
 {% endif %}
 </div>
                     <a href="{{ product.url | within: collection }}" class="pc-title" itemprop="name">{{ product.title }}</a>
