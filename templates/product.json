@@ -713,6 +713,17 @@
         "show_view_all": true,
         "view_all_text": "VIEW ALL RELATED PRODUCTS"
       }
+    },
+    "custom_liquid_KdMfgz": {
+      "type": "custom-liquid",
+      "name": "t:names.custom_liquid",
+      "settings": {
+        "custom_liquid": "<div class=\"faq-section\">\n\n  <h3>1. Why are Aakash F1 Pumpkin Seeds good for home gardening?</h3>\n  <p>\n    Aakash F1 Pumpkin Seeds grow vigorously with strong vines and large fruits, making them ideal for terrace, backyard, and kitchen gardens.\n  </p>\n\n  <h3>2. How often should I water pumpkin plants?</h3>\n  <p>\n    Water every 2–3 days and keep the soil moist but not waterlogged. Reduce watering near harvest.\n  </p>\n\n  <h3>3. Can beginners grow Aakash F1 Pumpkin easily?</h3>\n  <p>\n    Yes, Aakash F1 Pumpkin is easy to grow, adaptable, and suitable for beginner home gardeners.\n  </p>\n\n  <h3>4. How many plants can I grow in a small garden?</h3>\n  <p>\n    You can grow 1–2 plants in a 20–25 sq ft area because pumpkin vines spread widely.\n  </p>\n\n  <h3>5. Do pumpkin plants need sunlight?</h3>\n  <p>\n    Yes, pumpkin plants require 6–8 hours of direct sunlight daily for healthy growth and fruit production.\n  </p>\n\n</div>",
+        "color_scheme": "",
+        "section_width": "page-width",
+        "padding-block-start": 0,
+        "padding-block-end": 0
+      }
     }
   },
   "order": [
@@ -722,6 +733,7 @@
     "product_information_tab_ytkm4J",
     "product_recommendations_qggXJq",
     "17717607547d73321b",
-    "releted_products_4GVMFR"
+    "releted_products_4GVMFR",
+    "custom_liquid_KdMfgz"
   ]
 }
