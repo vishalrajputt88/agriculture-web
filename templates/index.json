@@ -12,6 +12,17 @@
     "custom_agri_slidder_UPBpVU": {
       "type": "custom-agri-slidder",
       "blocks": {
+        "slide_YG3xdL": {
+          "type": "slide",
+          "settings": {
+            "image": "shopify://shop_images/WhatsApp_Image_2026-05-13_at_3.41.17_PM.jpg",
+            "heading": "",
+            "subheading": "",
+            "description": "",
+            "button_text": "",
+            "button_link": ""
+          }
+        },
         "slide_myrchD": {
           "type": "slide",
           "settings": {
@@ -47,6 +58,7 @@
         }
       },
       "block_order": [
+        "slide_YG3xdL",
         "slide_myrchD",
         "slide_hqTtrp",
         "slide_AKdbjF"
