@@ -144,6 +144,7 @@
                 "font_size": 16,
                 "text_color": "#eaaa06",
                 "block_aligment": "left",
+                "rating_decimal_places": "1",
                 "margin_top": 0,
                 "margin_bottom": 0
               }
@@ -248,34 +249,12 @@
                     "padding-inline-end": 0
                   },
                   "blocks": {}
-                },
-                "product_info_text_KzX9x9": {
-                  "type": "product-info-text",
-                  "name": "Product info text",
-                  "settings": {
-                    "desktop_width_percent": 100,
-                    "text_align": "left",
-                    "line_spacing": 5,
-                    "show_line1": true,
-                    "line1_text": "MRP Inclusive of all taxes",
-                    "line1_size": 13,
-                    "line1_weight": "400",
-                    "line1_color": "#333333",
-                    "show_line2": true,
-                    "line2_prefix": "Product SKU:",
-                    "sku_fallback": "N/A",
-                    "line2_size": 13,
-                    "line2_weight": "400",
-                    "line2_color": "#333333"
-                  },
-                  "blocks": {}
                 }
               },
               "block_order": [
                 "product_inventory_erLBba",
                 "text_qM4K4p",
-                "price_tVjtKg",
-                "product_info_text_KzX9x9"
+                "price_tVjtKg"
               ]
             },
             "product_info_text_ij9RWq": {
