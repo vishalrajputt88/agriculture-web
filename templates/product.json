@@ -389,7 +389,7 @@
               "name": "Product details accordion",
               "settings": {
                 "item_1_enabled": true,
-                "item_1_title": "Key Features & Benefits of {{ closest.product.title }}",
+                "item_1_title": "Key Features",
                 "item_1_content": "{{ closest.product.metafields.custom.key_features | metafield_tag }}",
                 "item_1_default_open": true,
                 "item_2_enabled": true,
