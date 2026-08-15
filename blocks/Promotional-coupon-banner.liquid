@@ -1,11 +1,12 @@
 {% assign custom_discount_banner = block.id | replace: '_', '' | downcase %}
 
 {% style %}
-  .coupon-banner-{{ custom_discount_banner }} {
+ .coupon-banner-{{ custom_discount_banner }} {
     display: block;
     width: {{ block.settings.desktop_width_percent }}%;
     max-width: 100%;
-  }
+    margin-top: 15px;
+}
 
   .coupon-banner__container-{{ custom_discount_banner }} {
     background-color: {{ block.settings.background_color }};
