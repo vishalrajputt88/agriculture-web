@@ -266,6 +266,30 @@
                   },
                   "block_order": []
                 },
+                "promotional_coupon_banner_xaKNGc": {
+                  "type": "Promotional-coupon-banner",
+                  "name": "Promotional coupon banner",
+                  "settings": {
+                    "price_text": "Use code",
+                    "coupon_code": "WHATSUP",
+                    "discount_text": "For 5% discount",
+                    "button_text": "COPY",
+                    "desktop_width_percent": 100,
+                    "padding": 14,
+                    "background_color": "#f5e6d3",
+                    "border_color": "#d4a574",
+                    "text_color": "#333333",
+                    "code_color": "#000000",
+                    "button_bg_color": "#111111",
+                    "button_text_color": "#ffffff",
+                    "border_width": 2,
+                    "border_radius": 16,
+                    "button_border_radius": 3,
+                    "price_font_size": 14,
+                    "button_font_size": 12
+                  },
+                  "blocks": {}
+                },
                 "text_qM4K4p": {
                   "type": "text",
                   "name": "Product description",
@@ -298,6 +322,7 @@
                 "custom_varient_picker_gEjbQw",
                 "product_inventory_erLBba",
                 "buy_buttons_aiaDRy",
+                "promotional_coupon_banner_xaKNGc",
                 "text_qM4K4p"
               ]
             },
@@ -359,30 +384,6 @@
               },
               "blocks": {}
             },
-            "promotional_coupon_banner_ggiW36": {
-              "type": "promotional-coupon-banner",
-              "name": "Promotional coupon banner",
-              "settings": {
-                "price_text": "On first",
-                "coupon_code": "Order Get",
-                "discount_text": "50 Rs OFF use \"FIRST50\"",
-                "button_text": "COPY",
-                "desktop_width_percent": 100,
-                "padding": 14,
-                "background_color": "#f5e6d3",
-                "border_color": "#d4a574",
-                "text_color": "#333333",
-                "code_color": "#000000",
-                "button_bg_color": "#000000",
-                "button_text_color": "#ffffff",
-                "border_width": 2,
-                "border_radius": 6,
-                "button_border_radius": 4,
-                "price_font_size": 16,
-                "button_font_size": 12
-              },
-              "blocks": {}
-            },
             "product_details_accordion_wDyKf8": {
               "type": "product-details-accordion",
               "name": "Product details accordion",
@@ -429,7 +430,6 @@
             "variant_picker_R3rGDr",
             "custom_liquid_k3XP4T",
             "wishlist_button_main",
-            "promotional_coupon_banner_ggiW36",
             "product_details_accordion_wDyKf8"
           ]
         }
@@ -440,7 +440,7 @@
         "desktop_media_position": "left",
         "equal_columns": true,
         "limit_details_width": false,
-        "gap": 40,
+        "gap": 32,
         "enable_sticky_add_to_cart": true,
         "color_scheme": "",
         "padding-block-start": 0,
