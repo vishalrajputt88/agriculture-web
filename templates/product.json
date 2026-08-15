@@ -267,7 +267,7 @@
                   "block_order": []
                 },
                 "promotional_coupon_banner_xaKNGc": {
-                  "type": "Promotional-coupon-banner",
+                  "type": "promotional-coupon-banner",
                   "name": "Promotional coupon banner",
                   "settings": {
                     "price_text": "Use code",
@@ -389,7 +389,7 @@
               "name": "Product details accordion",
               "settings": {
                 "item_1_enabled": true,
-                "item_1_title": "Key Features",
+                "item_1_title": "benefits",
                 "item_1_content": "{{ closest.product.metafields.custom.key_features | metafield_tag }}",
                 "item_1_default_open": true,
                 "item_2_enabled": true,
