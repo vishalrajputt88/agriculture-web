@@ -138,7 +138,7 @@
               "blocks": {}
             },
             "trustwill_trustoo_star_rating_widget_X4FQ3c": {
-              "type": "shopify://apps/trustwill-trustoo/blocks/star-rating-widget/c8f15077-6475-4e86-ad06-b66038d5ba2c",
+              "type": "shopify://apps/cwilltrustoo-reviews/blocks/star-rating-widget/c8f15077-6475-4e86-ad06-b66038d5ba2c",
               "settings": {
                 "star_size": 20,
                 "font_size": 16,
@@ -189,6 +189,34 @@
                 "padding-inline-end": 0
               },
               "blocks": {
+                "price_tVjtKg": {
+                  "type": "price",
+                  "settings": {
+                    "show_sale_price_first": true,
+                    "show_installments": false,
+                    "show_tax_info": false,
+                    "type_preset": "paragraph",
+                    "width": "100%",
+                    "alignment": "left",
+                    "font": "var(--font-body--family)",
+                    "font_size": "1rem",
+                    "line_height": "normal",
+                    "letter_spacing": "normal",
+                    "case": "none",
+                    "color": "var(--color-foreground)",
+                    "padding-block-start": 4,
+                    "padding-block-end": 0,
+                    "padding-inline-start": 0,
+                    "padding-inline-end": 0
+                  },
+                  "blocks": {}
+                },
+                "custom_varient_picker_gEjbQw": {
+                  "type": "custom-varient-picker",
+                  "name": "Custom Variant Selector",
+                  "settings": {},
+                  "blocks": {}
+                },
                 "product_inventory_erLBba": {
                   "type": "product-inventory",
                   "name": "t:names.product_inventory",
@@ -227,34 +255,13 @@
                     "padding-inline-end": 0
                   },
                   "blocks": {}
-                },
-                "price_tVjtKg": {
-                  "type": "price",
-                  "settings": {
-                    "show_sale_price_first": true,
-                    "show_installments": false,
-                    "show_tax_info": false,
-                    "type_preset": "paragraph",
-                    "width": "100%",
-                    "alignment": "left",
-                    "font": "var(--font-body--family)",
-                    "font_size": "1rem",
-                    "line_height": "normal",
-                    "letter_spacing": "normal",
-                    "case": "none",
-                    "color": "var(--color-foreground)",
-                    "padding-block-start": 4,
-                    "padding-block-end": 0,
-                    "padding-inline-start": 0,
-                    "padding-inline-end": 0
-                  },
-                  "blocks": {}
                 }
               },
               "block_order": [
+                "price_tVjtKg",
+                "custom_varient_picker_gEjbQw",
                 "product_inventory_erLBba",
-                "text_qM4K4p",
-                "price_tVjtKg"
+                "text_qM4K4p"
               ]
             },
             "product_info_text_ij9RWq": {
@@ -299,12 +306,6 @@
               "settings": {
                 "custom_liquid": "{% if product.has_only_default_variant == false %}\n<div class=\"custom-variant-wrapper\">\n  <div class=\"variant-grid\">\n    {% for variant in product.variants %}\n      <div \n        class=\"variant-card {% if variant == product.selected_or_first_available_variant %}active{% endif %} {% unless variant.available %}disabled{% endunless %}\"\n        data-variant-id=\"{{ variant.id }}\"\n        data-variant-price=\"{{ variant.price }}\"\n      >\n        <div class=\"variant-title\">\n          {{ variant.title }}\n        </div>\n        <div class=\"variant-subtitle\">\n          ({{ variant.title }} x 1)\n        </div>\n        <div class=\"variant-price\">\n         ₹ {{ variant.price | money_without_currency }}/100 ml\n        </div>\n      </div>\n    {% endfor %}\n  </div>\n  <!-- Hidden select to sync Shopify -->\n  <select name=\"id\" class=\"variant-hidden-select\" id=\"product-select-{{ product.id }}\" hidden>\n    {% for variant in product.variants %}\n      <option \n        value=\"{{ variant.id }}\" \n        {% if variant == product.selected_or_first_available_variant %}selected{% endif %}\n      >\n        {{ variant.title }}\n      </option>\n    {% endfor %}\n  </select>\n</div>\n{% endif %}\n\n<style>\n.custom-variant-wrapper {\n  margin-bottom: 25px;\n}\n\n.variant-grid {\n  display: flex;\n  flex-wrap: wrap;\n  gap: 12px;\n  align-items: flex-start;\n}\n\n.variant-card {\n  min-width: 110px;\n  max-width: 140px;\n  padding: 5px 10px;\n  border-radius: 12px;\n  background: #e8f5e9;\n  cursor: pointer;\n  transition: all 0.3s ease;\n  border: 2px solid #d4e9d6;\n  text-align: center;\n  box-shadow: 0 2px 4px rgba(0,0,0,0.05);\n}\n\n.variant-card:hover {\n  transform: translateY(-3px);\n  box-shadow: 0 4px 12px rgba(30, 125, 60, 0.15);\n  border-color: #1e7d3c;\n}\n\n.variant-card.active {\n  background: linear-gradient(135deg, #1e7d3c 0%, #2d9e4f 100%);\n  color: #fff;\n  border-color: #1e7d3c;\n  box-shadow: 0 4px 12px rgba(30, 125, 60, 0.3);\n}\n\n.variant-card.disabled {\n  opacity: 0.4;\n  pointer-events: none;\n  background: #f0f0f0;\n}\n\n.variant-title {\n  font-weight: 700;\n  font-size: 14px;\n  margin-bottom: 4px;\n  letter-spacing: 0.3px;\n}\n\n.variant-card.active .variant-title {\n  color: #fff;\n}\n\n.variant-subtitle {\n  font-size: 10px;\n  margin-top: 2px;\n  margin-bottom: 4px;\n  opacity: 0.75;\n  font-weight: 400;\n}\n\n.variant-card.active .variant-subtitle {\n  opacity: 0.9;\n  color: rgba(255,255,255,0.9);\n}\n\n.variant-price {\n  margin-top: 0px;\n  background: #c8e6c9;\n  padding: 6px 12px;\n  border-radius: 8px;\n  font-size: 10px;\n  font-weight: 600;\n  display: inline-block;\n  color: #1e7d3c;\n}\n\n.variant-card.active .variant-price {\n  background: rgba(255, 255, 255, 0.25);\n  color: #fff;\n  font-weight: 700;\n}\n\n/* Responsive */\n@media (max-width: 768px) {\n  .variant-card {\n    min-width: 100px;\n    max-width: 120px;\n    padding: 14px 10px;\n  }\n  \n  .variant-title {\n    font-size: 16px;\n  }\n  \n  .variant-subtitle {\n    font-size: 10px;\n  }\n  \n  .variant-price {\n    font-size: 12px;\n    padding: 5px 10px;\n  }\n}\n\n@media (max-width: 480px) {\n  .variant-grid {\n    gap: 10px;\n  }\n  \n  .variant-card {\n    min-width: 90px;\n    max-width: 110px;\n    padding: 12px 8px;\n  }\n  \n  .variant-title {\n    font-size: 15px;\n  }\n}\n</style>\n\n<script>\ndocument.addEventListener('DOMContentLoaded', function() {\n\n  const variantCards = document.querySelectorAll('.variant-card');\n\n  variantCards.forEach(function(card) {\n\n    card.addEventListener('click', function() {\n\n      if (card.classList.contains('disabled')) return;\n\n      variantCards.forEach(c => c.classList.remove('active'));\n      card.classList.add('active');\n\n      const variantId = card.dataset.variantId;\n\n      // 🔥 Find existing radio input having same variant ID\n      const realInput = document.querySelector(\n        'input[type=\"radio\"][data-variant-id=\"' + variantId + '\"]'\n      );\n\n      if (!realInput) {\n        console.log(\"Matching variant radio not found\");\n        return;\n      }\n\n      // Trigger real theme variant change\n      realInput.checked = true;\n      realInput.dispatchEvent(new Event('change', { bubbles: true }));\n\n    });\n\n  });\n\n});\n</script>"
               },
-              "blocks": {}
-            },
-            "custom_varient_picker_mhFFRg": {
-              "type": "custom-varient-picker",
-              "name": "Custom Variant Selector",
-              "settings": {},
               "blocks": {}
             },
             "buy_buttons_eYQEYi": {
@@ -425,7 +426,6 @@
             "product_info_text_ij9RWq",
             "variant_picker_R3rGDr",
             "custom_liquid_k3XP4T",
-            "custom_varient_picker_mhFFRg",
             "buy_buttons_eYQEYi",
             "wishlist_button_main",
             "promotional_coupon_banner_ggiW36",
