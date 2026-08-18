@@ -383,43 +383,6 @@
                 "padding-inline-end": 0
               },
               "blocks": {}
-            },
-            "product_details_accordion_wDyKf8": {
-              "type": "product-details-accordion",
-              "name": "Product details accordion",
-              "settings": {
-                "item_1_enabled": true,
-                "item_1_title": "Benefits",
-                "item_1_content": "{{ closest.product.metafields.custom.key_features | metafield_tag }}",
-                "item_1_default_open": true,
-                "item_2_enabled": true,
-                "item_2_title": "Application Scope",
-                "item_2_content": "{{ closest.product.metafields.custom.application_scope | metafield_tag }}",
-                "item_2_default_open": false,
-                "item_3_enabled": false,
-                "item_3_title": "Additional Information",
-                "item_3_content": "<p>Add additional information here.</p>",
-                "item_3_default_open": false,
-                "desktop_width_percent": 100,
-                "background_color": "#ffffff",
-                "hover_background_color": "#f5f5f5",
-                "border_color": "#e0e0e0",
-                "header_text_color": "#000000",
-                "content_text_color": "#666666",
-                "icon_color": "#333333",
-                "header_font_size": 16,
-                "header_font_weight": 600,
-                "content_font_size": 14,
-                "content_font_weight": 400,
-                "content_line_height": 1.6,
-                "header_padding_vertical": 18,
-                "header_padding_horizontal": 20,
-                "content_padding_horizontal": 0,
-                "content_padding_bottom": 20,
-                "mobile_header_padding": 16,
-                "icon_size": 20
-              },
-              "blocks": {}
             }
           },
           "block_order": [
@@ -429,8 +392,7 @@
             "product_info_text_ij9RWq",
             "variant_picker_R3rGDr",
             "custom_liquid_k3XP4T",
-            "wishlist_button_main",
-            "product_details_accordion_wDyKf8"
+            "wishlist_button_main"
           ]
         }
       },
